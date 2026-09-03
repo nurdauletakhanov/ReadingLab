@@ -4,7 +4,7 @@ export const site = {
   author: 'Nurdaulet Akhanov',
   github: 'https://github.com/nurdauletakhanov/ReadingLab',
   nextLecture: {
-    topic: 'Topic to be announced',
+    topic: 'Least Squares Foundations',
     date: 'Friday',
     place: 'Lecture Hall 1',
     time: '3 pm',
