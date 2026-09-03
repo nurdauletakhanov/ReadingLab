@@ -101,14 +101,11 @@ h2.section { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; ma
 .papers table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: .75rem 0 1.5rem; }
 .papers th, .papers td { border-bottom: 1px solid var(--line); padding: .45rem .5rem; text-align: left; vertical-align: top; }
 .papers th { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--bg); }
-.papers td:nth-child(1) { text-align: center; white-space: nowrap; }
-.papers td:nth-child(2) { font-family: var(--mono); font-size: .82rem; white-space: nowrap; }
+.papers td:nth-child(1) { font-family: var(--mono); font-size: .82rem; white-space: nowrap; }
 .papers td a { color: var(--text); }
 .papers td a:hover { color: var(--accent); }
 .papers h2 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 2.2rem 0 .4rem; }
 .papers hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
-.papers .done { color: var(--accent); font-weight: 600; }
-.papers .todo { color: var(--line); }
 .papers .table-wrap { overflow-x: auto; }
 
 /* The full-bleed article slot for legacy tutorials: the tutorial's own .wrap sets the measure. */
