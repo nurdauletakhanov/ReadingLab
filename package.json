@@ -10,7 +10,8 @@
     "preview": "astro preview",
     "check": "astro check",
     "verify": "pnpm check && pnpm build && du -sh dist && find dist -size +15M",
-    "import:video": "python3 scripts/import_video.py"
+    "import:video": "python3 scripts/import_video.py",
+    "deploy": "bash scripts/deploy.sh"
   },
   "pnpm": { "onlyBuiltDependencies": ["esbuild", "sharp"] },
   "dependencies": {
