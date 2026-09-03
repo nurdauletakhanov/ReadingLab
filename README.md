@@ -51,10 +51,7 @@ Node 22 and pnpm 10 (`corepack enable` gives you pnpm). `ffmpeg` is needed only 
    keeping the two-line frontmatter at the top. Titles are linked automatically (known DOIs in
    `src/lib/rehype-paper-links.mjs`, otherwise a Scholar search). No PDFs are hosted.
 
-4. `git push`, then `pnpm deploy` (builds and pushes `dist/` to the `gh-pages` branch, which
-   GitHub Pages serves). `.github/workflows/deploy.yml` does the same on every push once it is
-   committed; that needs a token with the `workflow` scope (`gh auth refresh -s workflow`) and
-   Pages switched to "GitHub Actions" in the repo settings.
+4. `git push`. The GitHub Action in `.github/workflows/deploy.yml` builds and deploys to Pages.
 
 ## Labs (later)
 
