@@ -5,7 +5,7 @@ const entry = await getEntry('papers', 'reading-list');
 if (!entry) throw new Error('src/content/papers/reading-list.md is missing');
 const { Content } = await render(entry);
 ---
-<BaseLayout title="Papers" description="The reading list: fifteen levels from classical statistics to frontier models.">
+<BaseLayout title="Papers" description="The reading list: fifteen parts from classical statistics to frontier models.">
   <p class="eyebrow">Papers</p>
   <h1 class="page-title">{entry.data.title}</h1>
   <div class="papers">

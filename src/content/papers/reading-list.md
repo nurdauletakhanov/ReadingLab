@@ -3,7 +3,7 @@ title: "ML/AI Reading List: Foundations to Frontier"
 updated: 2026-08-21
 ---
 
-## Level 1 — Core Supervised ML
+## Part 1 — Core Supervised ML
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -20,7 +20,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 2 — Trees and Ensembles
+## Part 2 — Trees and Ensembles
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -35,7 +35,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 3 — Probabilistic ML and Structured Prediction
+## Part 3 — Probabilistic ML and Structured Prediction
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -46,7 +46,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 4 — Optimization and "How to Train"
+## Part 4 — Optimization and "How to Train"
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -62,7 +62,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 5 — Deep Learning Vision Backbones
+## Part 5 — Deep Learning Vision Backbones
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -79,7 +79,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 6 — NLP: Embeddings → Seq2Seq → Transformers
+## Part 6 — NLP: Embeddings → Seq2Seq → Transformers
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -102,7 +102,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 7 — Self-Supervised & Representation Learning
+## Part 7 — Self-Supervised & Representation Learning
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -122,7 +122,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 8 — Generative Modeling
+## Part 8 — Generative Modeling
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -146,7 +146,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 9 — Graph ML
+## Part 9 — Graph ML
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -156,7 +156,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 10 — Reinforcement Learning
+## Part 10 — Reinforcement Learning
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -172,7 +172,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 11 — Scaling and Theory
+## Part 11 — Scaling and Theory
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -183,7 +183,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 12 — Audio ML 🎵
+## Part 12 — Audio ML 🎵
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -205,7 +205,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 13 — Music Information Retrieval
+## Part 13 — Music Information Retrieval
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -218,7 +218,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 14 — Parameter-Efficient Fine-Tuning and Alignment
+## Part 14 — Parameter-Efficient Fine-Tuning and Alignment
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -238,7 +238,7 @@ updated: 2026-08-21
 
 ---
 
-## Level 15 — Frontier Models and Technical Reports
+## Part 15 — Frontier Models and Technical Reports
 
 | Year | Authors | Title | Concept |
 |------|---------|-------|---------|
@@ -254,4 +254,3 @@ updated: 2026-08-21
 | 2025 | MiniMax | MiniMax-01 | Lightning attention at scale |
 | 2024 | 01.AI | Yi Technical Report | Open frontier model |
 | 2024 | Google | Gemini Technical Report | Multimodal frontier |
-
