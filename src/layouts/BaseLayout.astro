@@ -1,0 +1,50 @@
+---
+import '../styles/global.css';
+import { site } from '../site.config';
+import { withBase } from '../lib/paths';
+import Header from '../components/Header.astro';
+import Footer from '../components/Footer.astro';
+import MathJax from '../components/MathJax.astro';
+
+interface Props {
+  title: string;
+  description?: string;
+  math?: boolean;
+  fontsHref?: string;
+  fullBleed?: boolean;
+}
+const { title, description = site.tagline, math = false, fontsHref, fullBleed = false } = Astro.props;
+const fonts = [site.fontsHref, ...(fontsHref && fontsHref !== site.fontsHref ? [fontsHref] : [])];
+const canonical = new URL(Astro.url.pathname, Astro.site);
+---
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <title>{title === site.title ? title : `${title} · ${site.title}`}</title>
+    <meta name="description" content={description} />
+    <link rel="canonical" href={canonical} />
+    <link rel="icon" href={withBase('/favicon.svg')} type="image/svg+xml" />
+    <link rel="sitemap" href={withBase('/sitemap-index.xml')} />
+    <script is:inline>
+      (function () {
+        try {
+          var t = localStorage.getItem('theme');
+          if (t === 'dark' || t === 'light') document.documentElement.dataset.theme = t;
+        } catch (e) {}
+      })();
+    </script>
+    <link rel="preconnect" href="https://fonts.googleapis.com" />
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+    {fonts.map((href) => <link rel="stylesheet" href={href} />)}
+    {math && <MathJax />}
+  </head>
+  <body>
+    <Header />
+    <main class:list={[{ container: !fullBleed }]}>
+      <slot />
+    </main>
+    <Footer />
+  </body>
+</html>

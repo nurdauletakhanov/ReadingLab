@@ -1,0 +1,106 @@
+/* Site tokens. Same palette and dark-mode convention as the tutorials, so chrome and article match. */
+:root {
+  --bg: #f7f7f5; --surface: #ffffff; --text: #24282e; --muted: #6b7280;
+  --accent: #a8710a; --accent-soft: #f6ecd6; --line: #e0e1de; --player-bg: #0e1014;
+  --serif: "Newsreader", Georgia, serif;
+  --sans: "Public Sans", -apple-system, system-ui, sans-serif;
+  --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;
+  color-scheme: light;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131619; --surface: #1b1f24; --text: #e7e9ec; --muted: #98a0aa;
+    --accent: #e0ab3c; --accent-soft: #2b2617; --line: #2a2e34;
+    color-scheme: dark;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131619; --surface: #1b1f24; --text: #e7e9ec; --muted: #98a0aa;
+  --accent: #e0ab3c; --accent-soft: #2b2617; --line: #2a2e34;
+  color-scheme: dark;
+}
+
+* { box-sizing: border-box; }
+html { background: var(--bg); }
+body {
+  margin: 0; background: var(--bg); color: var(--text);
+  font-family: var(--sans); font-size: 16px; line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  min-height: 100vh; display: flex; flex-direction: column;
+}
+a { color: var(--accent); text-decoration-thickness: 1px; text-underline-offset: 2px; }
+main { flex: 1; }
+.container { max-width: 780px; margin: 0 auto; padding: 1.5rem 1.25rem 3rem; }
+
+/* Header */
+.site-header { border-bottom: 1px solid var(--line); background: var(--bg); }
+.site-header .bar {
+  max-width: 780px; margin: 0 auto; padding: .8rem 1.25rem;
+  display: flex; align-items: center; gap: 1.25rem; flex-wrap: wrap;
+}
+.brand { font-family: var(--serif); font-weight: 600; font-size: 1.2rem; color: var(--text); text-decoration: none; }
+.brand span { color: var(--accent); }
+.site-nav { display: flex; gap: 1rem; margin-left: auto; align-items: center; }
+.site-nav a { color: var(--muted); text-decoration: none; font-size: .95rem; padding: .2rem 0; border-bottom: 2px solid transparent; }
+.site-nav a:hover { color: var(--text); }
+.site-nav a[aria-current="page"] { color: var(--text); border-bottom-color: var(--accent); }
+.theme-toggle {
+  background: none; border: 1px solid var(--line); color: var(--muted); border-radius: 999px;
+  padding: .25rem .6rem; font: inherit; font-size: .8rem; cursor: pointer; font-family: var(--mono);
+}
+.theme-toggle:hover { color: var(--text); border-color: var(--accent); }
+
+/* Footer */
+.site-footer { border-top: 1px solid var(--line); color: var(--muted); font-size: .85rem; }
+.site-footer .bar { max-width: 780px; margin: 0 auto; padding: 1rem 1.25rem; display: flex; gap: 1rem; flex-wrap: wrap; }
+
+/* Type */
+.eyebrow { font-family: var(--mono); font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--accent); margin: 0 0 .5rem; }
+h1.page-title { font-family: var(--serif); font-weight: 600; font-size: clamp(1.7rem, 5vw, 2.4rem); line-height: 1.15; margin: 0 0 .35rem; text-wrap: balance; }
+.lede { color: var(--muted); font-size: 1.05rem; margin: 0 0 1.5rem; }
+.cite { font-family: var(--serif); font-style: italic; color: var(--muted); margin: 0; font-size: 1.02rem; }
+h2.section { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; margin: 2rem 0 .6rem; }
+
+/* Cards */
+.cards { display: grid; gap: 1rem; grid-template-columns: repeat(auto-fill, minmax(240px, 1fr)); margin: 0; padding: 0; list-style: none; }
+.card {
+  background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.1rem;
+  display: flex; flex-direction: column; gap: .35rem;
+}
+.card:hover { border-color: var(--accent); }
+.card .kicker { font-family: var(--mono); font-size: .7rem; letter-spacing: .1em; text-transform: uppercase; color: var(--muted); }
+.card h3 { font-family: var(--serif); font-weight: 600; font-size: 1.15rem; margin: 0; line-height: 1.25; }
+.card h3 a { color: var(--text); text-decoration: none; }
+.card h3 a::after { content: ""; position: absolute; inset: 0; }
+.card { position: relative; }
+.card p { margin: 0; color: var(--muted); font-size: .92rem; }
+.card .meta { font-family: var(--mono); font-size: .75rem; color: var(--muted); margin-top: auto; padding-top: .4rem; }
+
+/* Sessions on the home page */
+.session { border-top: 1px solid var(--line); padding: 1.25rem 0; display: grid; grid-template-columns: 5.5rem 1fr; gap: 1rem; }
+.session .num { font-family: var(--mono); color: var(--accent); font-size: .8rem; letter-spacing: .08em; text-transform: uppercase; padding-top: .3rem; }
+.session h3 { font-family: var(--serif); font-weight: 600; font-size: 1.35rem; margin: 0 0 .25rem; }
+.session .links { display: flex; gap: .6rem; flex-wrap: wrap; margin-top: .6rem; }
+.session .links a {
+  border: 1px solid var(--line); border-radius: 999px; padding: .25rem .75rem; text-decoration: none;
+  color: var(--text); font-size: .88rem; background: var(--surface);
+}
+.session .links a:hover { border-color: var(--accent); }
+@media (max-width: 520px) { .session { grid-template-columns: 1fr; gap: .25rem; } }
+
+/* Papers page tables */
+.papers table { border-collapse: collapse; width: 100%; font-size: .9rem; margin: .75rem 0 1.5rem; }
+.papers th, .papers td { border-bottom: 1px solid var(--line); padding: .45rem .5rem; text-align: left; vertical-align: top; }
+.papers th { font-family: var(--mono); font-size: .72rem; letter-spacing: .08em; text-transform: uppercase; color: var(--muted); position: sticky; top: 0; background: var(--bg); }
+.papers td:nth-child(1), .papers td:nth-child(2) { text-align: center; white-space: nowrap; }
+.papers td:nth-child(3) { font-family: var(--mono); font-size: .82rem; white-space: nowrap; }
+.papers td a { color: var(--text); }
+.papers td a:hover { color: var(--accent); }
+.papers h2 { font-family: var(--serif); font-weight: 600; font-size: 1.3rem; margin: 2.2rem 0 .4rem; }
+.papers hr { border: 0; border-top: 1px solid var(--line); margin: 2rem 0; }
+.papers .done { color: var(--accent); font-weight: 600; }
+.papers .todo { color: var(--line); }
+.papers .table-wrap { overflow-x: auto; }
+
+/* The full-bleed article slot for legacy tutorials: the tutorial's own .wrap sets the measure. */
+.tut { min-height: 40vh; }

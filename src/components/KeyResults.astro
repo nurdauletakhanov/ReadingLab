@@ -1,0 +1,24 @@
+---
+interface Props { items: { label: string; tex: string }[] }
+const { items } = Astro.props;
+---
+{items.length > 0 && (
+  <section class="formulas">
+    <h2>Key results</h2>
+    <dl>
+      {items.map((k) => (
+        <>
+          <dt>{k.label}</dt>
+          <dd>{`\\(${k.tex}\\)`}</dd>
+        </>
+      ))}
+    </dl>
+  </section>
+)}
+<style>
+  .formulas { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.15rem; margin-top: 1.5rem; }
+  h2 { font-family: var(--serif); font-weight: 600; font-size: 1.25rem; margin: 0 0 .6rem; }
+  dt { font-weight: 600; font-size: .85rem; color: var(--muted); margin-top: .7rem; }
+  dt:first-child { margin-top: 0; }
+  dd { margin: .2rem 0 0; overflow-x: auto; padding-bottom: .15rem; }
+</style>

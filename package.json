@@ -1,0 +1,27 @@
+{
+  "name": "readinglab",
+  "private": true,
+  "type": "module",
+  "packageManager": "pnpm@10.33.2",
+  "engines": { "node": ">=22" },
+  "scripts": {
+    "dev": "astro dev",
+    "build": "astro build",
+    "preview": "astro preview",
+    "check": "astro check",
+    "verify": "pnpm check && pnpm build && du -sh dist && find dist -size +15M",
+    "import:video": "python3 scripts/import_video.py"
+  },
+  "pnpm": { "onlyBuiltDependencies": ["esbuild", "sharp"] },
+  "dependencies": {
+    "@astrojs/sitemap": "^3.7.4",
+    "astro": "^5.18.2"
+  },
+  "devDependencies": {
+    "@astrojs/check": "^0.9.10",
+    "postcss": "^8.5.0",
+    "postcss-prefix-selector": "^2.2.0",
+    "typescript": "^5.6.0",
+    "yaml": "^2.9.0"
+  }
+}

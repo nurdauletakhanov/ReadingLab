@@ -1,0 +1,13 @@
+session: 1
+order: 1
+level: 1
+summary: "Hoerl & Kennard (1970) rebuilt from scratch: where least squares breaks, the ridge estimator, shrinkage direction by direction, the existence theorem, and how to choose k."
+paper:
+  authors: "Arthur E. Hoerl & Robert W. Kennard"
+  title: "Ridge Regression: Biased Estimation for Nonorthogonal Problems"
+  year: 1970
+  venue: "Technometrics 12(1)"
+  url: "https://doi.org/10.1080/00401706.1970.10488634"
+video: ridge
+linkRewrites:
+  "https://claude.ai/code/artifact/459b9778-0262-43f3-aff6-98e7a26110d7": /tutorials/foundations/

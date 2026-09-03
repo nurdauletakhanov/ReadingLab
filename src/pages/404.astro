@@ -1,0 +1,9 @@
+---
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { withBase } from '../lib/paths';
+---
+<BaseLayout title="Not found">
+  <p class="eyebrow">404</p>
+  <h1 class="page-title">Nothing here.</h1>
+  <p class="lede">Try the <a href={withBase('/')}>home page</a>, the <a href={withBase('/tutorials/')}>tutorials</a> or the <a href={withBase('/videos/')}>videos</a>.</p>
+</BaseLayout>

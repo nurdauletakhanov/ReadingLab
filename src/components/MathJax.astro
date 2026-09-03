@@ -1,0 +1,10 @@
+---
+// One MathJax per page, with the exact config the tutorials were authored against.
+const config = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], tags: 'none' },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea'] },
+};
+---
+<script is:inline set:html={`window.MathJax=${JSON.stringify(config)};`} />
+<script is:inline src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>

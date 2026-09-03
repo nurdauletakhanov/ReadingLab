@@ -1,0 +1,706 @@
+<title>Least Squares Foundations</title>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,400;0,6..72,600;1,6..72,400&family=Public+Sans:wght@400;500;600&family=IBM+Plex+Mono:wght@400;500&display=swap">
+<script>
+window.MathJax = {
+  tex: { inlineMath: [['\\(', '\\)']], displayMath: [['\\[', '\\]']], tags: 'none' },
+  svg: { fontCache: 'global' },
+  options: { skipHtmlTags: ['script', 'noscript', 'style', 'textarea'] }
+};
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/mathjax/3.2.2/es5/tex-svg.js"></script>
+<style>
+:root {
+  --bg: #f7f7f5; --surface: #ffffff; --text: #24282e; --muted: #6b7280;
+  --accent: #a8710a; --accent-soft: #f6ecd6; --line: #e0e1de;
+  --deriv: #1e2a33; --deriv-text: #f2ebd9; --deriv-accent: #f0c55a; --deriv-dim: #a9b7c2;
+  --qa: #37627f; --qa-soft: #e8eff4;
+  --num: #b4560a;
+}
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --bg: #131619; --surface: #1b1f24; --text: #e7e9ec; --muted: #98a0aa;
+    --accent: #e0ab3c; --accent-soft: #2b2617; --line: #2a2e34;
+    --deriv: #0e161c; --deriv-text: #f2ebd9; --deriv-accent: #f0c55a; --deriv-dim: #9fb0bd;
+    --qa: #8ab4d4; --qa-soft: #1a2733;
+    --num: #e08a45;
+  }
+}
+:root[data-theme="dark"] {
+  --bg: #131619; --surface: #1b1f24; --text: #e7e9ec; --muted: #98a0aa;
+  --accent: #e0ab3c; --accent-soft: #2b2617; --line: #2a2e34;
+  --deriv: #0e161c; --deriv-text: #f2ebd9; --deriv-accent: #f0c55a; --deriv-dim: #9fb0bd;
+  --qa: #8ab4d4; --qa-soft: #1a2733;
+  --num: #e08a45;
+}
+* { box-sizing: border-box; }
+body { background: var(--bg); color: var(--text); margin: 0; padding: 1.2rem;
+  font-family: "Public Sans", -apple-system, system-ui, sans-serif; line-height: 1.62; font-size: 16px; }
+.wrap { max-width: 720px; margin: 0 auto; display: flex; flex-direction: column; gap: 2.6rem; }
+header { padding-top: 1rem; }
+.eyebrow { font-family: "IBM Plex Mono", monospace; font-size: .72rem; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 .6rem; }
+h1 { font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: clamp(2rem, 6vw, 2.9rem);
+  line-height: 1.08; margin: 0 0 .5rem; text-wrap: balance; letter-spacing: -.01em; }
+.cite { font-family: "Newsreader", Georgia, serif; font-style: italic; color: var(--muted); margin: 0 0 1.2rem; }
+.lede { font-size: 1.06rem; max-width: 62ch; margin: 0; }
+.prereq { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.15rem; margin-top: 1.4rem; }
+.prereq h3 { margin-top: 0; }
+.prereq ul { margin-bottom: 0; }
+nav { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.15rem; }
+nav ol { list-style: none; margin: .3rem 0 0; padding: 0; counter-reset: toc; }
+nav li { counter-increment: toc; margin: .18rem 0; display: flex; gap: .75rem; }
+nav li::before { content: counter(toc) "."; color: var(--accent); font-family: "IBM Plex Mono", monospace;
+  font-size: .85rem; min-width: 1.3rem; flex: none; }
+nav a { color: var(--text); text-decoration: none; border-bottom: 1px solid transparent; }
+nav a:hover, nav a:focus-visible { border-bottom-color: var(--accent); }
+nav .grp { font-size: .72rem; letter-spacing: .12em; text-transform: uppercase; color: var(--muted);
+  margin: .8rem 0 .2rem; }
+nav .grp:first-of-type { margin-top: .5rem; }
+section { display: flex; flex-direction: column; scroll-margin-top: 1rem; }
+.snum { font-family: "IBM Plex Mono", monospace; font-size: .74rem; letter-spacing: .13em;
+  text-transform: uppercase; color: var(--accent); margin: 0 0 .25rem; }
+h2 { font-family: "Newsreader", Georgia, serif; font-weight: 600; font-size: 1.75rem;
+  margin: 0 0 .5rem; line-height: 1.16; text-wrap: balance; }
+h3 { font-size: 1.02rem; font-weight: 600; margin: 1.6rem 0 .35rem; }
+p { margin: .7rem 0; max-width: 64ch; }
+ul, ol { margin: .6rem 0 .6rem 1.3rem; padding: 0; max-width: 64ch; }
+li { margin: .35rem 0; }
+em.term { font-style: normal; font-weight: 600; color: var(--accent); }
+code { font-family: "IBM Plex Mono", monospace; font-size: .9em; background: var(--accent-soft);
+  padding: .08em .35em; border-radius: 4px; }
+.deriv { background: var(--deriv); color: var(--deriv-text); border-radius: 10px;
+  padding: .95rem 1.1rem 1.05rem; margin: 1rem 0; overflow-x: auto; }
+.deriv .lab { font-size: .68rem; letter-spacing: .13em; text-transform: uppercase;
+  color: var(--deriv-accent); margin-bottom: .4rem; }
+.deriv ol { list-style: none; margin: 0; counter-reset: s; max-width: none; }
+.deriv li { counter-increment: s; display: flex; gap: .8rem; align-items: baseline; margin: .18rem 0; min-width: 0; }
+.deriv li::before { content: counter(s); color: var(--deriv-accent);
+  font-family: "IBM Plex Mono", monospace; font-size: .78rem; min-width: 1.1rem; flex: none; }
+.deriv li > span { min-width: 0; overflow-x: auto; }
+.deriv .note { color: var(--deriv-dim); font-size: .87rem; padding-left: 1.9rem;
+  line-height: 1.5; margin: .45rem 0 .1rem; max-width: 60ch; }
+.deriv mjx-container { color: var(--deriv-text); }
+.key { border-left: 3px solid var(--accent); background: var(--accent-soft); border-radius: 0 8px 8px 0;
+  padding: .7rem .95rem; margin: 1rem 0; max-width: 64ch; }
+.key b { color: var(--accent); font-weight: 600; display: block; font-size: .72rem;
+  letter-spacing: .1em; text-transform: uppercase; margin-bottom: .15rem; }
+.qa { background: var(--qa-soft); border-radius: 8px; padding: .75rem .95rem; margin: .8rem 0; max-width: 64ch; }
+.qa b { color: var(--qa); }
+table { border-collapse: collapse; font-size: .92rem; width: 100%; margin: .8rem 0; }
+td, th { text-align: left; padding: .38rem .8rem .38rem 0; vertical-align: top; border-bottom: 1px solid var(--line); }
+th { font-weight: 600; color: var(--muted); font-size: .74rem; text-transform: uppercase; letter-spacing: .07em; }
+td.num { font-family: "IBM Plex Mono", monospace; font-variant-numeric: tabular-nums; white-space: nowrap; }
+.tablewrap { overflow-x: auto; }
+figure { margin: 1.3rem 0; }
+figure > svg.diagram { display: block; margin: 0 auto; width: 100%; max-width: 420px; height: auto; }
+.fig-a  { stroke: var(--accent); }
+.fig-af { fill: var(--accent); }
+.fig-b  { stroke: var(--qa); }
+.fig-bf { fill: var(--qa); }
+figcaption { font-size: .87rem; color: var(--muted); margin-top: .6rem; max-width: 62ch; line-height: 1.5; }
+details { border: 1px solid var(--line); border-radius: 8px; padding: .6rem .9rem; margin: .6rem 0; background: var(--surface); }
+summary { cursor: pointer; font-weight: 600; font-size: .93rem; }
+summary::marker { color: var(--accent); }
+details[open] summary { margin-bottom: .4rem; }
+.checklist { background: var(--surface); border: 1px solid var(--line); border-radius: 10px; padding: 1rem 1.15rem; }
+.checklist h3 { margin-top: 0; }
+footer { color: var(--muted); font-size: .85rem; padding-bottom: 2.5rem; border-top: 1px solid var(--line); padding-top: 1.2rem; }
+mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width: 100%; margin: .5rem 0 !important; }
+:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+@media (prefers-reduced-motion: no-preference) { nav a { transition: border-color .15s; } }
+</style>
+
+<div class="wrap">
+
+<header>
+  <p class="eyebrow">Paper reading club · Session 0 · Foundations</p>
+  <h1>Least Squares Foundations</h1>
+  <p class="cite">Everything you need before reading Hoerl &amp; Kennard's ridge regression paper</p>
+  <p class="lede">This is the groundwork session. We build linear regression from a table of numbers, learn to read the matrix \(X'X\) both as algebra and as geometry, define what makes an estimate "good", and finish by proving the theorem that says least squares is the best you can do. Only then does the next session get to overturn it.</p>
+
+  <div class="prereq">
+    <h3>What you need to know already</h3>
+    <ul>
+      <li>How to multiply matrices, and what a transpose is.</li>
+      <li>That the derivative of a function is zero at its minimum.</li>
+      <li>Average and spread of a set of numbers, informally.</li>
+    </ul>
+    <p style="margin-bottom:0">If you have seen a dot product before, you are comfortably ahead. Everything else is built here.</p>
+  </div>
+</header>
+
+<nav>
+  <h3 style="margin-top:0">Contents</h3>
+  <p class="grp">Part I · The model</p>
+  <ol>
+    <li><a href="#s1">From a table of cars to an equation</a></li>
+    <li><a href="#s2">Compressing it into matrices</a></li>
+  </ol>
+  <p class="grp">Part II · The geometry of correlation</p>
+  <ol start="3">
+    <li><a href="#s3">Predictors are vectors</a></li>
+    <li><a href="#s4">Correlation is an angle</a></li>
+    <li><a href="#s5">The correlation matrix \(X'X\)</a></li>
+    <li><a href="#s6">Eigenvalues: where the information is</a></li>
+    <li><a href="#s7">What we assume about the noise</a></li>
+  </ol>
+  <p class="grp">Part III · What makes an estimate good</p>
+  <ol start="8">
+    <li><a href="#s8">Least squares, and why the estimate is random</a></li>
+    <li><a href="#s9">Estimators, bias, and variance</a></li>
+    <li><a href="#s10">Mean squared error</a></li>
+    <li><a href="#s11">The Gauss–Markov theorem</a></li>
+    <li><a href="#s12">Where this leaves us</a></li>
+  </ol>
+  <p class="grp">Closing</p>
+  <ol start="13">
+    <li><a href="#s13">Exercises</a></li>
+    <li><a href="#s14">Check yourself</a></li>
+  </ol>
+</nav>
+
+<!-- 1 -->
+<section id="s1">
+  <p class="snum">Section 1 · Part I</p>
+  <h2>From a table of cars to an equation</h2>
+  <p>Start with data. We measure five cars — their weight in tonnes, their horsepower, and the fuel they consume in litres per 100 km:</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Car</th><th>Weight (t)</th><th>Horsepower</th><th>Fuel (L/100km)</th></tr>
+    <tr><td class="num">1</td><td class="num">1.2</td><td class="num">95</td><td class="num">6.4</td></tr>
+    <tr><td class="num">2</td><td class="num">1.4</td><td class="num">100</td><td class="num">7.1</td></tr>
+    <tr><td class="num">3</td><td class="num">1.0</td><td class="num">90</td><td class="num">5.8</td></tr>
+    <tr><td class="num">4</td><td class="num">1.8</td><td class="num">150</td><td class="num">9.6</td></tr>
+    <tr><td class="num">5</td><td class="num">1.6</td><td class="num">115</td><td class="num">8.2</td></tr>
+  </table>
+  </div>
+  <p>We suspect fuel consumption is roughly a weighted sum of the other two numbers. For car \(i\):</p>
+  \[\text{fuel}_i \;\approx\; \beta_1 \cdot \text{weight}_i \;+\; \beta_2 \cdot \text{horsepower}_i\]
+  <p>The two unknown numbers \(\beta_1,\beta_2\) are what we want to find. They are not measurements — they are properties of the relationship itself, and no amount of staring at the table reveals them directly.</p>
+  <p>The word "approximately" is doing real work. No two cars of identical weight and horsepower consume identical fuel: tyre pressure, driver, weather, measurement error. We name that leftover \(\varepsilon_i\) and write an exact equation:</p>
+  \[\text{fuel}_i = \beta_1 \cdot \text{weight}_i + \beta_2 \cdot \text{horsepower}_i + \varepsilon_i\]
+  <div class="key"><b>The vocabulary</b>The thing being predicted (fuel) is the <em class="term">response</em>. The things doing the predicting (weight, horsepower) are the <em class="term">predictors</em>. The unknown weights \(\beta_j\) are the <em class="term">coefficients</em>. The leftovers \(\varepsilon_i\) are the <em class="term">noise</em> or <em class="term">errors</em>.</div>
+</section>
+
+<!-- 2 -->
+<section id="s2">
+  <p class="snum">Section 2 · Part I</p>
+  <h2>Compressing it into matrices</h2>
+  <p>Writing that equation once per car gives five equations. Stacked, they look like this:</p>
+  \[\begin{aligned}
+  6.4 &= 1.2\,\beta_1 + \;\,95\,\beta_2 + \varepsilon_1\\
+  7.1 &= 1.4\,\beta_1 + 100\,\beta_2 + \varepsilon_2\\
+  5.8 &= 1.0\,\beta_1 + \;\,90\,\beta_2 + \varepsilon_3\\
+  9.6 &= 1.8\,\beta_1 + 150\,\beta_2 + \varepsilon_4\\
+  8.2 &= 1.6\,\beta_1 + 115\,\beta_2 + \varepsilon_5
+  \end{aligned}\]
+  <p>This is exactly what matrix notation was invented to shorten. Put the responses in a column \(Y\), the predictor table in a matrix \(X\), the unknowns in a column \(\beta\), and the leftovers in a column \(\varepsilon\):</p>
+  \[\underbrace{\begin{pmatrix}6.4\\7.1\\5.8\\9.6\\8.2\end{pmatrix}}_{Y} = \underbrace{\begin{pmatrix}1.2 & 95\\1.4 & 100\\1.0 & 90\\1.8 & 150\\1.6 & 115\end{pmatrix}}_{X}\underbrace{\begin{pmatrix}\beta_1\\\beta_2\end{pmatrix}}_{\beta} + \underbrace{\begin{pmatrix}\varepsilon_1\\\varepsilon_2\\\varepsilon_3\\\varepsilon_4\\\varepsilon_5\end{pmatrix}}_{\varepsilon}\]
+  <p>Check that the matrix product really does reproduce the five equations — multiply the first row of \(X\) by \(\beta\) and you get \(1.2\beta_1 + 95\beta_2\). It does. So the whole system is:</p>
+  \[Y = X\beta + \varepsilon\]
+  <p>That is the linear model, and every paper in this reading list starts from it. In general \(X\) has \(n\) rows (one per observation) and \(p\) columns (one per predictor), so \(\beta\) has \(p\) entries. Here \(n = 5\) and \(p = 2\).</p>
+  <p>We have named the noise \(\varepsilon\) but said nothing about it. That is deliberate. The assumptions the classical theory makes about \(\varepsilon\) are best read as statements about <em>geometry</em>, so we will build that language first and come back to them in Section 7.</p>
+  <div class="qa"><b>Where is the intercept?</b> A constant term \(\beta_0\) is usually included by adding a column of ones to \(X\). The ridge paper sidesteps this by centering all variables first, which makes the intercept zero. We will do the same in Section 4.</div>
+</section>
+
+<!-- 3 -->
+<section id="s3">
+  <p class="snum">Section 3 · Part II</p>
+  <h2>Predictors are vectors</h2>
+  <p>Here is the shift in perspective that makes everything afterwards easier. Stop reading \(X\) row by row — one row per car — and start reading it <em>column by column</em>, one column per predictor.</p>
+  <p>The weight column is a list of five numbers. So is the horsepower column. A list of five numbers is a point, or an arrow, in five-dimensional space. You cannot picture five dimensions, but every rule you know from two and three dimensions still holds, and that is all we need.</p>
+  <p>Two operations do all the work. For vectors \(u\) and \(v\) with \(n\) entries:</p>
+  \[u'v = \sum_{i=1}^{n} u_i v_i \quad \text{(dot product)}, \qquad \|u\| = \sqrt{u'u} \quad \text{(length)}\]
+  <p>And the fact that ties them together, true in any number of dimensions:</p>
+  \[u'v = \|u\|\,\|v\|\cos\theta\]
+  <p>where \(\theta\) is the angle between the two arrows. Read it backwards and it says: the dot product measures how much two vectors point the same way. It is largest when they are parallel, zero when they are perpendicular, and negative when they point in opposing directions.</p>
+  <div class="key"><b>Vocabulary you will meet</b>Perpendicular vectors have \(u'v = 0\). The word mathematicians use for perpendicular is <em class="term">orthogonal</em>. Keep it in mind — the ridge paper's title is "Biased Estimation for Nonorthogonal Problems".</div>
+</section>
+
+<!-- 4 -->
+<section id="s4">
+  <p class="snum">Section 4 · Part II</p>
+  <h2>Correlation is an angle</h2>
+  <p>Two predictor columns can be measured in wildly different units — tonnes and horsepower — so comparing them directly is meaningless. The standard fix has two steps, and the paper calls the result <em class="term">standardized</em> data:</p>
+  <ol>
+    <li><b>Center:</b> subtract each column's mean, so it averages to zero.</li>
+    <li><b>Scale:</b> divide by the column's length, so \(\|x_j\| = 1\).</li>
+  </ol>
+  <p>Do it with our five cars. The weight column has mean \(1.4\); subtracting gives \((-0.2,\ 0,\ -0.4,\ 0.4,\ 0.2)\), whose length is \(0.632\). Dividing through:</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th></th><th>weight, centered</th><th>weight, standardized</th><th>hp, centered</th><th>hp, standardized</th></tr>
+    <tr><td class="num">1</td><td class="num">−0.2</td><td class="num">−0.316</td><td class="num">−15</td><td class="num">−0.309</td></tr>
+    <tr><td class="num">2</td><td class="num">0.0</td><td class="num">0.000</td><td class="num">−10</td><td class="num">−0.206</td></tr>
+    <tr><td class="num">3</td><td class="num">−0.4</td><td class="num">−0.632</td><td class="num">−20</td><td class="num">−0.413</td></tr>
+    <tr><td class="num">4</td><td class="num">0.4</td><td class="num">0.632</td><td class="num">40</td><td class="num">0.825</td></tr>
+    <tr><td class="num">5</td><td class="num">0.2</td><td class="num">0.316</td><td class="num">5</td><td class="num">0.103</td></tr>
+  </table>
+  </div>
+  <p>Now take the dot product of the two standardized columns:</p>
+  \[(-0.316)(-0.309) + 0 + (-0.632)(-0.413) + (0.632)(0.825) + (0.316)(0.103) = 0.913\]
+  <p>That number, \(0.913\), is exactly the <em class="term">correlation</em> between weight and horsepower. Not approximately — exactly. And because both vectors have length one, the identity from Section 3 collapses to something remarkable:</p>
+  \[r = x_1'x_2 = \cos\theta \quad\Longrightarrow\quad \theta = \arccos(0.913) = 24^\circ\]
+  <div class="key"><b>The idea to carry forward</b>Correlation is the cosine of the angle between two standardized predictor columns. Correlation \(1\) means \(0^\circ\), the same direction. Correlation \(0\) means \(90^\circ\), perpendicular — <em>orthogonal</em>. Our two predictors sit \(24^\circ\) apart: they lean heavily toward each other, carrying largely the same information.</div>
+
+  <h3>Why standardize? A detour through covariance</h3>
+  <p>There is a cruder measure of co-movement that comes before correlation, and seeing why it fails is the clearest way to understand why we standardize. It is the <em class="term">covariance</em>: center both columns, multiply them entry by entry, and average.</p>
+  \[\mathrm{cov}(u,v) = \frac{1}{n-1}\sum_{i=1}^{n}(u_i - \bar u)(v_i - \bar v)\]
+  <p>It is positive when the two variables tend to sit above their means together, and negative when one is high while the other is low. For our five cars, \(\mathrm{cov}(\text{weight},\text{hp}) = 7.0\).</p>
+  <p>But 7.0 of <em>what</em>? Tonne-horsepower. The number carries units, and that makes it useless as a measure of strength: you cannot tell whether 7.0 is a strong relationship or a weak one without knowing what scales you measured on.</p>
+  <p>Here is the failure made concrete. Record weight in <b>grams</b> instead of tonnes — the same five cars, the same physical reality, just a different ruler. Every weight number is multiplied by \(c = 10^{6}\):</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Quantity</th><th>Weight in tonnes</th><th>Weight in grams</th><th>Scaled by</th></tr>
+    <tr><td>\(\mathrm{cov}(\text{weight},\text{hp})\)</td><td class="num">7.000</td><td class="num">7 000 000</td><td class="num">\(c\)</td></tr>
+    <tr><td>\(\mathrm{sd}(\text{weight})\)</td><td class="num">0.3162</td><td class="num">316 200</td><td class="num">\(c\)</td></tr>
+    <tr><td>\(\mathrm{sd}(\text{horsepower})\)</td><td class="num">24.238</td><td class="num">24.238</td><td class="num">1</td></tr>
+    <tr><td><b>\(\mathrm{cov} \,/\, (\mathrm{sd}\cdot\mathrm{sd})\)</b></td><td class="num"><b>0.913</b></td><td class="num"><b>0.913</b></td><td class="num"><b>1</b></td></tr>
+  </table>
+  </div>
+  <p>The covariance is multiplied by a million. The number in the last row does not move at all — and the fourth column shows exactly why. That last row is the definition of correlation:</p>
+  \[r = \frac{\mathrm{cov}(u,v)}{\mathrm{sd}(u)\,\mathrm{sd}(v)}\]
+  <p>Rescale one column by \(c\) and the numerator picks up a factor of \(c\) — but so does the denominator, through \(\mathrm{sd}(u)\). The two factors cancel. Correlation is simply covariance with the units divided out, which is also what confines it to \([-1,1]\).</p>
+  <p>Check it against the numbers above: \(7.0 / (0.3162 \times 24.238) = 0.913\), and \(7\,000\,000 / (316\,200 \times 24.238) = 0.913\). Same answer, different rulers.</p>
+  <div class="key"><b>What standardizing really does</b>Centering and scaling each column to length one performs that same division <em>once, in advance, on the data itself</em>. After standardizing, the plain dot product \(x_i'x_j\) already <em>is</em> the correlation — there is nothing left to divide by. That is why we standardized before taking dot products in this section, and why the ridge paper assumes it throughout.</div>
+  <div class="qa"><b>Can a correlation exceed 1?</b> No, and now you can see why geometrically: it is a cosine. Algebraically it is the Cauchy–Schwarz inequality, \(|u'v| \le \|u\|\|v\|\). Equality happens only when the vectors are parallel — the two predictors are then the same measurement in disguise.</div>
+
+</section>
+
+<!-- 5 -->
+<section id="s5">
+  <p class="snum">Section 5 · Part II</p>
+  <h2>The correlation matrix \(X'X\)</h2>
+  <p>We now have all the pieces to read the single most important object in the ridge paper. Multiply \(X'\) by \(X\) and look at what lands in each cell: the \((i,j)\) entry of \(X'X\) is the \(i\)-th row of \(X'\) times the \(j\)-th column of \(X\) — that is, \(x_i'x_j\), the dot product of predictor \(i\) with predictor \(j\).</p>
+  <p>Which, for standardized columns, we just proved is their correlation. So:</p>
+  \[X'X = \begin{pmatrix} x_1'x_1 & x_1'x_2 \\ x_2'x_1 & x_2'x_2\end{pmatrix} = \begin{pmatrix}1 & 0.913\\ 0.913 & 1\end{pmatrix}\]
+  <p>\(X'X\) <em>is</em> the correlation matrix. Read it as a table of every pairwise relationship:</p>
+  <ul>
+    <li>The <b>diagonal is always 1</b>, since every predictor correlates perfectly with itself (and has length one).</li>
+    <li>It is <b>symmetric</b>: the correlation of weight with horsepower is the same as horsepower with weight.</li>
+    <li>Every entry is in \([-1, 1]\).</li>
+  </ul>
+  <p>With three predictors it would be \(3\times3\), and so on. Adding engine size to our five cars gives:</p>
+  \[X'X = \begin{pmatrix} 1 & 0.913 & 0.977\\ 0.913 & 1 & 0.976 \\ 0.977 & 0.976 & 1\end{pmatrix}\]
+  <p>Every pair is strongly related — heavier cars have bigger engines have more horsepower — so every off-diagonal entry sits near 1. We will come back to this matrix in the next section.</p>
+  <div class="key"><b>The two extremes</b>The best possible case is \(X'X = I\), the identity: every off-diagonal zero, every predictor perpendicular to every other, each carrying information no other has. That is the <em>orthogonal</em> case. The worst case has off-diagonals close to \(\pm1\), where predictors are near-duplicates of each other. The ridge paper is entirely about the worst case.</div>
+</section>
+
+<!-- 6 -->
+<section id="s6">
+  <p class="snum">Section 6 · Part II</p>
+  <h2>Eigenvalues: where the information is</h2>
+  <p>One more tool, and it is the one that will explain <em>why</em> correlated predictors are dangerous rather than merely inconvenient.</p>
+  <p>An <em class="term">eigenvector</em> of a matrix \(A\) is a direction that the matrix does not rotate — it only stretches or shrinks it. The stretch factor is the <em class="term">eigenvalue</em>:</p>
+  \[A v = \lambda v\]
+  <p>Every symmetric matrix, and \(X'X\) is always symmetric, can be completely described by its eigenvectors and eigenvalues:</p>
+  \[X'X = P\Lambda P'\]
+  <p>where the columns of \(P\) are the eigenvectors (mutually perpendicular, each of length one) and \(\Lambda\) is the diagonal matrix of eigenvalues. This is just a change of viewpoint: rotate your axes to line up with the eigenvectors, and the matrix becomes a simple diagonal stretch.</p>
+
+  <h3>What they mean for data</h3>
+  <p>First, what is a "data cloud"? Take our five cars and forget the fuel column for a moment. Each car now has two standardized numbers — a weight and a horsepower — so each car is a <em>point in a plane</em>. Plot all five and you get a scatter of points. That scatter is the data cloud, and its <em>shape</em> is what \(X'X\) measures.</p>
+
+  <figure>
+    <svg class="diagram" width="420" height="380" viewBox="0 0 420 380" role="img" aria-label="Scatter plot of five cars by standardized weight and horsepower. The points lie in a long thin cloud along the (1,1) diagonal, with a long gold arrow labelled lambda-1 = 1.913 along that direction and a very short blue arrow labelled lambda-2 = 0.087 perpendicular to it.">
+      <defs>
+        <marker id="ah1" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" class="fig-af"/>
+        </marker>
+        <marker id="ah2" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+          <path d="M 0 0 L 10 5 L 0 10 z" class="fig-bf"/>
+        </marker>
+      </defs>
+
+      <ellipse cx="210" cy="190" rx="197" ry="42" transform="rotate(-45 210 190)"
+               fill="currentColor" fill-opacity="0.07" stroke="currentColor" stroke-opacity="0.25"/>
+
+      <line x1="60" y1="190" x2="360" y2="190" stroke="currentColor" stroke-opacity="0.4"/>
+      <line x1="210" y1="40" x2="210" y2="340" stroke="currentColor" stroke-opacity="0.4"/>
+      <line x1="135" y1="186" x2="135" y2="194" stroke="currentColor" stroke-opacity="0.4"/>
+      <line x1="285" y1="186" x2="285" y2="194" stroke="currentColor" stroke-opacity="0.4"/>
+      <line x1="206" y1="115" x2="214" y2="115" stroke="currentColor" stroke-opacity="0.4"/>
+      <line x1="206" y1="265" x2="214" y2="265" stroke="currentColor" stroke-opacity="0.4"/>
+
+      <line x1="210" y1="190" x2="349" y2="51" class="fig-a" stroke-width="2.5" marker-end="url(#ah1)"/>
+      <line x1="210" y1="190" x2="240" y2="220" class="fig-b" stroke-width="2.5" marker-end="url(#ah2)"/>
+
+      <circle cx="163" cy="236" r="4.5" fill="currentColor"/>
+      <circle cx="210" cy="221" r="4.5" fill="currentColor"/>
+      <circle cx="115" cy="252" r="4.5" fill="currentColor"/>
+      <circle cx="305" cy="66"  r="4.5" fill="currentColor"/>
+      <circle cx="257" cy="175" r="4.5" fill="currentColor"/>
+
+      <text x="238" y="58" text-anchor="end" font-size="13" class="fig-af" font-weight="600">&#955;&#8321; = 1.913</text>
+      <text x="238" y="73" text-anchor="end" font-size="12" class="fig-af">along (1, 1)</text>
+      <text x="252" y="228" font-size="13" class="fig-bf" font-weight="600">&#955;&#8322; = 0.087</text>
+      <text x="252" y="243" font-size="12" class="fig-bf">along (1, &#8722;1)</text>
+
+      <text x="204" y="205" text-anchor="end" font-size="11" fill="currentColor" fill-opacity="0.55">0</text>
+      <text x="285" y="205" text-anchor="middle" font-size="11" fill="currentColor" fill-opacity="0.55">0.5</text>
+      <text x="196" y="119" text-anchor="end" font-size="11" fill="currentColor" fill-opacity="0.55">0.5</text>
+      <text x="210" y="366" text-anchor="middle" font-size="12" fill="currentColor" fill-opacity="0.75">standardized weight</text>
+      <text x="24" y="190" text-anchor="middle" font-size="12" fill="currentColor" fill-opacity="0.75" transform="rotate(-90 24 190)">standardized horsepower</text>
+    </svg>
+    <figcaption>Each dot is one of the five cars, placed by its standardized weight and horsepower. The cloud is long in one direction and almost flat in the other; the shaded ellipse traces that shape. The arrows are the two eigenvectors, drawn with lengths proportional to \(\sqrt{\lambda}\) — which is why one is long and the other is a stub.</figcaption>
+  </figure>
+
+  <p>Now the two ideas line up. For \(X'X\), the eigenvectors point along the principal directions of that cloud, and each eigenvalue says how far the data spreads along its direction. A large eigenvalue means "the cloud is long this way — lots of variation, lots of information." A tiny eigenvalue means "the cloud is flat this way — the data barely moves, so it tells us almost nothing."</p>
+
+  <p>The numbers are easy here. For any matrix of the form \(\begin{pmatrix}1 & r\\ r & 1\end{pmatrix}\) the eigenvectors are always \(\tfrac{1}{\sqrt2}(1,1)\) and \(\tfrac{1}{\sqrt2}(1,-1)\), with eigenvalues \(1+r\) and \(1-r\). At \(r = 0.913\):</p>
+  \[\lambda_1 = 1.913 \;\; \text{along } (1,1), \qquad \lambda_2 = 0.087 \;\; \text{along } (1,-1)\]
+
+  <p>Look back at the picture with those numbers in hand. The cloud stretches along \((1,1)\), the direction in which <em>both predictors rise together</em> — which is exactly what correlated predictors do. Perpendicular to it, along \((1,-1)\), where one predictor would rise while the other falls, the points barely spread at all. In plain language: our five cars simply do not include a heavy car with a weak engine, so the data has almost nothing to say about that combination.</p>
+
+  <p>And "spread along a direction" is not a loose phrase. It is exactly what the eigenvalue counts:</p>
+
+  <div class="deriv">
+    <div class="lab">Derivation · the eigenvalue <em>is</em> the spread</div>
+    <ol>
+      <li><span>project each car onto \(u_1 = \tfrac{1}{\sqrt2}(1,1)\): \(\;-0.442,\; -0.146,\; -0.739,\; 1.031,\; 0.297\)</span></li>
+      <li><span>add up their squares: \(\;0.195 + 0.021 + 0.546 + 1.063 + 0.088 = 1.913 = \lambda_1\) ✓</span></li>
+      <li><span>project each car onto \(u_2 = \tfrac{1}{\sqrt2}(1,-1)\): \(\;-0.005,\; 0.146,\; -0.155,\; -0.136,\; 0.151\)</span></li>
+      <li><span>add up their squares: \(\;0.000 + 0.021 + 0.024 + 0.019 + 0.023 = 0.087 = \lambda_2\) ✓</span></li>
+    </ol>
+    <div class="note">So each eigenvalue is literally the total squared spread of the data along its own direction. The five cars carry twenty-two times more spread along \((1,1)\) than along \((1,-1)\).</div>
+  </div>
+
+  <div class="deriv">
+    <div class="lab">Derivation · the fact that makes it inevitable</div>
+    <ol>
+      <li><span>the trace of a matrix is the sum of its diagonal entries</span></li>
+      <li><span>for a correlation matrix the diagonal is \(p\) ones, so \(\;\mathrm{tr}(X'X) = p\)</span></li>
+      <li><span>a standard fact: the trace also equals the sum of the eigenvalues</span></li>
+      <li><span>therefore \(\;\displaystyle\sum_{i=1}^{p}\lambda_i = p\), always, whatever the correlations</span></li>
+      <li><span>check: \(1.913 + 0.087 = 2 = p\) ✓</span></li>
+    </ol>
+    <div class="note">Correlation cannot change the total — it can only redistribute it. Push one eigenvalue up and another <em>must</em> fall toward zero. This is the mechanism by which correlated predictors manufacture near-zero eigenvalues, and it is not an accident of our example. It is arithmetic.</div>
+  </div>
+
+  <h3>Three predictors: the same picture, one dimension up</h3>
+  <p>Everything so far used two predictors, because two dimensions fit on a page. Nothing about the idea changes when there are more — you simply cannot draw it past three. With three predictors the cloud becomes a solid shape, and there are three eigenvalues: three perpendicular directions, each with its own amount of spread.</p>
+
+  <figure>
+    <svg class="diagram" width="420" height="290" viewBox="0 0 420 290" role="img" aria-label="Schematic three-dimensional data cloud: about thirty scattered points, nearly all inside a faint wireframe ellipsoid with three lying outside it. Blue lines mark the three predictor axes. Three gold arrows run from the centre along the cloud axes: a long one labelled lambda 1, a medium one labelled lambda 2, and a short one labelled lambda 3.">
+      <defs>
+        <marker id="ch" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto"><path d="M 0 0 L 10 5 L 0 10 z" class="fig-af"/></marker>
+      </defs>
+      <g class="fig-b" stroke-opacity="0.75" stroke-width="1.5">
+        <line x1="226.3" y1="165.3" x2="105.0" y2="172.4"/>
+        <line x1="226.3" y1="165.3" x2="239.0" y2="233.1"/>
+        <line x1="226.3" y1="165.3" x2="226.3" y2="64.2"/>
+      </g>
+      <text x="94.1" y="177.1" text-anchor="middle" font-size="11" class="fig-bf" fill-opacity="0.95">predictor 1</text>
+      <text x="240.2" y="243.3" text-anchor="middle" font-size="11" class="fig-bf" fill-opacity="0.95">predictor 2</text>
+      <text x="226.3" y="59.1" text-anchor="middle" font-size="11" class="fig-bf" fill-opacity="0.95">predictor 3</text>
+      <polyline points="131.1,216.7 138.5,220.1 147.4,222.6 157.7,224.0 169.1,224.5 181.5,223.9 194.7,222.4 208.5,219.8 222.5,216.4 236.6,212.0 250.5,206.9 264.0,201.1 276.9,194.6 288.9,187.6 299.8,180.3 309.5,172.7 317.7,165.0 324.4,157.2 329.4,149.7 332.6,142.3 334.0,135.4 333.6,129.0 331.4,123.2 327.3,118.1 321.5,113.9 314.1,110.5 305.2,108.1 294.9,106.6 283.5,106.1 271.1,106.7 257.9,108.2 244.1,110.8 230.1,114.2 216.0,118.6 202.1,123.7 188.6,129.6 175.7,136.0 163.7,143.0 152.8,150.3 143.1,157.9 134.9,165.7 128.2,173.4 123.2,181.0 120.0,188.3 118.5,195.2 119.0,201.6 121.2,207.4 125.3,212.5 131.1,216.7" fill="none" stroke="currentColor" stroke-opacity="0.18"/>
+      <polyline points="131.1,216.7 131.9,212.9 134.3,208.2 138.3,202.7 143.8,196.7 150.7,190.1 159.0,183.0 168.3,175.7 178.7,168.2 189.9,160.7 201.6,153.2 213.9,145.9 226.3,139.0 238.7,132.5 250.9,126.6 262.7,121.3 273.9,116.8 284.3,113.1 293.6,110.3 301.8,108.5 308.8,107.6 314.3,107.7 318.3,108.8 320.7,110.9 321.5,113.9 320.7,117.8 318.3,122.5 314.3,127.9 308.8,133.9 301.8,140.5 293.6,147.6 284.3,154.9 273.9,162.4 262.7,170.0 250.9,177.4 238.7,184.7 226.3,191.6 213.9,198.1 201.6,204.1 189.9,209.3 178.7,213.8 168.3,217.5 159.0,220.3 150.7,222.1 143.8,223.0 138.3,222.9 134.3,221.8 131.9,219.7 131.1,216.7" fill="none" stroke="currentColor" stroke-opacity="0.18"/>
+      <polyline points="276.9,194.6 276.4,190.9 275.1,186.8 273.0,182.3 270.1,177.5 266.4,172.5 262.1,167.4 257.1,162.2 251.6,157.1 245.6,152.2 239.4,147.4 232.9,143.0 226.3,139.0 219.7,135.4 213.2,132.3 206.9,129.8 201.0,127.9 195.5,126.6 190.5,126.0 186.2,126.0 182.5,126.8 179.6,128.2 177.4,130.2 176.2,132.8 175.7,136.0 176.2,139.7 177.4,143.8 179.6,148.3 182.5,153.1 186.2,158.1 190.5,163.2 195.5,168.4 201.0,173.5 206.9,178.4 213.2,183.2 219.7,187.6 226.3,191.6 232.9,195.2 239.4,198.3 245.6,200.9 251.6,202.8 257.1,204.0 262.1,204.6 266.4,204.6 270.1,203.8 273.0,202.4 275.1,200.4 276.4,197.8 276.9,194.6" fill="none" stroke="currentColor" stroke-opacity="0.18"/>
+      <g fill="currentColor" fill-opacity="0.88">
+        <circle cx="258.1" cy="163.3" r="3.5"/>
+        <circle cx="246.9" cy="159.9" r="3.5"/>
+        <circle cx="210.1" cy="165.7" r="3.5"/>
+        <circle cx="334.4" cy="146.5" r="3.5"/>
+        <circle cx="204.2" cy="184.2" r="3.5"/>
+        <circle cx="231.2" cy="187.8" r="3.5"/>
+        <circle cx="252.2" cy="183.5" r="3.5"/>
+        <circle cx="298.9" cy="149.0" r="3.5"/>
+        <circle cx="291.1" cy="123.9" r="3.5"/>
+        <circle cx="250.0" cy="123.8" r="3.5"/>
+        <circle cx="194.0" cy="193.1" r="3.5"/>
+        <circle cx="232.2" cy="186.4" r="3.5"/>
+        <circle cx="232.3" cy="192.0" r="3.5"/>
+        <circle cx="271.1" cy="149.1" r="3.5"/>
+        <circle cx="165.9" cy="184.2" r="3.5"/>
+        <circle cx="231.7" cy="127.1" r="3.5"/>
+        <circle cx="198.4" cy="147.5" r="3.5"/>
+        <circle cx="213.6" cy="183.9" r="3.5"/>
+        <circle cx="170.5" cy="161.4" r="3.5"/>
+        <circle cx="175.6" cy="153.2" r="3.5"/>
+        <circle cx="257.8" cy="176.1" r="3.5"/>
+        <circle cx="240.4" cy="182.6" r="3.5"/>
+        <circle cx="208.0" cy="169.6" r="3.5"/>
+        <circle cx="274.2" cy="158.0" r="3.5"/>
+        <circle cx="252.1" cy="150.1" r="3.5"/>
+        <circle cx="133.7" cy="172.0" r="3.5"/>
+        <circle cx="213.4" cy="189.7" r="3.5"/>
+        <circle cx="160.3" cy="169.2" r="3.5"/>
+        <circle cx="152.0" cy="179.5" r="3.5"/>
+        <circle cx="288.1" cy="118.5" r="3.5"/>
+        <circle cx="120.8" cy="196.6" r="3.5"/>
+        <circle cx="236.6" cy="191.8" r="3.5"/>
+        <circle cx="267.5" cy="153.9" r="3.5"/>
+        <circle cx="226.6" cy="147.5" r="3.5"/>
+      </g>
+      <line x1="226.3" y1="165.3" x2="131.1" y2="216.7" class="fig-a" stroke-width="2.9" marker-end="url(#ch)"/>
+      <line x1="226.3" y1="165.3" x2="276.9" y2="194.6" class="fig-a" stroke-width="2.5" marker-end="url(#ch)"/>
+      <line x1="226.3" y1="165.3" x2="226.3" y2="139.0" class="fig-a" stroke-width="2.2" marker-end="url(#ch)"/>
+      <text x="115.2" y="229.3" text-anchor="middle" font-size="13" font-weight="600" class="fig-af">&#955;&#8321;</text>
+      <text x="292.4" y="207.6" text-anchor="middle" font-size="13" font-weight="600" class="fig-af">&#955;&#8322;</text>
+      <text x="212.3" y="122.0" text-anchor="middle" font-size="13" font-weight="600" class="fig-af">&#955;&#8323;</text>
+    </svg>
+    <figcaption>A schematic three-predictor cloud, drawn so that all three directions are visible. Each dot is one observation and the blue lines are the three predictor axes; the faint wireframe traces the cloud's shape, with three points falling outside it, as real data does. The three arrows are perpendicular, with lengths proportional to \(\sqrt{\lambda}\): long, medium and short.</figcaption>
+  </figure>
+
+  <p>Read the shape off the picture. The cloud is long along \(\lambda_1\), moderate along \(\lambda_2\), and thin along \(\lambda_3\) — so the data has a lot to say about the first combination of predictors, something to say about the second, and little about the third. That is all an eigen-decomposition ever tells you: which directions, and how much spread in each.</p>
+
+  <p>That drawing is deliberately gentle. Here are the real numbers for our five cars once engine size is added, using the \(3\times3\) matrix from the previous section:</p>
+  \[\lambda_1 = 2.9116, \qquad \lambda_2 = 0.0867, \qquad \lambda_3 = 0.0017\]
+  <p>They sum to \(3\), as they must. But look at how lopsided they are compared with the schematic: \(2.91\) of the total \(3\) sits in one direction — close to \(\tfrac{1}{\sqrt3}(1,1,1)\), the direction in which all three predictors rise together — and almost nothing is left for the other two. Drawn honestly, at lengths proportional to \(\sqrt\lambda\), the second arrow would be a stub and the third would be about four pixels long. That is exactly why the picture above is a schematic.</p>
+  <p>So what we have been calling a cloud is, in the real data, barely a cloud at all. It is very nearly a straight line drifting through three-dimensional space: five cars that differ mostly in one way, "bigger or smaller", and hardly at all in any other.</p>
+
+  <div class="key"><b>The number to remember</b>With two predictors, the flattest direction had \(\lambda = 0.087\). Adding one more correlated predictor pushes the flattest direction down to \(\lambda = 0.0017\), whose reciprocal is \(1/\lambda = 589\). Add up the reciprocals over all three directions and you get \(\sum_i 1/\lambda_i = 601\). Hold on to that number: in the next session, the ridge paper's formula for how badly least squares misses is exactly \(\sigma^2\sum_i 1/\lambda_i\). These five cars would multiply the noise by six hundred.</div>
+
+  <div class="key"><b>The chain to remember</b>Correlated predictors \(\Rightarrow\) columns at a small angle \(\Rightarrow\) \(X'X\) far from the identity \(\Rightarrow\) one eigenvalue near zero \(\Rightarrow\) inverting \(X'X\) requires dividing by that near-zero number. In the next session, that last step is where everything explodes.</div>
+</section>
+
+<!-- 7 -->
+<section id="s7">
+  <p class="snum">Section 7 · Part II</p>
+  <h2>What we assume about the noise</h2>
+  <p>In Section 2 we wrote the model with a noise term and then walked away from it. We now have vectors, angles and orthogonality, which is exactly the vocabulary the assumptions are written in.</p>
+  <p>We cannot say anything about the individual \(\varepsilon_i\) — they are unknown by definition. But we can state what we believe about them <em>on average</em>. Two assumptions carry all of classical regression:</p>
+  \[\mathbb{E}[\varepsilon] = 0, \qquad \mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I_n\]
+
+  <h3>The first: errors average out</h3>
+  <p>\(\mathbb{E}[\cdot]\) means "expected value" — the long-run average over many repetitions. Saying \(\mathbb{E}[\varepsilon] = 0\) means the noise pushes measurements above the line as often and as far as it pushes them below. There is no systematic drift. Note this is an assumption about a <em>tendency</em>, not about any particular car.</p>
+
+  <h3>The second: equally noisy, and unrelated</h3>
+  <p>This one looks like a single statement but is two, because \(\varepsilon\varepsilon'\) is an \(n\times n\) matrix — a column times a row. Its \((i,j)\) entry is \(\varepsilon_i\varepsilon_j\), so taking expectations gives a whole table:</p>
+  \[\mathbb{E}[\varepsilon\varepsilon'] = \begin{pmatrix} \mathbb{E}[\varepsilon_1^2] & \mathbb{E}[\varepsilon_1\varepsilon_2] & \cdots\\ \mathbb{E}[\varepsilon_2\varepsilon_1] & \mathbb{E}[\varepsilon_2^2] & \cdots\\ \vdots & \vdots & \ddots\end{pmatrix} \;=\; \begin{pmatrix}\sigma^2 & 0 & \cdots\\ 0 & \sigma^2 & \cdots\\ \vdots & \vdots & \ddots\end{pmatrix}\]
+  <ul>
+    <li><b>Down the diagonal:</b> \(\mathbb{E}[\varepsilon_i^2] = \sigma^2\) for every \(i\). Every observation is equally noisy — one shared \(\sigma^2\), not a different one per car. The technical name is <em class="term">homoskedasticity</em>.</li>
+    <li><b>Off the diagonal:</b> \(\mathbb{E}[\varepsilon_i\varepsilon_j] = 0\) when \(i \ne j\). The errors are unrelated to each other. Knowing car 3 used more fuel than predicted tells you nothing about car 4.</li>
+  </ul>
+  <p>Together these two are called <em class="term">spherical</em> errors: picture the noise as a round cloud in \(n\) dimensions, the same width in every direction, with no tilt.</p>
+  <h3>Reading the second assumption as geometry</h3>
+  <p>We just called the errors "unrelated" — but we have spent four sections building a precise meaning for that word, so let us use it.</p>
+  <p>There is a real difference between the two situations, and it is worth naming before we bridge it. A predictor column is \(n\) <em>fixed, observed numbers</em>, and we correlated two of them with a dot product that sums over observations. Each error \(\varepsilon_i\), by contrast, is a single <em>random variable</em> — not a list of numbers at all. You cannot take its dot product with anything.</p>
+  <p>But the geometry transfers, if you swap one kind of sum for another. For random variables with mean zero, define</p>
+  \[\langle U, V\rangle \;=\; \mathbb{E}[UV]\]
+  <p>This obeys every rule a dot product obeys: it is symmetric, it is linear in each argument, and \(\langle U,U\rangle \ge 0\). So every geometric word we have been using is available again — it just means something new:</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Geometric idea</th><th>For data columns in \(\mathbb{R}^n\)</th><th>For random variables</th></tr>
+    <tr><td>"dot product"</td><td>\(u'v = \sum_i u_i v_i\)</td><td>\(\mathbb{E}[UV]\)</td></tr>
+    <tr><td>length²</td><td>\(\sum_i u_i^2\)</td><td>\(\mathbb{E}[U^2] = \mathrm{Var}(U)\)</td></tr>
+    <tr><td>length</td><td>\(\|u\|\)</td><td>standard deviation</td></tr>
+    <tr><td>cosine of angle</td><td>sample correlation</td><td>correlation of \(U\) and \(V\)</td></tr>
+    <tr><td>perpendicular</td><td>\(u'v = 0\)</td><td>\(\mathbb{E}[UV] = 0\) — uncorrelated</td></tr>
+  </table>
+  </div>
+  <p>Read the last row again and the assumption decodes itself. Saying \(\mathbb{E}[\varepsilon_i\varepsilon_j] = 0\) says that \(\varepsilon_i\) and \(\varepsilon_j\) are <em>orthogonal random variables</em>: perpendicular, at \(90^\circ\), sharing no linear information. And the diagonal condition \(\mathbb{E}[\varepsilon_i^2] = \sigma^2\) says every one of them has the same length \(\sigma\).</p>
+  <div class="key"><b>Why "spherical" is not a metaphor</b>\(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\) says the \(n\) errors are mutually perpendicular and all of identical length. That is the definition of a set of axes for a sphere. The same matrix condition, \(\text{something} = \sigma^2 I\), that we will call "orthogonal" for predictors is what we call "spherical" for errors — one geometric idea wearing two names.</div>
+  <div class="qa"><b>Is "uncorrelated" the same as "independent"?</b> No, and the difference matters. Zero correlation rules out a <em>linear</em> relationship only; two variables can be perfectly dependent yet uncorrelated (take \(U\) symmetric about zero and \(V = U^2\)). Independence is strictly stronger. Everything we prove in this session needs only the weaker assumption, which is one reason the classical theory is so robust.</div>
+  <div class="qa"><b>When would these fail?</b> The diagonal fails if, say, large cars are inherently more variable than small ones. The off-diagonal fails for time series, where today's error resembles yesterday's, or for clustered data, like cars all tested on the same track on the same day.</div>
+  <div class="key"><b>Not assumed: normality</b>Nothing here says the errors follow a bell curve. That extra assumption is needed for confidence intervals and hypothesis tests, but not for anything we prove in this session.</div>
+
+</section>
+
+<!-- 8 -->
+<section id="s8">
+  <p class="snum">Section 8 · Part III</p>
+  <h2>Least squares, and why the estimate is random</h2>
+  <p>The setup is complete, so let us actually estimate \(\beta\). The oldest recipe, and still the default one, is to try out candidate coefficient vectors and keep whichever makes the total squared prediction error smallest.</p>
+  <p>Notation matters here, so we borrow the paper's own. Write \(B\) for a <em class="term">candidate</em> — any \(p\)-vector we might try — and keep \(\beta\) strictly for the true, unknown coefficients. They are different things: \(\beta\) is a fixed fact about the world, while \(B\) is a variable we sweep over, most values of which fit the data terribly. The candidate that wins gets its own name, \(\hat\beta\).</p>
+  <p>Why <em>squared</em> error rather than, say, absolute error? Two reasons. It is differentiable everywhere, so calculus works; and it punishes one large miss more than several small ones, which usually matches what we want.</p>
+  <div class="deriv">
+    <div class="lab">Derivation · the normal equations</div>
+    <ol>
+      <li><span>\(\phi(B) = \|Y - XB\|^2 = (Y-XB)'(Y-XB)\) — the fit score of candidate \(B\)</span></li>
+      <li><span>expand: \(\;= Y'Y - 2B'X'Y + B'X'XB\)</span></li>
+      <li><span>differentiate with respect to \(B\) and set to zero:</span></li>
+      <li><span>\(\nabla_B\,\phi = -2X'Y + 2X'XB = 0\)</span></li>
+      <li><span>\(X'X\,B = X'Y\) — the <b>normal equations</b></span></li>
+      <li><span>multiply by \((X'X)^{-1}\); call the winning candidate \(\hat\beta\): \(\quad\hat\beta = (X'X)^{-1}X'Y\)</span></li>
+    </ol>
+    <div class="note">Step 4 uses two matrix-calculus rules: \(\partial(B'a)/\partial B = a\) and \(\partial(B'AB)/\partial B = 2AB\) for symmetric \(A\). If they are unfamiliar, verify them by hand in the \(2\times2\) case — it takes five minutes and removes the mystery. Note that \(\beta\) never appears in this derivation: least squares only ever looks at the data, never at the truth it is trying to recover.</div>
+  </div>
+  <p>That is the formula, and it is worth pausing on the shape of it: <b>it requires inverting \(X'X\)</b>. Section 6 told us that correlated predictors push an eigenvalue of \(X'X\) toward zero, and inverting such a matrix means dividing by that near-zero number. Keep that in view; it is the crack the whole ridge paper is built on.</p>
+
+  <h3>Why this estimate is a random quantity</h3>
+  <p>We now have a concrete \(\hat\beta\), so we can settle a point that is easy to state loosely and better to see algebraically. Substitute the model \(Y = X\beta + \varepsilon\) into the formula and watch what happens.</p>
+  <div class="deriv">
+    <div class="lab">Derivation · the estimate is truth plus noise</div>
+    <ol>
+      <li><span>\(\hat\beta = (X'X)^{-1}X'Y = (X'X)^{-1}X'(X\beta + \varepsilon)\)</span></li>
+      <li><span>expand: \(\;= (X'X)^{-1}(X'X)\beta \;+\; (X'X)^{-1}X'\varepsilon\)</span></li>
+      <li><span>the first product collapses, since \((X'X)^{-1}(X'X) = I\):</span></li>
+      <li><span>\(\;\;\hat\beta = \beta + (X'X)^{-1}X'\varepsilon\)</span></li>
+    </ol>
+    <div class="note">Read line 4 slowly. The estimate equals the <em>true</em> \(\beta\) — which is fixed — plus a fixed matrix multiplying the noise \(\varepsilon\), which is random. That is the whole answer: \(\hat\beta\) is random not by assumption but by inheritance. It is a function of \(\varepsilon\), so it varies whenever \(\varepsilon\) does.</div>
+  </div>
+  <p>Note which parts are which. \(X\) is treated as fixed — we condition on the predictors we happened to observe — so the matrix \((X'X)^{-1}X'\) is a constant. Only \(\varepsilon\) moves. Measure the same five cars again next week, get slightly different readings, and the same formula hands back a different \(\hat\beta\), even though \(\beta\) itself never moved.</p>
+  <p>You have already seen this happen. The table in Section 5 ran exactly this experiment: one fixed \(X\), three draws of the noise, and least squares returned \((-0.8, +3.5)\), then \((+10.3, -7.9)\), then \((+8.5, -5.6)\). Those three rows are line 4 of the derivation, made visible.</p>
+  <p>So we cannot ask "is this estimate correct?" — we got one draw, and a different week would have given another. The only honest questions are about the <em>whole distribution</em> of estimates the recipe produces. That is what the next two sections set up.</p>
+</section>
+
+<!-- 9 -->
+<section id="s9">
+  <p class="snum">Section 9 · Part III</p>
+  <h2>Estimators, bias, and variance</h2>
+  <p>Least squares is one recipe for turning data into a guess at \(\beta\). There are infinitely many others — weight the observations differently, ignore some, shrink the answer toward zero. Any such recipe is called an <em class="term">estimator</em>, written \(\hat\beta\); the hat means "estimated from data". To prefer one estimator over another we need a way to score them, and that is what this section builds.</p>
+  <p>Three different objects are now in play, and keeping them apart is the single most useful thing you can do in this section:</p>
+  <div class="tablewrap">
+  <table>
+    <tr><th>Symbol</th><th>What it is</th><th>Random?</th></tr>
+    <tr><td>\(\beta\)</td><td>the truth — the real coefficients out in the world</td><td><b>No.</b> Fixed and unknown; it never changes</td></tr>
+    <tr><td>\(\hat\beta\)</td><td>our estimate, computed from the data we happened to collect</td><td><b>Yes.</b> New sample, new noise, different \(\hat\beta\)</td></tr>
+    <tr><td>\(\mathbb{E}[\hat\beta]\)</td><td>the average of \(\hat\beta\) over infinitely many repeated samples</td><td><b>No.</b> A fixed vector — but not necessarily equal to \(\beta\)</td></tr>
+  </table>
+  </div>
+  <p>The third row is the one that is easy to miss, and it is where both of the next definitions live. \(\mathbb{E}[\hat\beta]\) is where your recipe <em>tends</em> to land: a fixed target, but not necessarily the right one. So there are two separate gaps to worry about.</p>
+
+  <p>Two questions capture almost everything:</p>
+  <ul>
+    <li><b>Bias:</b> \(\;\mathbb{E}[\hat\beta] - \beta\). Averaged over infinitely many repeated experiments, does the recipe land on the truth? If the bias is zero the estimator is called <em class="term">unbiased</em>.</li>
+    <li><b>Variance:</b> \(\;\mathrm{Var}(\hat\beta)\). How much do individual estimates scatter around their own average?</li>
+  </ul>
+  <p>Both quantities are computable for the estimator we just derived. Take line 4 of the last derivation, \(\hat\beta = \beta + (X'X)^{-1}X'\varepsilon\), and apply each definition in turn.</p>
+  <div class="deriv">
+    <div class="lab">Derivation · it is unbiased, and its variance</div>
+    <ol>
+      <li><span>abbreviate the constant matrix \(A = (X'X)^{-1}X'\), so that \(\hat\beta = AY\)</span></li>
+      <li><span>substitute the model: \(\;\hat\beta = A(X\beta + \varepsilon) = \beta + A\varepsilon\)</span></li>
+      <li><span>take expectations; \(\mathbb{E}[\varepsilon] = 0\) kills the second term: \(\;\mathbb{E}[\hat\beta] = \beta\) — <b>unbiased</b></span></li>
+      <li><span>so the deviation from its own mean is simply \(\;\hat\beta - \mathbb{E}[\hat\beta] = A\varepsilon\)</span></li>
+      <li><span>by definition \(\;\mathrm{Var}(\hat\beta) = \mathbb{E}\big[(\hat\beta - \mathbb{E}\hat\beta)(\hat\beta - \mathbb{E}\hat\beta)'\big] = \mathbb{E}\big[(A\varepsilon)(A\varepsilon)'\big]\)</span></li>
+      <li><span>\((A\varepsilon)' = \varepsilon'A'\), so this is \(\;\mathbb{E}\big[A\,\varepsilon\varepsilon'\,A'\big]\)</span></li>
+      <li><span>\(A\) is built only from \(X\), which is fixed, so it slides outside: \(\;= A\;\mathbb{E}[\varepsilon\varepsilon']\;A'\)</span></li>
+      <li><span>now use the noise assumption \(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\): \(\;= A\,\sigma^2 I\,A' = \sigma^2 AA'\)</span></li>
+      <li><span>expand \(AA'\): \(\;(X'X)^{-1}X'\cdot\big[(X'X)^{-1}X'\big]' = (X'X)^{-1}X'\,X\,(X'X)^{-1}\)</span></li>
+      <li><span>the middle telescopes, since \((X'X)^{-1}(X'X) = I\): \(\;AA' = (X'X)^{-1}\)</span></li>
+      <li><span>\(\;\;\mathrm{Var}(\hat\beta) = \sigma^2 (X'X)^{-1}\)</span></li>
+    </ol>
+    <div class="note">Three steps deserve a second look. <b>Step 5:</b> the variance of a <em>vector</em> is a \(p\times p\) matrix — the diagonal holds the variance of each coefficient, the off-diagonal entries hold the covariances between them. <b>Step 7:</b> \(A\) can leave the expectation only because \(X\) is treated as fixed; if the predictors were random this line would fail. <b>Step 9:</b> uses \((BC)' = C'B'\) together with the fact that \((X'X)^{-1}\) is symmetric — the inverse of a symmetric matrix is symmetric, so transposing it changes nothing.</div>
+  </div>
+  <p>It is worth turning that result into the eigen-coordinates of Section 6, because it makes the danger explicit. Writing \(X'X = P\Lambda P'\) gives \(\mathrm{Var}(\hat\beta) = \sigma^2 P\Lambda^{-1}P'\) — so along the \(i\)-th eigenvector the variance of the estimate is</p>
+  \[\frac{\sigma^2}{\lambda_i}\]
+  <p>A direction in which the data barely spreads is a direction in which the estimate wildly varies. That is the entire problem in one fraction, and adding these up over all \(p\) directions is exactly the \(\sigma^2\sum_i 1/\lambda_i\) that Section 5 warned about.</p>
+  <p>So least squares scores perfectly on the first count — zero bias — and its variance is \(\sigma^2(X'X)^{-1}\). Note the shape of that variance: \((X'X)^{-1}\) again, the same inverse that Section 6 warned us about. Correlated predictors do not bias least squares; they inflate its variance.</p>
+  <p>Picture two dart players aiming at a bullseye that represents the true \(\beta\):</p>
+  <ul>
+    <li><b>Player A</b> is unbiased — the darts are centered on the bullseye on average — but they scatter all over the board. High variance.</li>
+    <li><b>Player B</b> aims slightly off-center, a deliberate bias, but every dart lands in a tight cluster near the middle. Low variance.</li>
+  </ul>
+    <p>In that picture, the centre of the dart cluster is \(\mathbb{E}[\hat\beta]\) and the bullseye is \(\beta\). <em>Variance</em> is how tight the cluster is; <em>bias</em> is how far the cluster's centre sits from the bullseye.</p>
+  <div class="key"><b>The question this whole club is about</b>You get exactly one throw, because one dataset is one throw. Which player do you want to be? Classical statistics answers "A, always." The ridge paper answers "sometimes B, and here is the proof."</div>
+</section>
+
+<!-- 10 -->
+<section id="s10">
+  <p class="snum">Section 10 · Part III</p>
+  <h2>Mean squared error</h2>
+  <p>Bias and variance are two separate numbers, and an estimator can be good at one and terrible at the other. To choose between recipes we want a single score. The standard one is the <em class="term">mean squared error</em>:</p>
+  \[\mathrm{MSE}(\hat\beta) \;=\; \mathbb{E}\big[\,\|\hat\beta - \beta\|^2\,\big]\]
+  <p>The name is a literal recipe, read from the inside out:</p>
+  <ul>
+    <li><b>error</b> — \(\hat\beta - \beta\), how far this particular estimate landed from the truth;</li>
+    <li><b>squared</b> — \(\|\cdot\|^2 = \sum_j(\hat\beta_j - \beta_j)^2\), the squared errors of all \(p\) coefficients added up, which makes it one non-negative number and penalises a big miss more than several small ones;</li>
+    <li><b>mean</b> — \(\mathbb{E}[\cdot]\), averaged over every dataset you might have collected, since Section 8 showed \(\hat\beta\) changes with the noise.</li>
+  </ul>
+  <p>So MSE is the average squared distance between estimate and truth. It scores the <em>recipe</em>, not any single run of it, and smaller is better.</p>
+  <p>Now the identity that makes it useful: mean squared error splits, exactly and always, into the two quantities from the previous section.</p>
+  <div class="deriv">
+    <div class="lab">Derivation · MSE = variance + bias²</div>
+    <ol>
+      <li><span>\(\mathbb{E}\|\hat\beta - \beta\|^2\) — add and subtract the estimator's own mean:</span></li>
+      <li><span>\(= \mathbb{E}\big\|\,(\hat\beta - \mathbb{E}[\hat\beta]) + (\mathbb{E}[\hat\beta] - \beta)\,\big\|^2\)</span></li>
+      <li><span>expand the square into three pieces:</span></li>
+      <li><span>\(= \underbrace{\mathbb{E}\|\hat\beta - \mathbb{E}\hat\beta\|^2}_{\text{variance}} + 2\,\mathbb{E}\big[(\hat\beta - \mathbb{E}\hat\beta)\big]'(\mathbb{E}\hat\beta - \beta) + \underbrace{\|\mathbb{E}\hat\beta - \beta\|^2}_{\text{bias}^2}\)</span></li>
+      <li><span>the middle term is zero, because \(\mathbb{E}[\hat\beta - \mathbb{E}\hat\beta] = \mathbb{E}\hat\beta - \mathbb{E}\hat\beta = 0\)</span></li>
+      <li><span>\(\;\;\mathbb{E}\|\hat\beta - \beta\|^2 = \mathrm{Variance} + \mathrm{Bias}^2\)</span></li>
+    </ol>
+    <div class="note">Step 5 is not "by definition" — it uses two facts. First, <b>linearity</b>: \(\mathbb{E}[U - V] = \mathbb{E}U - \mathbb{E}V\). Second, and this is the one people stumble on, <b>\(\mathbb{E}[\hat\beta]\) is a constant</b>: taking an expectation produces a fixed number, and the average of a fixed number is itself. So \(\mathbb{E}[\hat\beta - \mathbb{E}\hat\beta] = \mathbb{E}\hat\beta - \mathbb{E}\hat\beta = 0\). In words: deviations from a mean always average to zero — that is what makes it the mean. Exactly as \(\sum_i(x_i - \bar x) = 0\) for any list of numbers: try \(2, 4, 9\), whose mean is \(5\) and whose deviations \(-3, -1, +4\) sum to zero. The other factor, \((\mathbb{E}\hat\beta - \beta)\), is constant too, so it slides outside the expectation and multiplies that zero.</div>
+  </div>
+  <p>This identity is the hinge of the entire reading list. It says accuracy has two independent enemies, and that reducing one is allowed to increase the other. Least squares, as we are about to prove, drives bias to exactly zero and then accepts whatever variance it gets. Nothing forces that to be the best deal available.</p>
+</section>
+
+<!-- 11 -->
+<section id="s11">
+  <p class="snum">Section 11 · Part III</p>
+  <h2>The Gauss–Markov theorem</h2>
+  <p>Least squares is unbiased. But so are infinitely many other recipes — you could weight the observations differently, or ignore some, and still be right on average. Is least squares special?</p>
+  <p>Yes, and the result is one of the most celebrated in statistics.</p>
+  <div class="key"><b>Gauss–Markov theorem</b>Among all estimators that are (i) linear in \(Y\) and (ii) unbiased, the least squares estimator has the smallest variance. It is, in the traditional acronym, the Best Linear Unbiased Estimator — BLUE.</div>
+  <p>"Linear in \(Y\)" means the estimator has the form \(\tilde\beta = CY\) for some fixed matrix \(C\) built from \(X\) alone. Least squares is the case \(C = (X'X)^{-1}X'\). The proof is short and worth doing in full, because it shows exactly where the optimality comes from.</p>
+  <div class="deriv">
+    <div class="lab">Derivation · proof of Gauss–Markov</div>
+    <ol>
+      <li><span>let \(\tilde\beta = CY\) be any linear estimator; then \(\mathbb{E}[\tilde\beta] = CX\beta\)</span></li>
+      <li><span>for this to equal \(\beta\) for <em>every</em> possible \(\beta\), we need \(\;CX = I\)</span></li>
+      <li><span>write \(C\) as least squares plus a deviation: \(\;C = (X'X)^{-1}X' + D\)</span></li>
+      <li><span>then \(CX = I + DX\), so the unbiasedness condition forces \(\;DX = 0\)</span></li>
+      <li><span>now compute the variance: \(\;\mathrm{Var}(\tilde\beta) = \sigma^2 CC'\)</span></li>
+      <li><span>\(CC' = \big[(X'X)^{-1}X' + D\big]\big[(X'X)^{-1}X' + D\big]'\)</span></li>
+      <li><span>\(\;= (X'X)^{-1} + (X'X)^{-1}(DX)' + (DX)(X'X)^{-1} + DD'\)</span></li>
+      <li><span>the two middle terms vanish because \(DX = 0\), leaving</span></li>
+      <li><span>\(\mathrm{Var}(\tilde\beta) = \underbrace{\sigma^2(X'X)^{-1}}_{\mathrm{Var}(\hat\beta)} + \sigma^2 DD'\)</span></li>
+      <li><span>\(DD'\) has non-negative diagonal entries (each is a sum of squares), so every coefficient's variance is at least as large as under least squares, with equality only when \(D = 0\)  ∎</span></li>
+    </ol>
+    <div class="note">The structure of the argument is worth more than the result: unbiasedness pins down \(CX = I\), and once that constraint is imposed, any deviation \(D\) from least squares adds a non-negative quantity to the variance. You cannot do better <em>without leaving the class</em>.</div>
+  </div>
+  <p>Notice what the theorem does <em>not</em> require: no normal distribution, no large sample. Just the two noise assumptions from Section 7.</p>
+  <div class="qa"><b>Why is Markov's name on it?</b> Gauss proved it in 1823. Markov's 1912 work was credited by Neyman in 1934, and the double name stuck — though historians generally agree Markov added nothing Gauss had not already established. If you want the story, R. L. Plackett's 1949 note in <em>Biometrika</em>, "A historical note on the method of least squares", tells it well.</div>
+</section>
+
+<!-- 12 -->
+<section id="s12">
+  <p class="snum">Section 12 · Part III</p>
+  <h2>Where this leaves us</h2>
+  <p>Take stock. We have a model, an estimator, and a theorem saying that estimator is optimal. That sounds like the end of the story, and for about 150 years it was treated as one.</p>
+  <p>But read the theorem's fine print once more. It says least squares is best <b>among linear unbiased estimators</b>. Both qualifiers are load-bearing, and the second one is a choice nobody ever justified — it was assumed, because being right on average <em>sounds</em> obviously desirable.</p>
+  <p>Now put three facts from this session side by side:</p>
+  <ol>
+    <li>Accuracy is measured by MSE, which equals variance plus squared bias (Section 10).</li>
+    <li>Gauss–Markov only minimizes variance <em>after</em> forcing bias to zero (Section 11).</li>
+    <li>\(\mathrm{Var}(\hat\beta) = \sigma^2(X'X)^{-1}\), and correlated predictors make \(X'X\) nearly singular, so that variance can be enormous (Sections 6 and 9).</li>
+  </ol>
+  <p>The question those three raise almost by themselves: <em>if the variance is enormous, could accepting a small amount of bias buy back a lot more variance than it costs?</em></p>
+  <div class="key"><b>Next session</b>Hoerl and Kennard (1970) answer yes — and prove that a better-than-least-squares estimator always exists. Continue with the tutorial "Ridge Regression from Scratch", which picks up exactly here.</div>
+</section>
+
+<!-- 13 -->
+<section id="s13">
+  <p class="snum">Section 13</p>
+  <h2>Exercises</h2>
+
+  <h3>1. Compute a correlation by hand</h3>
+  <p>Take the five-car table from Section 1. Center and scale the horsepower column yourself, and verify the number \(0.913\) by taking the dot product with the standardized weight column.</p>
+
+  <h3>2. Make two predictors orthogonal</h3>
+  <p>Invent a five-row dataset with two predictors whose correlation is exactly zero. What does the data cloud look like? What is \(X'X\), and what are its eigenvalues?</p>
+  <details><summary>Hint</summary><p>Try \(x_1 = (1,1,-1,-1,0)\) and \(x_2 = (1,-1,1,-1,0)\) before standardizing. Both are already centered; check their dot product.</p></details>
+
+  <h3>3. Verify the eigenvalue sum</h3>
+  <p>For a \(3\times3\) correlation matrix of your choosing, compute the eigenvalues numerically and check that they sum to 3. Then push one off-diagonal entry toward 1 and watch what happens to the smallest eigenvalue.</p>
+
+  <h3>4. Prove the matrix-calculus rules</h3>
+  <p>Verify \(\partial(\beta'A\beta)/\partial\beta = 2A\beta\) for a symmetric \(2\times2\) matrix \(A\) by writing the quadratic form out in full and differentiating with respect to \(\beta_1\) and \(\beta_2\) separately.</p>
+
+  <h3>5. Find a biased estimator that beats least squares</h3>
+  <p>Consider the simple estimator \(\tilde\beta = c\,\hat\beta\) for a constant \(0 &lt; c &lt; 1\) — just least squares, scaled down. Compute its bias and its variance, then its MSE. Can you find a \(c\) making the MSE smaller than that of \(\hat\beta\)?</p>
+  <details><summary>Hint</summary><p>Bias \(= (c-1)\beta\) and variance \(= c^2\mathrm{Var}(\hat\beta)\). Write the MSE as a function of \(c\), differentiate, and see whether the minimum sits strictly below \(c = 1\). If you find that it does, you have just discovered the ridge paper's central idea on your own.</p></details>
+</section>
+
+<!-- 14 -->
+<section id="s14">
+  <p class="snum">Section 14</p>
+  <h2>Check yourself</h2>
+  <div class="checklist">
+    <h3>You are ready for the ridge paper if you can…</h3>
+    <ul>
+      <li>Write \(Y = X\beta + \varepsilon\) and say what each symbol contains.</li>
+      <li>State the two noise assumptions and explain what each half of \(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\) means.</li>
+      <li>Explain why \(X'X\) is the correlation matrix, and why correlation is a cosine.</li>
+      <li>Say what a small eigenvalue of \(X'X\) tells you about your data.</li>
+      <li>Explain why the eigenvalues of a correlation matrix must sum to \(p\).</li>
+      <li>Derive \(\hat\beta = (X'X)^{-1}X'Y\) from scratch.</li>
+      <li>Say what "unbiased" means without using the word "correct".</li>
+      <li>State MSE = variance + bias², and state the Gauss–Markov theorem including both of its qualifiers.</li>
+      <li>Explain why the theorem does <em>not</em> prove least squares is the most accurate estimator possible.</li>
+    </ul>
+  </div>
+</section>
+
+<footer>Session 0 of the paper reading club. Next: "Ridge Regression from Scratch" — Hoerl &amp; Kennard (1970).</footer>
+</div>

@@ -1,0 +1,18 @@
+---
+import { site } from '../site.config';
+import { withBase } from '../lib/paths';
+import ThemeToggle from './ThemeToggle.astro';
+const items = site.nav.filter((n) => !n.flag || site.flags[n.flag]);
+const here = Astro.url.pathname;
+---
+<header class="site-header">
+  <div class="bar">
+    <a class="brand" href={withBase('/')}>Reading<span>Lab</span></a>
+    <nav class="site-nav" aria-label="Main">
+      {items.map((n) => (
+        <a href={withBase(n.href)} aria-current={here.startsWith(withBase(n.href)) ? 'page' : undefined}>{n.label}</a>
+      ))}
+      <ThemeToggle />
+    </nav>
+  </div>
+</header>

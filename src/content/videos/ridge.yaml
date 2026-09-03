@@ -1,0 +1,33 @@
+title: "Ridge Regression: Biased Estimation for Nonorthogonal Problems"
+eyebrow: "Paper walkthrough · Level 1 · L2 regularization"
+session: 1
+level: 1
+summary: "The full walkthrough of the 1970 paper: why least squares explodes on correlated data, the ridge fix, its geometry, and the theorem that says some k always helps."
+paper:
+  authors: "Arthur E. Hoerl & Robert W. Kennard"
+  title: "Ridge Regression: Biased Estimation for Nonorthogonal Problems"
+  year: 1970
+  venue: "Technometrics 12(1)"
+  url: "https://doi.org/10.1080/00401706.1970.10488634"
+mp4: videos/ridge/ridge.mp4
+srt: ridge.srt
+poster: videos/ridge/poster.jpg
+durationSec: 970
+tutorial: ridge
+chapters:
+  - { title: "Introduction", at: 0 }
+  - { title: "The model (§0)", at: "Let's set the stage" }
+  - { title: "Least squares & Gauss–Markov (§1)", at: "How do we estimate beta" }
+  - { title: "Unbiased ≠ accurate: the dartboard", at: "Before we meet the paper's main idea" }
+  - { title: "Correlated data & eigenvalues", at: "Now let's see what correlation" }
+  - { title: "The error formula (eqs 1.5, 1.8)", at: "The paper measures the damage" }
+  - { title: "Simulation: OLS vs ridge", at: "Let's watch this happen" }
+  - { title: "The ridge estimator (eq 2.1)", at: "Here is the paper's remedy" }
+  - { title: "Geometry: shortest good fit (§3b)", at: "The paper gives a beautiful geometric" }
+  - { title: "Bias–variance & existence theorem (§4)", at: "Now the mathematical heart" }
+  - { title: "The ridge trace (§3a, §7)", at: "One practical question remains" }
+  - { title: "Legacy & connections (§6)", at: "Let's zoom out" }
+keyResults:
+  - { label: "The ridge estimator", tex: "\\hat\\beta^{*}(k) = (X'X + kI)^{-1} X'Y" }
+  - { label: "Why least squares fails", tex: "E\\lVert\\hat\\beta - \\beta\\rVert^{2} = \\sigma^{2} \\sum_i \\tfrac{1}{\\lambda_i} \\quad\\text{(explodes when the eigenvalues } \\lambda_i \\text{ are small)}" }
+  - { label: "Existence theorem", tex: "\\exists\\, k > 0 : \\ \\mathrm{MSE}\\big(\\hat\\beta^{*}(k)\\big) < \\mathrm{MSE}\\big(\\hat\\beta_{\\mathrm{OLS}}\\big) \\quad\\text{always}" }

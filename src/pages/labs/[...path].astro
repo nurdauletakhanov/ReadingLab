@@ -1,0 +1,23 @@
+---
+// Reserved for ContestLab problems. While site.flags.labs is false no page is emitted at all.
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/Card.astro';
+import { site } from '../../site.config';
+import { withBase } from '../../lib/paths';
+
+export async function getStaticPaths() {
+  return site.flags.labs ? [{ params: { path: undefined } }] : [];
+}
+const labs = await getCollection('labs');
+---
+<BaseLayout title="Labs" description="Practice problems in the ContestLab format.">
+  <p class="eyebrow">Labs</p>
+  <h1 class="page-title">Practice problems</h1>
+  <p class="lede">Each lab is a ContestLab problem: a statement, a starter notebook, and public data. Grading happens on ContestLab.</p>
+  <ul class="cards">
+    {labs.map((l) => (
+      <Card href={l.data.contestlabUrl ?? withBase('/labs/')} kicker={l.data.difficulty} title={l.data.title} summary={l.data.tags.join(' · ')} />
+    ))}
+  </ul>
+</BaseLayout>

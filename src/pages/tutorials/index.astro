@@ -1,0 +1,23 @@
+---
+import { getCollection } from 'astro:content';
+import BaseLayout from '../../layouts/BaseLayout.astro';
+import Card from '../../components/Card.astro';
+import { withBase } from '../../lib/paths';
+const tutorials = (await getCollection('tutorials')).sort((a, b) => a.data.session - b.data.session || a.data.order - b.data.order);
+---
+<BaseLayout title="Tutorials" description="Written lessons for each reading-club session.">
+  <p class="eyebrow">Tutorials</p>
+  <h1 class="page-title">Written lessons</h1>
+  <p class="lede">One long-form page per session: the ideas, the derivations, the exercises.</p>
+  <ul class="cards">
+    {tutorials.map((t) => (
+      <Card
+        href={withBase(`/tutorials/${t.id}/`)}
+        kicker={`Session ${t.data.session}${t.data.level ? ` · Level ${t.data.level}` : ''}`}
+        title={t.data.title}
+        summary={t.data.summary}
+        meta={t.data.paper ? `${t.data.paper.authors}, ${t.data.paper.year}` : undefined}
+      />
+    ))}
+  </ul>
+</BaseLayout>

@@ -1,0 +1,48 @@
+---
+import { getCollection, getEntry } from 'astro:content';
+import BaseLayout from '../layouts/BaseLayout.astro';
+import { site } from '../site.config';
+import { withBase } from '../lib/paths';
+import { fmtTime } from '../lib/srt';
+
+const tutorials = (await getCollection('tutorials')).sort((a, b) => a.data.session - b.data.session || a.data.order - b.data.order);
+const sessions = await Promise.all(
+  tutorials.map(async (t) => ({
+    t,
+    v: t.data.video ? await getEntry(t.data.video) : undefined,
+  })),
+);
+---
+<BaseLayout title={site.title}>
+  <p class="eyebrow">Paper reading club</p>
+  <h1 class="page-title">Read the paper. Watch the walkthrough. Build it yourself.</h1>
+  <p class="lede">{site.tagline}</p>
+
+  <h2 class="section">Sessions</h2>
+  {sessions.map(({ t, v }) => (
+    <section class="session">
+      <div class="num">Session {t.data.session}</div>
+      <div>
+        <h3>{t.data.title}</h3>
+        {t.data.paper && (
+          <p class="cite">
+            {t.data.paper.authors} ({t.data.paper.year}). {t.data.paper.url
+              ? <a href={t.data.paper.url} rel="noopener">{t.data.paper.title}</a>
+              : t.data.paper.title}{t.data.paper.venue ? `, ${t.data.paper.venue}` : ''}.
+          </p>
+        )}
+        {t.data.summary && <p>{t.data.summary}</p>}
+        <div class="links">
+          <a href={withBase(`/tutorials/${t.id}/`)}>Tutorial</a>
+          {v && <a href={withBase(`/videos/${v.id}/`)}>Video{v.data.durationSec ? ` · ${fmtTime(v.data.durationSec)}` : ''}</a>}
+        </div>
+      </div>
+    </section>
+  ))}
+
+  <h2 class="section">Elsewhere</h2>
+  <ul>
+    <li><a href={withBase('/papers/')}>The reading list</a>: fifteen levels from classical statistics to frontier model reports, with what has been read and coded so far.</li>
+    <li><a href={site.github} rel="noopener">Source of this site</a> on GitHub.</li>
+  </ul>
+</BaseLayout>

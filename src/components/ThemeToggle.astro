@@ -1,0 +1,16 @@
+<button class="theme-toggle" type="button" data-theme-toggle aria-label="Switch colour theme" title="Theme: light / dark / system">auto</button>
+<script>
+  const KEY = 'theme';
+  const order = ['light', 'dark', 'system'] as const;
+  const root = document.documentElement;
+  const current = () => (root.dataset.theme === 'light' || root.dataset.theme === 'dark' ? root.dataset.theme : 'system');
+  const apply = (t: string) => {
+    if (t === 'light' || t === 'dark') { root.dataset.theme = t; localStorage.setItem(KEY, t); }
+    else { delete root.dataset.theme; localStorage.removeItem(KEY); }
+    for (const b of document.querySelectorAll('[data-theme-toggle]')) b.textContent = t === 'system' ? 'auto' : t;
+  };
+  for (const b of document.querySelectorAll('[data-theme-toggle]')) {
+    b.textContent = current() === 'system' ? 'auto' : current();
+    b.addEventListener('click', () => apply(order[(order.indexOf(current() as any) + 1) % order.length]));
+  }
+</script>
