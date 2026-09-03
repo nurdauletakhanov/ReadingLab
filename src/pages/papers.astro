@@ -8,7 +8,6 @@ const { Content } = await render(entry);
 <BaseLayout title="Papers" description="The reading list: fifteen levels from classical statistics to frontier models.">
   <p class="eyebrow">Papers</p>
   <h1 class="page-title">{entry.data.title}</h1>
-  <p class="lede">Titles link to the publisher, DOI or a Scholar search. Nothing is re-hosted here.{entry.data.updated && ` Last updated ${entry.data.updated.toISOString().slice(0, 10)}.`}</p>
   <div class="papers">
     <Content />
   </div>
