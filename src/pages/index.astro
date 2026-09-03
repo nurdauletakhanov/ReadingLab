@@ -18,10 +18,13 @@ const sessions = await Promise.all(
   <h1 class="page-title">Read the paper. Watch the walkthrough. Build it yourself.</h1>
   <p class="lede">{site.tagline}</p>
 
-  <div class="notice" role="note">
-    <span class="when">Lectures</span>
-    <span>Sessions are held every <strong>{site.meeting.day}</strong> in <strong>{site.meeting.place}</strong> at <strong>{site.meeting.time}</strong>.</span>
-  </div>
+  <section class="news" aria-labelledby="next-lecture">
+    <span class="news-label"><span class="news-dot" aria-hidden="true"></span>News</span>
+    <div>
+      <h2 id="next-lecture">{site.nextLecture.topic}</h2>
+      <p>{site.nextLecture.date} <span aria-hidden="true">·</span> {site.nextLecture.time} <span aria-hidden="true">·</span> {site.nextLecture.place}</p>
+    </div>
+  </section>
 
   <h2 class="section">Sessions</h2>
   {sessions.map(({ t, v }) => (

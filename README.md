@@ -16,6 +16,11 @@ pnpm verify       # astro check + build + size report
 
 Node 22 and pnpm 10 (`corepack enable` gives you pnpm). `ffmpeg` is needed only to import videos.
 
+## Update the weekly lecture news
+
+Edit `nextLecture` in `src/site.config.ts`. Set its `topic`, `date`, `time`, and `place`, then
+push to `main`. The announcement at the top of the home page updates automatically.
+
 ## Add a session
 
 1. **Tutorial.** Save the self-contained HTML page (the artifact's HTML) as
