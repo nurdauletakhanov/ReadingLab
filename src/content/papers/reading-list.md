@@ -301,33 +301,3 @@ This is your domain. Read all of these.
 | [ ] | [ ] | 2024 | Google | Gemini Technical Report | Multimodal frontier |
 
 **Chinese reports include training data composition, hyperparameters, ablations, and failure modes that Western labs don't publish.** DeepSeek-V3 is the most informative engineering paper of the past two years.
-
----
-
-## Reading Strategy
-
-**For your situation specifically:**
-
-You have a baseline training right now. While it runs:
-1. Re-read Torres et al. (your competitor)
-2. Read DeepSeek-V3 (best technical writing in the field, transferable lessons)
-3. Read I-JEPA (relevant to your structured representation thread)
-4. Read EDM diffusion paper (Karras, deepens diffusion intuition)
-5. Read MAR / continuous AR papers (your followup direction)
-
-**For long-term gap-filling:**
-
-- **One paper per day** if reading carefully with notes
-- **One implementation per week** for ⭐🔨 papers
-- **Re-read foundations every 6 months** — Transformer, DDPM, VAE reveal new things as you grow
-- **Follow citation chains** — when a paper cites something interesting, queue it
-
-**Don't:**
-- Try to read this whole list before MBZUAI starts
-- Implement everything (5-10x slower than reading)
-- Read in strict order — jump to relevance
-
-**Do:**
-- Take notes per paper: surprises, gaps, things you'd do differently
-- Discuss with peers — reading groups beat solo reading
-- Track which papers shaped your thinking — that becomes your research voice
