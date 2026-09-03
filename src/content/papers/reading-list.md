@@ -3,17 +3,6 @@ title: "ML/AI Reading List: Foundations to Frontier"
 updated: 2026-08-21
 ---
 
-A complete reading path from classical statistics through modern frontier AI. Combines foundational coverage (kNN, SVMs, EM, trees, scaling laws) with modern depth (audio ML, JEPA, diffusion variants, PEFT, Chinese frontier models).
-
-**How to use:** Don't read in strict order. Foundations build understanding; modern sections build capability. For your audio/representation research focus, prioritize Levels 5, 6, 8, 12, 13, 14, 15. For PhD breadth, sample across all levels.
-
-**Tier markers:**
-- ⭐ = must-read (canonical)
-- 🔨 = must-implement (code from scratch to internalize)
-- 🎵 = directly relevant to your audio/representation research
-
----
-
 ## Level 1 — Core Supervised ML
 
 | Year | Authors | Title | Concept |
