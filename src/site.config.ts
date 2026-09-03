@@ -3,6 +3,7 @@ export const site = {
   tagline: 'A paper-reading club: written tutorials, animated walkthroughs, and the reading list behind them.',
   author: 'Nurdaulet Akhanov',
   github: 'https://github.com/nurdauletakhanov/ReadingLab',
+  meeting: { place: 'Lecture Hall 1', time: '3 pm' },
   nav: [
     { href: '/tutorials/', label: 'Tutorials' },
     { href: '/videos/', label: 'Videos' },

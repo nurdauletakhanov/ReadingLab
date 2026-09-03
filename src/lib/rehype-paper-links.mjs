@@ -1,5 +1,5 @@
 /**
- * Reading-list tables have columns Read | Coded | Year | Authors | Title | Concept.
+ * Reading-list tables have columns Read | Year | Authors | Title | Concept.
  * This plugin turns the Title cell into an outbound link: a known DOI/arXiv URL when
  * we have one, otherwise a Google Scholar search. No PDFs are hosted here.
  */
@@ -21,9 +21,9 @@ export function rehypePaperLinks() {
     const walk = (node) => {
       if (node.type === 'element' && node.tagName === 'tr') {
         const cells = node.children.filter((c) => c.type === 'element' && c.tagName === 'td');
-        if (cells.length === 6) {
+        if (cells.length === 5) {
           // GFM only renders task-list checkboxes inside lists, so mark the Read / Coded cells by hand.
-          for (const cell of cells.slice(0, 2)) {
+          for (const cell of cells.slice(0, 1)) {
             const v = text(cell).trim();
             if (v === '[x]' || v === '[ ]') {
               cell.children = [{
@@ -34,19 +34,19 @@ export function rehypePaperLinks() {
               }];
             }
           }
-          const title = clean(text(cells[4]));
-          const authors = clean(text(cells[3]));
+          const title = clean(text(cells[3]));
+          const authors = clean(text(cells[2]));
           if (title) {
             const known = KNOWN.find((k) => k.match.test(title));
             const url = known
               ? known.url
               : `https://scholar.google.com/scholar?q=${encodeURIComponent(`${title} ${authors}`)}`;
-            cells[4].children = [
+            cells[3].children = [
               {
                 type: 'element',
                 tagName: 'a',
                 properties: { href: url, target: '_blank', rel: 'noopener' },
-                children: cells[4].children,
+                children: cells[3].children,
               },
             ];
           }
