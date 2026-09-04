@@ -296,14 +296,16 @@ $$
 <div class="eq">
 
 $$
-\mathbb{E}[\varepsilon \mid X] = 0, \qquad \operatorname{Cov}(\varepsilon \mid X) = \sigma^2 I
+\mathbb{E}[\varepsilon \mid X] = 0, \qquad \operatorname{Cov}(\varepsilon \mid X) = \sigma^2 I_n
 $$
 
 </div>
 
-- Nothing systematic is left over: on average the model is right.
-- Every car has the same error variance, and no two errors are linked.
-- That is all. Normality is not needed for anything today.
+- `Cov` means covariance. For a random vector, it is a matrix:
+  $$\operatorname{Cov}(Z\mid X)=\mathbb E[(Z-\mathbb E[Z\mid X])(Z-\mathbb E[Z\mid X])^{\top}\mid X].$$
+- Diagonal entries are variances: $\operatorname{Var}(\varepsilon_i\mid X)=\sigma^2$.
+- Off-diagonal entries are pairwise covariances: $\operatorname{Cov}(\varepsilon_i,\varepsilon_j\mid X)=0$ for $i\ne j$.
+- Normality is not assumed.
 
 ---
 
@@ -314,15 +316,15 @@ $$
 <div class="eq">
 
 $$
-\hat\beta = \arg\min_{\beta} \|Y - X\beta\|^2 \;\Longrightarrow\; X^{\top}X\hat\beta = X^{\top}Y \;\Longrightarrow\; \hat\beta = (X^{\top}X)^{-1}X^{\top}Y
+\hat\beta = \arg\min_{B\in\mathbb R^p} \|Y-XB\|^2 \;\Longrightarrow\; X^{\top}X\hat\beta=X^{\top}Y
 $$
 
 </div>
 
-- The objective is the squared length of the residual vector in ℝ⁵.
-- Its gradient is −2XᵀY + 2XᵀXβ. Setting it to zero gives the normal equations.
-- If XᵀX can be inverted, the solution is unique and explicit.
-- Everything about β̂ is decided by that inverse.
+- $\beta$ is the true coefficient vector. It stays fixed and unknown.
+- $B$ is a candidate varied during minimization; the winning candidate is named $\hat\beta$.
+- The gradient with respect to $B$ is $-2X^{\top}Y+2X^{\top}XB$.
+- If $X^{\top}X$ is invertible, $\hat\beta=(X^{\top}X)^{-1}X^{\top}Y$.
 
 ---
 
@@ -441,19 +443,22 @@ $$
 
 <p class="label">Part III · What makes an estimate good</p>
 
-## Gauss–Markov, read carefully
+## The Gauss–Markov theorem
 
 <div class="eq">
 
 $$
-\operatorname{Cov}(\tilde\beta \mid X) - \operatorname{Cov}(\hat\beta \mid X) \succeq 0 \quad \text{for every } \tilde\beta \text{ linear in } Y \text{ and unbiased}
+\operatorname{Var}(a^{\top}\hat\beta\mid X) \le \operatorname{Var}(a^{\top}\tilde\beta\mid X)
+\qquad \text{for every } a\in\mathbb R^p
 $$
 
 </div>
 
-- Among linear unbiased estimators, least squares has the smallest covariance.
-- Two qualifiers. Drop “unbiased” and the theorem says nothing at all.
-- That gap is the door ridge regression walks through.
+- The comparison class is $\tilde\beta=CY$ with $CX=I$: linear in $Y$ and unbiased for every $\beta$.
+- The vector $a$ selects a direction: $\operatorname{Var}(a^{\top}\hat\beta\mid X)=a^{\top}\operatorname{Cov}(\hat\beta\mid X)a$. Setting $a=e_j$ compares coefficient $j$.
+- Write $C=(X^{\top}X)^{-1}X^{\top}+D$. Because $DX=0$,
+  $$\operatorname{Var}(a^{\top}\tilde\beta\mid X)-\operatorname{Var}(a^{\top}\hat\beta\mid X)=\sigma^2\|D^{\top}a\|^2\ge0.$$
+- Ridge is biased, so Gauss–Markov does not compare ridge with least squares.
 
 ---
 

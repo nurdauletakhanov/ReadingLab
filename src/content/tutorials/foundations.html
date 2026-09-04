@@ -116,7 +116,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p class="eyebrow">Paper reading club · Session 0 · Foundations</p>
   <h1>Least Squares Foundations</h1>
   <p class="cite">Everything you need before reading Hoerl &amp; Kennard's ridge regression paper</p>
-  <p class="lede">This is the groundwork session. We build linear regression from a table of numbers, learn to read the matrix \(X'X\) both as algebra and as geometry, define what makes an estimate "good", and finish by proving the theorem that says least squares is the best you can do. Only then does the next session get to overturn it.</p>
+  <p class="lede">This is the groundwork session. We build linear regression from a table of numbers, learn to read the matrix \(X^{\top}X\) both as algebra and as geometry, define what makes an estimate "good", and finish by proving the theorem that says least squares is the best you can do. Only then does the next session get to overturn it.</p>
 
   <div class="prereq">
     <h3>What you need to know already</h3>
@@ -140,14 +140,14 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <ol start="3">
     <li><a href="#s3">Predictors are vectors</a></li>
     <li><a href="#s4">Correlation is an angle</a></li>
-    <li><a href="#s5">The correlation matrix \(X'X\)</a></li>
+    <li><a href="#s5">The correlation matrix \(X^{\top}X\)</a></li>
     <li><a href="#s6">Eigenvalues: where the information is</a></li>
     <li><a href="#s7">What we assume about the noise</a></li>
   </ol>
   <p class="grp">Part III · What makes an estimate good</p>
   <ol start="8">
     <li><a href="#s8">Least squares, and why the estimate is random</a></li>
-    <li><a href="#s9">Estimators, bias, and variance</a></li>
+    <li><a href="#s9">Estimators, bias, and covariance</a></li>
     <li><a href="#s10">Mean squared error</a></li>
     <li><a href="#s11">The Gauss–Markov theorem</a></li>
     <li><a href="#s12">Where this leaves us</a></li>
@@ -224,13 +224,13 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p class="snum">Section 3 · Part II</p>
   <h2>Predictors are vectors</h2>
   <p>Here is the shift in perspective that makes everything afterwards easier. Stop reading \(X\) row by row — one row per car — and start reading it <em>column by column</em>, one column per predictor.</p>
-  <p>If \(X\) has \(n\) rows and \(p\) columns, then each predictor column \(x_j\) is a vector in \(\mathbb{R}^n\). Here \(n=5\) cars and \(p=2\) predictors, so the weight and horsepower columns are two vectors in \(\mathbb{R}^5\). Their pairwise dot products form the matrix \(X'X\), which is \(p\times p\) — \(2\times2\) in this example. Thus the predictor vectors live in observation space \(\mathbb{R}^n\), while \(X'X\) records their relationships in a \(p\times p\) matrix.</p>
+  <p>If \(X\) has \(n\) rows and \(p\) columns, then each predictor column \(x_j\) is a vector in \(\mathbb{R}^n\). Here \(n=5\) cars and \(p=2\) predictors, so the weight and horsepower columns are two vectors in \(\mathbb{R}^5\). Their pairwise dot products form the matrix \(X^{\top}X\), which is \(p\times p\) — \(2\times2\) in this example. Thus the predictor vectors live in observation space \(\mathbb{R}^n\), while \(X^{\top}X\) records their relationships in a \(p\times p\) matrix.</p>
   <p>Two operations do all the work. For vectors \(u\) and \(v\) with \(n\) entries:</p>
-  \[u'v = \sum_{i=1}^{n} u_i v_i \quad \text{(dot product)}, \qquad \|u\| = \sqrt{u'u} \quad \text{(length)}\]
+  \[u^{\top}v = \sum_{i=1}^{n} u_i v_i \quad \text{(dot product)}, \qquad \|u\| = \sqrt{u^{\top}u} \quad \text{(length)}\]
   <p>And the fact that ties them together, true in any number of dimensions:</p>
-  \[u'v = \|u\|\,\|v\|\cos\theta\]
+  \[u^{\top}v = \|u\|\,\|v\|\cos\theta\]
   <p>where \(\theta\) is the angle between the two arrows. Read it backwards and it says: the dot product measures how much two vectors point the same way. It is largest when they are parallel, zero when they are perpendicular, and negative when they point in opposing directions.</p>
-  <div class="key"><b>Vocabulary you will meet</b>Perpendicular vectors have \(u'v = 0\). The word mathematicians use for perpendicular is <em class="term">orthogonal</em>. Keep it in mind — the ridge paper's title is "Biased Estimation for Nonorthogonal Problems".</div>
+  <div class="key"><b>Vocabulary you will meet</b>Perpendicular vectors have \(u^{\top}v = 0\). The word mathematicians use for perpendicular is <em class="term">orthogonal</em>. Keep it in mind — the ridge paper's title is "Biased Estimation for Nonorthogonal Problems".</div>
 </section>
 
 <!-- 4 -->
@@ -256,7 +256,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p>Now take the dot product of the two standardized columns:</p>
   \[(-0.316)(-0.309) + 0 + (-0.632)(-0.413) + (0.632)(0.825) + (0.316)(0.103) = 0.913\]
   <p>That number, \(0.913\), is exactly the <em class="term">correlation</em> between weight and horsepower. Not approximately — exactly. And because both vectors have length one, the identity from Section 3 collapses to something remarkable:</p>
-  \[r = x_1'x_2 = \cos\theta \quad\Longrightarrow\quad \theta = \arccos(0.913) = 24^\circ\]
+  \[r = x_1^{\top}x_2 = \cos\theta \quad\Longrightarrow\quad \theta = \arccos(0.913) = 24^\circ\]
   <div class="key"><b>The idea to carry forward</b>Correlation is the cosine of the angle between two standardized predictor columns. Correlation \(1\) means \(0^\circ\), the same direction. Correlation \(0\) means \(90^\circ\), perpendicular — <em>orthogonal</em>. Our two predictors sit \(24^\circ\) apart: they lean heavily toward each other, carrying largely the same information.</div>
 
   <h3>Why standardize? A detour through covariance</h3>
@@ -281,28 +281,28 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   \[r = \frac{\mathrm{cov}(u,v)}{\mathrm{sd}(u)\,\mathrm{sd}(v)}\]
   <p>Rescale one column by \(c\) and the numerator picks up a factor of \(c\) — but so does the denominator, through \(\mathrm{sd}(u)\). The two factors cancel. Correlation is simply covariance with the units divided out, which is also what confines it to \([-1,1]\).</p>
   <p>Check it against the numbers above: \(7.0 / (0.3162 \times 24.238) = 0.913\), and \(7\,000\,000 / (316\,200 \times 24.238) = 0.913\). Same answer, different rulers.</p>
-  <div class="key"><b>What standardizing really does</b>Centering and scaling each column to length one performs that same division <em>once, in advance, on the data itself</em>. After standardizing, the plain dot product \(x_i'x_j\) already <em>is</em> the correlation — there is nothing left to divide by. That is why we standardized before taking dot products in this section, and why the ridge paper assumes it throughout.</div>
-  <div class="qa"><b>Can a correlation exceed 1?</b> No, and now you can see why geometrically: it is a cosine. Algebraically it is the Cauchy–Schwarz inequality, \(|u'v| \le \|u\|\|v\|\). Equality happens only when the vectors are parallel — the two predictors are then the same measurement in disguise.</div>
+  <div class="key"><b>What standardizing really does</b>Centering and scaling each column to length one performs that same division <em>once, in advance, on the data itself</em>. After standardizing, the plain dot product \(x_i^{\top}x_j\) already <em>is</em> the correlation — there is nothing left to divide by. That is why we standardized before taking dot products in this section, and why the ridge paper assumes it throughout.</div>
+  <div class="qa"><b>Can a correlation exceed 1?</b> No, and now you can see why geometrically: it is a cosine. Algebraically it is the Cauchy–Schwarz inequality, \(|u^{\top}v| \le \|u\|\|v\|\). Equality happens only when the vectors are parallel — the two predictors are then the same measurement in disguise.</div>
 
 </section>
 
 <!-- 5 -->
 <section id="s5">
   <p class="snum">Section 5 · Part II</p>
-  <h2>The correlation matrix \(X'X\)</h2>
-  <p>We now have all the pieces to read the single most important object in the ridge paper. Multiply \(X'\) by \(X\) and look at what lands in each cell: the \((i,j)\) entry of \(X'X\) is the \(i\)-th row of \(X'\) times the \(j\)-th column of \(X\) — that is, \(x_i'x_j\), the dot product of predictor \(i\) with predictor \(j\).</p>
+  <h2>The correlation matrix \(X^{\top}X\)</h2>
+  <p>We now have all the pieces to read the single most important object in the ridge paper. Multiply \(X^{\top}\) by \(X\) and look at what lands in each cell: the \((i,j)\) entry of \(X^{\top}X\) is the \(i\)-th row of \(X^{\top}\) times the \(j\)-th column of \(X\) — that is, \(x_i^{\top}x_j\), the dot product of predictor \(i\) with predictor \(j\).</p>
   <p>Which, for standardized columns, we just proved is their correlation. So:</p>
-  \[X'X = \begin{pmatrix} x_1'x_1 & x_1'x_2 \\ x_2'x_1 & x_2'x_2\end{pmatrix} = \begin{pmatrix}1 & 0.913\\ 0.913 & 1\end{pmatrix}\]
-  <p>\(X'X\) <em>is</em> the correlation matrix. Read it as a table of every pairwise relationship:</p>
+  \[X^{\top}X = \begin{pmatrix} x_1^{\top}x_1 & x_1^{\top}x_2 \\ x_2^{\top}x_1 & x_2^{\top}x_2\end{pmatrix} = \begin{pmatrix}1 & 0.913\\ 0.913 & 1\end{pmatrix}\]
+  <p>\(X^{\top}X\) <em>is</em> the correlation matrix. Read it as a table of every pairwise relationship:</p>
   <ul>
     <li>The <b>diagonal is always 1</b>, since every predictor correlates perfectly with itself (and has length one).</li>
     <li>It is <b>symmetric</b>: the correlation of weight with horsepower is the same as horsepower with weight.</li>
     <li>Every entry is in \([-1, 1]\).</li>
   </ul>
   <p>With three predictors it would be \(3\times3\), and so on. Adding engine size to our five cars gives:</p>
-  \[X'X = \begin{pmatrix} 1 & 0.913 & 0.977\\ 0.913 & 1 & 0.976 \\ 0.977 & 0.976 & 1\end{pmatrix}\]
+  \[X^{\top}X = \begin{pmatrix} 1 & 0.913 & 0.977\\ 0.913 & 1 & 0.976 \\ 0.977 & 0.976 & 1\end{pmatrix}\]
   <p>Every pair is strongly related — heavier cars have bigger engines have more horsepower — so every off-diagonal entry sits near 1. We will come back to this matrix in the next section.</p>
-  <div class="key"><b>The two extremes</b>The best possible case is \(X'X = I\), the identity: every off-diagonal zero, every predictor perpendicular to every other, each carrying information no other has. That is the <em>orthogonal</em> case. The worst case has off-diagonals close to \(\pm1\), where predictors are near-duplicates of each other. The ridge paper is entirely about the worst case.</div>
+  <div class="key"><b>The two extremes</b>The best possible case is \(X^{\top}X = I\), the identity: every off-diagonal zero, every predictor perpendicular to every other, each carrying information no other has. That is the <em>orthogonal</em> case. The worst case has off-diagonals close to \(\pm1\), where predictors are near-duplicates of each other. The ridge paper is entirely about the worst case.</div>
 </section>
 
 <!-- 6 -->
@@ -312,12 +312,12 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p>One more tool, and it is the one that will explain <em>why</em> correlated predictors are dangerous rather than merely inconvenient.</p>
   <p>An <em class="term">eigenvector</em> of a matrix \(A\) is a direction that the matrix does not rotate — it only stretches or shrinks it. The stretch factor is the <em class="term">eigenvalue</em>:</p>
   \[A v = \lambda v\]
-  <p>Every symmetric matrix, and \(X'X\) is always symmetric, can be completely described by its eigenvectors and eigenvalues:</p>
-  \[X'X = P\Lambda P'\]
+  <p>Every symmetric matrix, and \(X^{\top}X\) is always symmetric, can be completely described by its eigenvectors and eigenvalues:</p>
+  \[X^{\top}X = P\Lambda P^{\top}\]
   <p>where the columns of \(P\) are the eigenvectors (mutually perpendicular, each of length one) and \(\Lambda\) is the diagonal matrix of eigenvalues. This is just a change of viewpoint: rotate your axes to line up with the eigenvectors, and the matrix becomes a simple diagonal stretch.</p>
 
   <h3>What they mean for data</h3>
-  <p>First, what is a "data cloud"? Take our five cars and forget the fuel column for a moment. Each car now has two standardized numbers — a weight and a horsepower — so each car is a <em>point in a plane</em>. Plot all five and you get a scatter of points. That scatter is the data cloud, and its <em>shape</em> is what \(X'X\) measures.</p>
+  <p>First, what is a "data cloud"? Take our five cars and forget the fuel column for a moment. Each car now has two standardized numbers — a weight and a horsepower — so each car is a <em>point in a plane</em>. Plot all five and you get a scatter of points. That scatter is the data cloud, and its <em>shape</em> is what \(X^{\top}X\) measures.</p>
 
   <figure>
     <svg class="diagram" width="420" height="380" viewBox="0 0 420 380" role="img" aria-label="Scatter plot of five cars by standardized weight and horsepower. The points lie in a long thin cloud along the (1,1) diagonal, with a long gold arrow labelled lambda-1 = 1.913 along that direction and a very short blue arrow labelled lambda-2 = 0.087 perpendicular to it.">
@@ -363,7 +363,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
     <figcaption>Each dot is one of the five cars, placed by its standardized weight and horsepower. The cloud is long in one direction and almost flat in the other; the shaded ellipse traces that shape. The arrows are the two eigenvectors, drawn with lengths proportional to \(\sqrt{\lambda}\) — which is why one is long and the other is a stub.</figcaption>
   </figure>
 
-  <p>Now the two ideas line up. For \(X'X\), the eigenvectors point along the principal directions of that cloud, and each eigenvalue says how far the data spreads along its direction. A large eigenvalue means "the cloud is long this way — lots of variation, lots of information." A tiny eigenvalue means "the cloud is flat this way — the data barely moves, so it tells us almost nothing."</p>
+  <p>Now the two ideas line up. For \(X^{\top}X\), the eigenvectors point along the principal directions of that cloud, and each eigenvalue says how far the data spreads along its direction. A large eigenvalue means "the cloud is long this way — lots of variation, lots of information." A tiny eigenvalue means "the cloud is flat this way — the data barely moves, so it tells us almost nothing."</p>
 
   <p>The numbers are easy here. For any matrix of the form \(\begin{pmatrix}1 & r\\ r & 1\end{pmatrix}\) the eigenvectors are always \(\tfrac{1}{\sqrt2}(1,1)\) and \(\tfrac{1}{\sqrt2}(1,-1)\), with eigenvalues \(1+r\) and \(1-r\). At \(r = 0.913\):</p>
   \[\lambda_1 = 1.913 \;\; \text{along } (1,1), \qquad \lambda_2 = 0.087 \;\; \text{along } (1,-1)\]
@@ -387,7 +387,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
     <div class="lab">Derivation · the fact that makes it inevitable</div>
     <ol>
       <li><span>the trace of a matrix is the sum of its diagonal entries</span></li>
-      <li><span>for a correlation matrix the diagonal is \(p\) ones, so \(\;\mathrm{tr}(X'X) = p\)</span></li>
+      <li><span>for a correlation matrix the diagonal is \(p\) ones, so \(\;\mathrm{tr}(X^{\top}X) = p\)</span></li>
       <li><span>a standard fact: the trace also equals the sum of the eigenvalues</span></li>
       <li><span>therefore \(\;\displaystyle\sum_{i=1}^{p}\lambda_i = p\), always, whatever the correlations</span></li>
       <li><span>check: \(1.913 + 0.087 = 2 = p\) ✓</span></li>
@@ -469,7 +469,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
 
   <div class="key"><b>The number to remember</b>With two predictors, the flattest direction had \(\lambda = 0.087\). Adding one more correlated predictor pushes the flattest direction down to \(\lambda = 0.0017\), whose reciprocal is \(1/\lambda = 589\). Add up the reciprocals over all three directions and you get \(\sum_i 1/\lambda_i = 601\). Hold on to that number: in the next session, the ridge paper's formula for how badly least squares misses is exactly \(\sigma^2\sum_i 1/\lambda_i\). These five cars would multiply the noise by six hundred.</div>
 
-  <div class="key"><b>The chain to remember</b>Correlated predictors \(\Rightarrow\) columns at a small angle \(\Rightarrow\) \(X'X\) far from the identity \(\Rightarrow\) one eigenvalue near zero \(\Rightarrow\) inverting \(X'X\) requires dividing by that near-zero number. In the next session, that last step is where everything explodes.</div>
+  <div class="key"><b>The chain to remember</b>Correlated predictors \(\Rightarrow\) columns at a small angle \(\Rightarrow\) \(X^{\top}X\) far from the identity \(\Rightarrow\) one eigenvalue near zero \(\Rightarrow\) inverting \(X^{\top}X\) requires dividing by that near-zero number. In the next session, that last step is where everything explodes.</div>
 </section>
 
 <!-- 7 -->
@@ -477,18 +477,21 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p class="snum">Section 7 · Part II</p>
   <h2>What we assume about the noise</h2>
   <p>In Section 2 we wrote the model with a noise term and then walked away from it. We now have vectors, angles and orthogonality, which is exactly the vocabulary the assumptions are written in.</p>
-  <p>We cannot say anything about the individual \(\varepsilon_i\) — they are unknown by definition. But we can state what we believe about them <em>on average</em>. Two assumptions carry all of classical regression:</p>
-  \[\mathbb{E}[\varepsilon] = 0, \qquad \mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I_n\]
+  <p>We cannot say anything about the individual \(\varepsilon_i\) — they are unknown by definition. But, after treating the observed predictor matrix \(X\) as fixed, we can state what we believe about them <em>on average</em>. Two assumptions carry all of classical regression:</p>
+  \[\mathbb{E}[\varepsilon\mid X] = 0, \qquad \operatorname{Cov}(\varepsilon\mid X) = \sigma^2 I_n\]
+  <div class="key"><b>What does \(\operatorname{Cov}\) mean?</b>It is short for <em>covariance</em>. For any random vector \(Z\),
+  \[\operatorname{Cov}(Z\mid X)=\mathbb E\!\left[(Z-\mathbb E[Z\mid X])(Z-\mathbb E[Z\mid X])^{\top}\mid X\right].\]
+  This is a matrix. Its diagonal entries are the variances of the individual coordinates; its off-diagonal entries are the covariances between pairs of coordinates.</div>
 
   <h3>The first: errors average out</h3>
-  <p>\(\mathbb{E}[\cdot]\) means "expected value" — the long-run average over many repetitions. Saying \(\mathbb{E}[\varepsilon] = 0\) means the noise pushes measurements above the line as often and as far as it pushes them below. There is no systematic drift. Note this is an assumption about a <em>tendency</em>, not about any particular car.</p>
+  <p>\(\mathbb{E}[\cdot\mid X]\) means "expected value after holding \(X\) fixed" — the long-run average over repeated outcomes with the same predictors. Saying \(\mathbb{E}[\varepsilon\mid X] = 0\) means the noise pushes measurements above the line as often and as far as it pushes them below. There is no systematic drift. Note this is an assumption about a <em>tendency</em>, not about any particular car.</p>
 
   <h3>The second: equally noisy, and unrelated</h3>
-  <p>This one looks like a single statement but is two, because \(\varepsilon\varepsilon'\) is an \(n\times n\) matrix — a column times a row. Its \((i,j)\) entry is \(\varepsilon_i\varepsilon_j\), so taking expectations gives a whole table:</p>
-  \[\mathbb{E}[\varepsilon\varepsilon'] = \begin{pmatrix} \mathbb{E}[\varepsilon_1^2] & \mathbb{E}[\varepsilon_1\varepsilon_2] & \cdots\\ \mathbb{E}[\varepsilon_2\varepsilon_1] & \mathbb{E}[\varepsilon_2^2] & \cdots\\ \vdots & \vdots & \ddots\end{pmatrix} \;=\; \begin{pmatrix}\sigma^2 & 0 & \cdots\\ 0 & \sigma^2 & \cdots\\ \vdots & \vdots & \ddots\end{pmatrix}\]
+  <p>This one looks like a single statement but is two. Because the conditional mean is zero, the definition above simplifies to \(\operatorname{Cov}(\varepsilon\mid X)=\mathbb E[\varepsilon\varepsilon^{\top}\mid X]\). The outer product \(\varepsilon\varepsilon^{\top}\) is an \(n\times n\) matrix, and its \((i,j)\) entry is \(\varepsilon_i\varepsilon_j\). Thus the assumption expands into a whole table:</p>
+  \[\operatorname{Cov}(\varepsilon\mid X) = \begin{pmatrix} \operatorname{Var}(\varepsilon_1\mid X) & \operatorname{Cov}(\varepsilon_1,\varepsilon_2\mid X) & \cdots\\ \operatorname{Cov}(\varepsilon_2,\varepsilon_1\mid X) & \operatorname{Var}(\varepsilon_2\mid X) & \cdots\\ \vdots & \vdots & \ddots\end{pmatrix} \;=\; \begin{pmatrix}\sigma^2 & 0 & \cdots\\ 0 & \sigma^2 & \cdots\\ \vdots & \vdots & \ddots\end{pmatrix}\]
   <ul>
-    <li><b>Down the diagonal:</b> \(\mathbb{E}[\varepsilon_i^2] = \sigma^2\) for every \(i\). Every observation is equally noisy — one shared \(\sigma^2\), not a different one per car. The technical name is <em class="term">homoskedasticity</em>.</li>
-    <li><b>Off the diagonal:</b> \(\mathbb{E}[\varepsilon_i\varepsilon_j] = 0\) when \(i \ne j\). The errors are unrelated to each other. Knowing car 3 used more fuel than predicted tells you nothing about car 4.</li>
+    <li><b>Down the diagonal:</b> \(\operatorname{Var}(\varepsilon_i\mid X) = \sigma^2\) for every \(i\). Every observation is equally noisy — one shared \(\sigma^2\), not a different one per car. The technical name is <em class="term">homoskedasticity</em>.</li>
+    <li><b>Off the diagonal:</b> \(\operatorname{Cov}(\varepsilon_i,\varepsilon_j\mid X) = 0\) when \(i \ne j\). The errors are uncorrelated. Knowing car 3 used more fuel than predicted tells you nothing linearly about car 4's error.</li>
   </ul>
   <p>Together these two are called <em class="term">spherical</em> errors: picture the noise as a round cloud in \(n\) dimensions, the same width in every direction, with no tilt.</p>
   <h3>Reading the second assumption as geometry</h3>
@@ -500,15 +503,15 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <div class="tablewrap">
   <table>
     <tr><th>Geometric idea</th><th>For data columns in \(\mathbb{R}^n\)</th><th>For random variables</th></tr>
-    <tr><td>"dot product"</td><td>\(u'v = \sum_i u_i v_i\)</td><td>\(\mathbb{E}[UV]\)</td></tr>
+    <tr><td>"dot product"</td><td>\(u^{\top}v = \sum_i u_i v_i\)</td><td>\(\mathbb{E}[UV]\)</td></tr>
     <tr><td>length²</td><td>\(\sum_i u_i^2\)</td><td>\(\mathbb{E}[U^2] = \mathrm{Var}(U)\)</td></tr>
     <tr><td>length</td><td>\(\|u\|\)</td><td>standard deviation</td></tr>
     <tr><td>cosine of angle</td><td>sample correlation</td><td>correlation of \(U\) and \(V\)</td></tr>
-    <tr><td>perpendicular</td><td>\(u'v = 0\)</td><td>\(\mathbb{E}[UV] = 0\) — uncorrelated</td></tr>
+    <tr><td>perpendicular</td><td>\(u^{\top}v = 0\)</td><td>\(\mathbb{E}[UV] = 0\) — uncorrelated</td></tr>
   </table>
   </div>
   <p>Read the last row again and the assumption decodes itself. Saying \(\mathbb{E}[\varepsilon_i\varepsilon_j] = 0\) says that \(\varepsilon_i\) and \(\varepsilon_j\) are <em>orthogonal random variables</em>: perpendicular, at \(90^\circ\), sharing no linear information. And the diagonal condition \(\mathbb{E}[\varepsilon_i^2] = \sigma^2\) says every one of them has the same length \(\sigma\).</p>
-  <div class="key"><b>Why "spherical" is not a metaphor</b>\(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\) says the \(n\) errors are mutually perpendicular and all of identical length. That is the definition of a set of axes for a sphere. The same matrix condition, \(\text{something} = \sigma^2 I\), that we will call "orthogonal" for predictors is what we call "spherical" for errors — one geometric idea wearing two names.</div>
+  <div class="key"><b>Why "spherical" is not a metaphor</b>\(\operatorname{Cov}(\varepsilon\mid X) = \sigma^2 I\) says the noise has the same variance in every direction and no preferred tilt. Its covariance contours are spheres rather than stretched ellipses.</div>
   <div class="qa"><b>Is "uncorrelated" the same as "independent"?</b> No, and the difference matters. Zero correlation rules out a <em>linear</em> relationship only; two variables can be perfectly dependent yet uncorrelated (take \(U\) symmetric about zero and \(V = U^2\)). Independence is strictly stronger. Everything we prove in this session needs only the weaker assumption, which is one reason the classical theory is so robust.</div>
   <div class="qa"><b>When would these fail?</b> The diagonal fails if, say, large cars are inherently more variable than small ones. The off-diagonal fails for time series, where today's error resembles yesterday's, or for clustered data, like cars all tested on the same track on the same day.</div>
   <div class="key"><b>Not assumed: normality</b>Nothing here says the errors follow a bell curve. That extra assumption is needed for confidence intervals and hypothesis tests, but not for anything we prove in this session.</div>
@@ -529,10 +532,10 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
     <ol>
       <li><span>the least-squares fit is \(\hat Y=X\hat\beta\in\operatorname{Col}(X)\)</span></li>
       <li><span>at the closest point, the residual \(e=Y-\hat Y\) is perpendicular to \(\operatorname{Col}(X)\)</span></li>
-      <li><span>therefore \(e\) is perpendicular to every column of \(X\), which means \(X'e=0\)</span></li>
-      <li><span>substitute \(e=Y-X\hat\beta\): \(\;X'(Y-X\hat\beta)=0\)</span></li>
-      <li><span>rearrange: \(\;X'X\hat\beta=X'Y\) — the <b>normal equations</b></span></li>
-      <li><span>if \(X\) has full column rank: \(\;\hat\beta=(X'X)^{-1}X'Y\)</span></li>
+      <li><span>therefore \(e\) is perpendicular to every column of \(X\), which means \(X^{\top}e=0\)</span></li>
+      <li><span>substitute \(e=Y-X\hat\beta\): \(\;X^{\top}(Y-X\hat\beta)=0\)</span></li>
+      <li><span>rearrange: \(\;X^{\top}X\hat\beta=X^{\top}Y\) — the <b>normal equations</b></span></li>
+      <li><span>if \(X\) has full column rank: \(\;\hat\beta=(X^{\top}X)^{-1}X^{\top}Y\)</span></li>
     </ol>
     <div class="note">The geometry separates two objects that are often confused. \(\hat Y\in\mathbb R^n\) is the projection in observation space, while \(\hat\beta\in\mathbb R^p\) contains its coordinates. If the columns of \(X\) are dependent, the projection \(\hat Y\) can still be unique even though its coordinate vector \(\hat\beta\) is not.</div>
   </div>
@@ -540,30 +543,30 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <div class="deriv">
     <div class="lab">Derivation · the same equations from calculus</div>
     <ol>
-      <li><span>\(\phi(B) = \|Y - XB\|^2 = (Y-XB)'(Y-XB)\) — the fit score of candidate \(B\)</span></li>
-      <li><span>expand: \(\;= Y'Y - 2B'X'Y + B'X'XB\)</span></li>
+      <li><span>\(\phi(B) = \|Y - XB\|^2 = (Y-XB)^{\top}(Y-XB)\) — the fit score of candidate \(B\)</span></li>
+      <li><span>expand: \(\;= Y^{\top}Y - 2B^{\top}X^{\top}Y + B^{\top}X^{\top}XB\)</span></li>
       <li><span>differentiate with respect to \(B\) and set to zero:</span></li>
-      <li><span>\(\nabla_B\,\phi = -2X'Y + 2X'XB = 0\)</span></li>
-      <li><span>\(X'X\,B = X'Y\) — the <b>normal equations</b></span></li>
-      <li><span>multiply by \((X'X)^{-1}\); call the winning candidate \(\hat\beta\): \(\quad\hat\beta = (X'X)^{-1}X'Y\)</span></li>
+      <li><span>\(\nabla_B\,\phi = -2X^{\top}Y + 2X^{\top}XB = 0\)</span></li>
+      <li><span>\(X^{\top}X\,B = X^{\top}Y\) — the <b>normal equations</b></span></li>
+      <li><span>multiply by \((X^{\top}X)^{-1}\); call the winning candidate \(\hat\beta\): \(\quad\hat\beta = (X^{\top}X)^{-1}X^{\top}Y\)</span></li>
     </ol>
-    <div class="note">Step 4 uses two matrix-calculus rules: \(\partial(B'a)/\partial B = a\) and \(\partial(B'AB)/\partial B = 2AB\) for symmetric \(A\). If they are unfamiliar, verify them by hand in the \(2\times2\) case — it takes five minutes and removes the mystery. Note that \(\beta\) never appears in this derivation: least squares only ever looks at the data, never at the truth it is trying to recover.</div>
+    <div class="note">Step 4 uses two matrix-calculus rules: \(\partial(B^{\top}a)/\partial B = a\) and \(\partial(B^{\top}AB)/\partial B = 2AB\) for symmetric \(A\). If they are unfamiliar, verify them by hand in the \(2\times2\) case — it takes five minutes and removes the mystery. Note that \(\beta\) never appears in this derivation: least squares only ever looks at the data, never at the truth it is trying to recover.</div>
   </div>
-  <p>That is the formula, and it is worth pausing on the shape of it: <b>it requires inverting \(X'X\)</b>. Section 6 told us that correlated predictors push an eigenvalue of \(X'X\) toward zero, and inverting such a matrix means dividing by that near-zero number. Keep that in view; it is the crack the whole ridge paper is built on.</p>
+  <p>That is the formula, and it is worth pausing on the shape of it: <b>it requires inverting \(X^{\top}X\)</b>. Section 6 told us that correlated predictors push an eigenvalue of \(X^{\top}X\) toward zero, and inverting such a matrix means dividing by that near-zero number. Keep that in view; it is the crack the whole ridge paper is built on.</p>
 
   <h3>Why this estimate is a random quantity</h3>
   <p>We now have a concrete \(\hat\beta\), so we can settle a point that is easy to state loosely and better to see algebraically. Substitute the model \(Y = X\beta + \varepsilon\) into the formula and watch what happens.</p>
   <div class="deriv">
     <div class="lab">Derivation · the estimate is truth plus noise</div>
     <ol>
-      <li><span>\(\hat\beta = (X'X)^{-1}X'Y = (X'X)^{-1}X'(X\beta + \varepsilon)\)</span></li>
-      <li><span>expand: \(\;= (X'X)^{-1}(X'X)\beta \;+\; (X'X)^{-1}X'\varepsilon\)</span></li>
-      <li><span>the first product collapses, since \((X'X)^{-1}(X'X) = I\):</span></li>
-      <li><span>\(\;\;\hat\beta = \beta + (X'X)^{-1}X'\varepsilon\)</span></li>
+      <li><span>\(\hat\beta = (X^{\top}X)^{-1}X^{\top}Y = (X^{\top}X)^{-1}X^{\top}(X\beta + \varepsilon)\)</span></li>
+      <li><span>expand: \(\;= (X^{\top}X)^{-1}(X^{\top}X)\beta \;+\; (X^{\top}X)^{-1}X^{\top}\varepsilon\)</span></li>
+      <li><span>the first product collapses, since \((X^{\top}X)^{-1}(X^{\top}X) = I\):</span></li>
+      <li><span>\(\;\;\hat\beta = \beta + (X^{\top}X)^{-1}X^{\top}\varepsilon\)</span></li>
     </ol>
     <div class="note">Read line 4 slowly. The estimate equals the <em>true</em> \(\beta\) — which is fixed — plus a fixed matrix multiplying the noise \(\varepsilon\), which is random. That is the whole answer: \(\hat\beta\) is random not by assumption but by inheritance. It is a function of \(\varepsilon\), so it varies whenever \(\varepsilon\) does.</div>
   </div>
-  <p>Note which parts are which. \(X\) is treated as fixed — we condition on the predictors we happened to observe — so the matrix \((X'X)^{-1}X'\) is a constant. Only \(\varepsilon\) moves. Measure the same five cars again next week, get slightly different readings, and the same formula hands back a different \(\hat\beta\), even though \(\beta\) itself never moved.</p>
+  <p>Note which parts are which. \(X\) is treated as fixed — we condition on the predictors we happened to observe — so the matrix \((X^{\top}X)^{-1}X^{\top}\) is a constant. Only \(\varepsilon\) moves. Measure the same five cars again next week, get slightly different readings, and the same formula hands back a different \(\hat\beta\), even though \(\beta\) itself never moved.</p>
   <p>You have already seen this happen. The table in Section 5 ran exactly this experiment: one fixed \(X\), three draws of the noise, and least squares returned \((-0.8, +3.5)\), then \((+10.3, -7.9)\), then \((+8.5, -5.6)\). Those three rows are line 4 of the derivation, made visible.</p>
   <p>So we cannot ask "is this estimate correct?" — we got one draw, and a different week would have given another. The only honest questions are about the <em>whole distribution</em> of estimates the recipe produces. That is what the next two sections set up.</p>
 </section>
@@ -571,7 +574,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
 <!-- 9 -->
 <section id="s9">
   <p class="snum">Section 9 · Part III</p>
-  <h2>Estimators, bias, and variance</h2>
+  <h2>Estimators, bias, and covariance</h2>
   <p>Least squares is one recipe for turning data into a guess at \(\beta\). There are infinitely many others — weight the observations differently, ignore some, shrink the answer toward zero. Any such recipe is called an <em class="term">estimator</em>, written \(\hat\beta\); the hat means "estimated from data". To prefer one estimator over another we need a way to score them, and that is what this section builds.</p>
   <p>Three different objects are now in play, and keeping them apart is the single most useful thing you can do in this section:</p>
   <div class="tablewrap">
@@ -579,38 +582,38 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
     <tr><th>Symbol</th><th>What it is</th><th>Random?</th></tr>
     <tr><td>\(\beta\)</td><td>the truth — the real coefficients out in the world</td><td><b>No.</b> Fixed and unknown; it never changes</td></tr>
     <tr><td>\(\hat\beta\)</td><td>our estimate, computed from the data we happened to collect</td><td><b>Yes.</b> New sample, new noise, different \(\hat\beta\)</td></tr>
-    <tr><td>\(\mathbb{E}[\hat\beta]\)</td><td>the average of \(\hat\beta\) over infinitely many repeated samples</td><td><b>No.</b> A fixed vector — but not necessarily equal to \(\beta\)</td></tr>
+    <tr><td>\(\mathbb{E}[\hat\beta\mid X]\)</td><td>the average of \(\hat\beta\) over repeated outcomes with \(X\) held fixed</td><td><b>No.</b> A fixed vector — but not necessarily equal to \(\beta\)</td></tr>
   </table>
   </div>
-  <p>The third row is the one that is easy to miss, and it is where both of the next definitions live. \(\mathbb{E}[\hat\beta]\) is where your recipe <em>tends</em> to land: a fixed target, but not necessarily the right one. So there are two separate gaps to worry about.</p>
+  <p>The third row is the one that is easy to miss, and it is where both of the next definitions live. \(\mathbb{E}[\hat\beta\mid X]\) is where your recipe <em>tends</em> to land when the predictor matrix stays fixed: a fixed target, but not necessarily the right one. So there are two separate gaps to worry about.</p>
 
   <p>Two questions capture almost everything:</p>
   <ul>
-    <li><b>Bias:</b> \(\;\mathbb{E}[\hat\beta] - \beta\). Averaged over infinitely many repeated experiments, does the recipe land on the truth? If the bias is zero the estimator is called <em class="term">unbiased</em>.</li>
-    <li><b>Variance:</b> \(\;\mathrm{Var}(\hat\beta)\). How much do individual estimates scatter around their own average?</li>
+    <li><b>Bias:</b> \(\;\mathbb{E}[\hat\beta\mid X] - \beta\). With \(X\) held fixed and the experiment repeated, does the recipe land on the truth on average? If the bias is zero the estimator is called <em class="term">unbiased</em>.</li>
+    <li><b>Covariance:</b> \(\;\operatorname{Cov}(\hat\beta\mid X)\). How do the estimated coefficients scatter around their own average? This is a \(p\times p\) matrix; a single coefficient still has an ordinary scalar variance.</li>
   </ul>
-  <p>Both quantities are computable for the estimator we just derived. Take line 4 of the last derivation, \(\hat\beta = \beta + (X'X)^{-1}X'\varepsilon\), and apply each definition in turn.</p>
+  <p>Both quantities are computable for the estimator we just derived. Take line 4 of the last derivation, \(\hat\beta = \beta + (X^{\top}X)^{-1}X^{\top}\varepsilon\), and apply each definition in turn.</p>
   <div class="deriv">
-    <div class="lab">Derivation · it is unbiased, and its variance</div>
+    <div class="lab">Derivation · it is unbiased, and its covariance</div>
     <ol>
-      <li><span>abbreviate the constant matrix \(A = (X'X)^{-1}X'\), so that \(\hat\beta = AY\)</span></li>
+      <li><span>abbreviate the constant matrix \(A = (X^{\top}X)^{-1}X^{\top}\), so that \(\hat\beta = AY\)</span></li>
       <li><span>substitute the model: \(\;\hat\beta = A(X\beta + \varepsilon) = \beta + A\varepsilon\)</span></li>
-      <li><span>take expectations; \(\mathbb{E}[\varepsilon] = 0\) kills the second term: \(\;\mathbb{E}[\hat\beta] = \beta\) — <b>unbiased</b></span></li>
-      <li><span>so the deviation from its own mean is simply \(\;\hat\beta - \mathbb{E}[\hat\beta] = A\varepsilon\)</span></li>
-      <li><span>by definition \(\;\mathrm{Var}(\hat\beta) = \mathbb{E}\big[(\hat\beta - \mathbb{E}\hat\beta)(\hat\beta - \mathbb{E}\hat\beta)'\big] = \mathbb{E}\big[(A\varepsilon)(A\varepsilon)'\big]\)</span></li>
-      <li><span>\((A\varepsilon)' = \varepsilon'A'\), so this is \(\;\mathbb{E}\big[A\,\varepsilon\varepsilon'\,A'\big]\)</span></li>
-      <li><span>\(A\) is built only from \(X\), which is fixed, so it slides outside: \(\;= A\;\mathbb{E}[\varepsilon\varepsilon']\;A'\)</span></li>
-      <li><span>now use the noise assumption \(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\): \(\;= A\,\sigma^2 I\,A' = \sigma^2 AA'\)</span></li>
-      <li><span>expand \(AA'\): \(\;(X'X)^{-1}X'\cdot\big[(X'X)^{-1}X'\big]' = (X'X)^{-1}X'\,X\,(X'X)^{-1}\)</span></li>
-      <li><span>the middle telescopes, since \((X'X)^{-1}(X'X) = I\): \(\;AA' = (X'X)^{-1}\)</span></li>
-      <li><span>\(\;\;\mathrm{Var}(\hat\beta) = \sigma^2 (X'X)^{-1}\)</span></li>
+      <li><span>take conditional expectations; \(\mathbb{E}[\varepsilon\mid X] = 0\) kills the second term: \(\;\mathbb{E}[\hat\beta\mid X] = \beta\) — <b>unbiased</b></span></li>
+      <li><span>so the deviation from its own conditional mean is simply \(\;\hat\beta - \mathbb{E}[\hat\beta\mid X] = A\varepsilon\)</span></li>
+      <li><span>by definition \(\;\operatorname{Cov}(\hat\beta\mid X) = \mathbb{E}\big[(\hat\beta - \mathbb{E}[\hat\beta\mid X])(\hat\beta - \mathbb{E}[\hat\beta\mid X])^{\top}\mid X\big] = \mathbb{E}\big[(A\varepsilon)(A\varepsilon)^{\top}\mid X\big]\)</span></li>
+      <li><span>\((A\varepsilon)^{\top} = \varepsilon^{\top}A^{\top}\), so this is \(\;\mathbb{E}\big[A\,\varepsilon\varepsilon^{\top}\,A^{\top}\mid X\big]\)</span></li>
+      <li><span>\(A\) is built only from \(X\), which is fixed, so it slides outside: \(\;= A\;\mathbb{E}[\varepsilon\varepsilon^{\top}\mid X]\;A^{\top}\)</span></li>
+      <li><span>zero conditional mean gives \(\mathbb{E}[\varepsilon\varepsilon^{\top}\mid X]=\operatorname{Cov}(\varepsilon\mid X)=\sigma^2 I\), so this becomes \(\sigma^2 AA^{\top}\)</span></li>
+      <li><span>expand \(AA^{\top}\): \(\;(X^{\top}X)^{-1}X^{\top}\cdot\big[(X^{\top}X)^{-1}X^{\top}\big]^{\top} = (X^{\top}X)^{-1}X^{\top}\,X\,(X^{\top}X)^{-1}\)</span></li>
+      <li><span>the middle telescopes, since \((X^{\top}X)^{-1}(X^{\top}X) = I\): \(\;AA^{\top} = (X^{\top}X)^{-1}\)</span></li>
+      <li><span>\(\;\;\operatorname{Cov}(\hat\beta\mid X) = \sigma^2 (X^{\top}X)^{-1}\)</span></li>
     </ol>
-    <div class="note">Three steps deserve a second look. <b>Step 5:</b> the variance of a <em>vector</em> is a \(p\times p\) matrix — the diagonal holds the variance of each coefficient, the off-diagonal entries hold the covariances between them. <b>Step 7:</b> \(A\) can leave the expectation only because \(X\) is treated as fixed; if the predictors were random this line would fail. <b>Step 9:</b> uses \((BC)' = C'B'\) together with the fact that \((X'X)^{-1}\) is symmetric — the inverse of a symmetric matrix is symmetric, so transposing it changes nothing.</div>
+    <div class="note">Three steps deserve a second look. <b>Step 5:</b> covariance of a <em>vector</em> is a \(p\times p\) matrix — the diagonal holds the variance of each coefficient, and the off-diagonal entries hold the covariances between them. <b>Step 7:</b> \(A\) can leave the conditional expectation because it is determined once \(X\) is fixed. <b>Step 9:</b> uses \((BC)^{\top} = C^{\top}B^{\top}\) together with the fact that \((X^{\top}X)^{-1}\) is symmetric.</div>
   </div>
-  <p>It is worth turning that result into the eigen-coordinates of Section 6, because it makes the danger explicit. Writing \(X'X = P\Lambda P'\) gives \(\mathrm{Var}(\hat\beta) = \sigma^2 P\Lambda^{-1}P'\) — so along the \(i\)-th eigenvector the variance of the estimate is</p>
+  <p>It is worth turning that result into the eigen-coordinates of Section 6, because it makes the danger explicit. Writing \(X^{\top}X = P\Lambda P^{\top}\) gives \(\operatorname{Cov}(\hat\beta\mid X) = \sigma^2 P\Lambda^{-1}P^{\top}\) — so along the \(i\)-th eigenvector the variance of the estimate is</p>
   \[\frac{\sigma^2}{\lambda_i}\]
   <p>A direction in which the data barely spreads is a direction in which the estimate wildly varies. That is the entire problem in one fraction, and adding these up over all \(p\) directions is exactly the \(\sigma^2\sum_i 1/\lambda_i\) that Section 5 warned about.</p>
-  <p>So least squares scores perfectly on the first count — zero bias — and its variance is \(\sigma^2(X'X)^{-1}\). Note the shape of that variance: \((X'X)^{-1}\) again, the same inverse that Section 6 warned us about. Correlated predictors do not bias least squares; they inflate its variance.</p>
+  <p>So least squares scores perfectly on the first count — zero bias — and its covariance matrix is \(\sigma^2(X^{\top}X)^{-1}\). Note the shape of that matrix: the same inverse that Section 6 warned us about. Correlated predictors do not bias least squares; they inflate its variance in particular coefficient directions.</p>
   <p>Picture two dart players aiming at a bullseye that represents the true \(\beta\):</p>
   <ul>
     <li><b>Player A</b> is unbiased — the darts are centered on the bullseye on average — but they scatter all over the board. High variance.</li>
@@ -641,7 +644,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
       <li><span>\(\mathbb{E}\|\hat\beta - \beta\|^2\) — add and subtract the estimator's own mean:</span></li>
       <li><span>\(= \mathbb{E}\big\|\,(\hat\beta - \mathbb{E}[\hat\beta]) + (\mathbb{E}[\hat\beta] - \beta)\,\big\|^2\)</span></li>
       <li><span>expand the square into three pieces:</span></li>
-      <li><span>\(= \underbrace{\mathbb{E}\|\hat\beta - \mathbb{E}\hat\beta\|^2}_{\text{variance}} + 2\,\mathbb{E}\big[(\hat\beta - \mathbb{E}\hat\beta)\big]'(\mathbb{E}\hat\beta - \beta) + \underbrace{\|\mathbb{E}\hat\beta - \beta\|^2}_{\text{bias}^2}\)</span></li>
+      <li><span>\(= \underbrace{\mathbb{E}\|\hat\beta - \mathbb{E}\hat\beta\|^2}_{\text{variance}} + 2\,\mathbb{E}\big[(\hat\beta - \mathbb{E}\hat\beta)\big]^{\top}(\mathbb{E}\hat\beta - \beta) + \underbrace{\|\mathbb{E}\hat\beta - \beta\|^2}_{\text{bias}^2}\)</span></li>
       <li><span>the middle term is zero, because \(\mathbb{E}[\hat\beta - \mathbb{E}\hat\beta] = \mathbb{E}\hat\beta - \mathbb{E}\hat\beta = 0\)</span></li>
       <li><span>\(\;\;\mathbb{E}\|\hat\beta - \beta\|^2 = \mathrm{Variance} + \mathrm{Bias}^2\)</span></li>
     </ol>
@@ -656,30 +659,33 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <h2>The Gauss–Markov theorem</h2>
   <p>Least squares is unbiased. But so are infinitely many other recipes — you could weight the observations differently, or ignore some, and still be right on average. Is least squares special?</p>
   <p>Yes, and the result is one of the most celebrated in statistics.</p>
-  <div class="key"><b>Gauss–Markov theorem</b>Among all estimators that are (i) linear in \(Y\) and (ii) unbiased, the least squares estimator has the smallest variance. It is, in the traditional acronym, the Best Linear Unbiased Estimator — BLUE.</div>
-  <p>"Linear in \(Y\)" means the estimator has the form \(\tilde\beta = CY\) for some fixed matrix \(C\) built from \(X\) alone. Least squares is the case \(C = (X'X)^{-1}X'\). The proof is short and worth doing in full, because it shows exactly where the optimality comes from.</p>
+  <div class="key"><b>Gauss–Markov theorem</b>Among all estimators that are (i) linear in \(Y\) and (ii) unbiased, least squares has the smallest variance in every coefficient direction. For every fixed \(a\in\mathbb R^p\),
+  \[\operatorname{Var}(a^{\top}\hat\beta\mid X)\;\le\;\operatorname{Var}(a^{\top}\tilde\beta\mid X).\]
+  It is, in the traditional acronym, the Best Linear Unbiased Estimator — BLUE.</div>
+  <p>The vector \(a\) simply chooses what part of the coefficient vector to inspect. The quantity \(a^{\top}\hat\beta\) is a scalar, and its variance is \(a^{\top}\operatorname{Cov}(\hat\beta\mid X)a\). Taking \(a=e_j\), the \(j\)-th coordinate vector, compares the variance of coefficient \(j\). Other choices compare any linear combination of coefficients.</p>
+  <p>"Linear in \(Y\)" means the estimator has the form \(\tilde\beta = CY\) for some fixed matrix \(C\) built from \(X\) alone. Least squares is the case \(C = (X^{\top}X)^{-1}X^{\top}\). The proof is short and worth doing in full, because it shows exactly where the optimality comes from.</p>
   <div class="deriv">
     <div class="lab">Derivation · proof of Gauss–Markov</div>
     <ol>
       <li><span>let \(\tilde\beta = CY\) be any linear estimator, where \(C\) is \(p\times n\) and built from \(X\) alone</span></li>
       <li><span>substitute the model: \(\;\tilde\beta = C(X\beta + \varepsilon) = CX\beta + C\varepsilon\)</span></li>
-      <li><span>take expectations; \(\mathbb{E}[\varepsilon] = 0\) kills the second term: \(\;\mathbb{E}[\tilde\beta] = CX\beta\)</span></li>
+      <li><span>take conditional expectations; \(\mathbb{E}[\varepsilon\mid X] = 0\) kills the second term: \(\;\mathbb{E}[\tilde\beta\mid X] = CX\beta\)</span></li>
       <li><span>unbiased means \(CX\beta = \beta\), and it must hold for <em>every</em> \(\beta\), because we never learn which \(\beta\) is the true one</span></li>
       <li><span>feed in the basis vectors \(e_1,\dots,e_p\) one at a time; the \(j\)-th says column \(j\) of \(CX\) equals \(e_j\), so \(\;CX = I\)</span></li>
-      <li><span>abbreviate least squares \(A = (X'X)^{-1}X'\); it satisfies \(\;AX = (X'X)^{-1}(X'X) = I\)</span></li>
+      <li><span>abbreviate least squares \(A = (X^{\top}X)^{-1}X^{\top}\); it satisfies \(\;AX = (X^{\top}X)^{-1}(X^{\top}X) = I\)</span></li>
       <li><span>any \(C\) can be written \(C = A + D\), where \(D = C - A\) simply names how far the competitor deviates from least squares</span></li>
       <li><span>then \(\;CX = AX + DX = I + DX\), and \(CX = I\) forces \(\;DX = 0\)</span></li>
-      <li><span>now the variance. The constant part drops out, so \(\;\tilde\beta - \mathbb{E}[\tilde\beta] = C\varepsilon\)</span></li>
-      <li><span>the covariance of a vector is an outer product: \(\;\mathrm{Var}(\tilde\beta) = \mathbb{E}\big[(C\varepsilon)(C\varepsilon)'\big] = \mathbb{E}\big[C\,\varepsilon\varepsilon'\,C'\big]\)</span></li>
-      <li><span>\(C\) is constant, so it slides out on both sides: \(\;= C\;\mathbb{E}[\varepsilon\varepsilon']\;C'\)</span></li>
-      <li><span>the noise assumption \(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\) gives \(\;\mathrm{Var}(\tilde\beta) = \sigma^2 CC'\)</span></li>
-      <li><span>expand with \(C = A + D\): \(\;CC' = AA' + AD' + DA' + DD'\)</span></li>
-      <li><span>the cross terms die: \(\;AD' = (X'X)^{-1}X'D' = (X'X)^{-1}(DX)' = 0\), and \(DA' = (AD')' = 0\)</span></li>
-      <li><span>\(AA' = (X'X)^{-1}\) was computed in Section 9, leaving</span></li>
-      <li><span>\(\mathrm{Var}(\tilde\beta) = \underbrace{\sigma^2(X'X)^{-1}}_{\mathrm{Var}(\hat\beta)} + \sigma^2 DD'\)</span></li>
-      <li><span>\(DD'\) has non-negative diagonal entries (each is a sum of squares), so every coefficient's variance is at least as large as under least squares, with equality only when \(D = 0\) &nbsp;∎</span></li>
+      <li><span>now the covariance. The constant part drops out, so \(\;\tilde\beta - \mathbb{E}[\tilde\beta\mid X] = C\varepsilon\)</span></li>
+      <li><span>apply the definition from Section 7: \(\;\operatorname{Cov}(\tilde\beta\mid X) = \mathbb{E}\big[(C\varepsilon)(C\varepsilon)^{\top}\mid X\big]\)</span></li>
+      <li><span>\(C\) is fixed once \(X\) is fixed, so it slides out on both sides: \(\;= C\;\operatorname{Cov}(\varepsilon\mid X)\;C^{\top}\)</span></li>
+      <li><span>the noise assumption \(\operatorname{Cov}(\varepsilon\mid X) = \sigma^2 I\) gives \(\;\operatorname{Cov}(\tilde\beta\mid X) = \sigma^2 CC^{\top}\)</span></li>
+      <li><span>expand with \(C = A + D\): \(\;CC^{\top} = AA^{\top} + AD^{\top} + DA^{\top} + DD^{\top}\)</span></li>
+      <li><span>the cross terms die: \(\;AD^{\top} = (X^{\top}X)^{-1}X^{\top}D^{\top} = (X^{\top}X)^{-1}(DX)^{\top} = 0\), and \(DA^{\top} = (AD^{\top})^{\top} = 0\)</span></li>
+      <li><span>\(AA^{\top} = (X^{\top}X)^{-1}\) was computed in Section 9, leaving \(\operatorname{Cov}(\tilde\beta\mid X)=\operatorname{Cov}(\hat\beta\mid X)+\sigma^2DD^{\top}\)</span></li>
+      <li><span>select any direction \(a\) and multiply on the left by \(a^{\top}\) and on the right by \(a\):</span></li>
+      <li><span>\(\operatorname{Var}(a^{\top}\tilde\beta\mid X)=\operatorname{Var}(a^{\top}\hat\beta\mid X)+\sigma^2\|D^{\top}a\|^2\ge\operatorname{Var}(a^{\top}\hat\beta\mid X)\;\;\square\)</span></li>
     </ol>
-    <div class="note">Two steps carry the whole proof. Step 4 is the one to remember: unbiasedness is demanded for <em>every</em> \(\beta\), not for one particular \(\beta\), and only that turns \(CX\beta = \beta\) into the matrix identity \(CX = I\). Step 8 then says \(DX = 0\): every row of \(D\) is perpendicular to every column of \(X\), so a competitor may only draw on directions in the data that carry no information about \(\beta\). It adds noise and buys nothing, which is exactly what the final line measures.</div>
+    <div class="note">Two steps carry the whole proof. <b>Step 4:</b> unbiasedness is demanded for <em>every</em> \(\beta\), not for one particular \(\beta\), and only that turns \(CX\beta = \beta\) into the matrix identity \(CX = I\). <b>Step 8:</b> \(DX = 0\), which kills the cross terms. The last line is the theorem in its clearest form: the competitor's variance equals the least-squares variance plus the non-negative quantity \(\sigma^2\|D^{\top}a\|^2\).</div>
   </div>
   <p>Notice what the theorem does <em>not</em> require: no normal distribution, no large sample. Just the two noise assumptions from Section 7.</p>
   <div class="qa"><b>Why is Markov's name on it?</b> Gauss proved it in 1823. Markov's 1912 work was credited by Neyman in 1934, and the double name stuck — though historians generally agree Markov added nothing Gauss had not already established. If you want the story, R. L. Plackett's 1949 note in <em>Biometrika</em>, "A historical note on the method of least squares", tells it well.</div>
@@ -695,7 +701,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <ol>
     <li>Accuracy is measured by MSE, which equals variance plus squared bias (Section 10).</li>
     <li>Gauss–Markov only minimizes variance <em>after</em> forcing bias to zero (Section 11).</li>
-    <li>\(\mathrm{Var}(\hat\beta) = \sigma^2(X'X)^{-1}\), and correlated predictors make \(X'X\) nearly singular, so that variance can be enormous (Sections 6 and 9).</li>
+    <li>\(\operatorname{Cov}(\hat\beta\mid X) = \sigma^2(X^{\top}X)^{-1}\), and correlated predictors make \(X^{\top}X\) nearly singular, so variance can be enormous in some coefficient directions (Sections 6 and 9).</li>
   </ol>
   <p>The question those three raise almost by themselves: <em>if the variance is enormous, could accepting a small amount of bias buy back a lot more variance than it costs?</em></p>
   <div class="key"><b>Next session</b>Hoerl and Kennard (1970) answer yes — and prove that a better-than-least-squares estimator always exists. Continue with the tutorial "Ridge Regression from Scratch", which picks up exactly here.</div>
@@ -707,39 +713,39 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <h2>Proof exercises</h2>
   <p>These problems ask for arguments, not numerical calculation. State every assumption you use.</p>
 
-  <h3>1. Prove that \(X'X\) is symmetric</h3>
-  <p>For any matrix \(X\), prove that \((X'X)' = X'X\). Explain why this holds whatever the shape of \(X\), and why it is what licenses the eigendecomposition \(X'X = P\Lambda P'\) with real eigenvalues and perpendicular eigenvectors.</p>
-  <details><summary>Hint</summary><p>Use \((AB)' = B'A'\) twice, and \((A')' = A\).</p></details>
+  <h3>1. Prove that \(X^{\top}X\) is symmetric</h3>
+  <p>For any matrix \(X\), prove that \((X^{\top}X)^{\top} = X^{\top}X\). Explain why this holds whatever the shape of \(X\), and why it is what licenses the eigendecomposition \(X^{\top}X = P\Lambda P^{\top}\) with real eigenvalues and perpendicular eigenvectors.</p>
+  <details><summary>Hint</summary><p>Use \((AB)^{\top} = B^{\top}A^{\top}\) twice, and \((A^{\top})^{\top} = A\).</p></details>
 
-  <h3>2. Prove that \(X'X\) is positive semidefinite</h3>
-  <p>For an arbitrary vector \(v\), prove that \(v'X'Xv \ge 0\). Use your result to explain why every eigenvalue of \(X'X\) is non-negative.</p>
-  <details><summary>Hint</summary><p>Rewrite the quadratic form as \((Xv)'(Xv) = \|Xv\|^2\).</p></details>
+  <h3>2. Prove that \(X^{\top}X\) is positive semidefinite</h3>
+  <p>For an arbitrary vector \(v\), prove that \(v^{\top}X^{\top}Xv \ge 0\). Use your result to explain why every eigenvalue of \(X^{\top}X\) is non-negative.</p>
+  <details><summary>Hint</summary><p>Rewrite the quadratic form as \((Xv)^{\top}(Xv) = \|Xv\|^2\).</p></details>
 
   <h3>3. Prove that a positive definite matrix is invertible</h3>
-  <p>Let \(M\) be symmetric with \(v'Mv &gt; 0\) for every \(v \ne 0\). Prove that \(M\) is invertible. Then prove that \(X'X\) satisfies this condition exactly when the columns of \(X\) are linearly independent, and explain what that says about exact multicollinearity.</p>
-  <details><summary>Hint</summary><p>A square matrix fails to be invertible only if some \(v \ne 0\) has \(Mv = 0\); test that \(v\) in the quadratic form. For the second part, show that \(X'Xv = 0\) forces \(\|Xv\|^2 = 0\), and prove the converse.</p></details>
+  <p>Let \(M\) be symmetric with \(v^{\top}Mv &gt; 0\) for every \(v \ne 0\). Prove that \(M\) is invertible. Then prove that \(X^{\top}X\) satisfies this condition exactly when the columns of \(X\) are linearly independent, and explain what that says about exact multicollinearity.</p>
+  <details><summary>Hint</summary><p>A square matrix fails to be invertible only if some \(v \ne 0\) has \(Mv = 0\); test that \(v\) in the quadratic form. For the second part, show that \(X^{\top}Xv = 0\) forces \(\|Xv\|^2 = 0\), and prove the converse.</p></details>
 
   <h3>4. Prove that a dot product of unit vectors is at most 1</h3>
-  <p>Let \(u\) and \(v\) have unit Euclidean length. Prove that \(|u'v| \le 1\), with equality exactly when the two vectors are parallel. Deduce that for centered, unit-length predictor columns the correlation is \(x_1'x_2 = \cos\theta\) and lies in \([-1,1]\).</p>
-  <details><summary>Hint</summary><p>Cauchy–Schwarz, \(|u'v| \le \|u\|\|v\|\); or expand \(\|u - v\|^2 \ge 0\) and \(\|u + v\|^2 \ge 0\).</p></details>
+  <p>Let \(u\) and \(v\) have unit Euclidean length. Prove that \(|u^{\top}v| \le 1\), with equality exactly when the two vectors are parallel. Deduce that for centered, unit-length predictor columns the correlation is \(x_1^{\top}x_2 = \cos\theta\) and lies in \([-1,1]\).</p>
+  <details><summary>Hint</summary><p>Cauchy–Schwarz, \(|u^{\top}v| \le \|u\|\|v\|\); or expand \(\|u - v\|^2 \ge 0\) and \(\|u + v\|^2 \ge 0\).</p></details>
 
   <h3>5. Prove that the eigenvalues sum to the trace</h3>
-  <p>For a symmetric matrix \(A\) with eigendecomposition \(A = P\Lambda P'\), prove that \(\operatorname{tr}(A) = \sum_j \lambda_j\). Then prove that unit-length columns give \(\operatorname{tr}(X'X)=p\), and conclude that \(\sum_{j=1}^{p}\lambda_j = p\).</p>
-  <details><summary>Hint</summary><p>The trace is cyclic: \(\operatorname{tr}(P\Lambda P') = \operatorname{tr}(\Lambda P'P)\), and \(P'P = I\).</p></details>
+  <p>For a symmetric matrix \(A\) with eigendecomposition \(A = P\Lambda P^{\top}\), prove that \(\operatorname{tr}(A) = \sum_j \lambda_j\). Then prove that unit-length columns give \(\operatorname{tr}(X^{\top}X)=p\), and conclude that \(\sum_{j=1}^{p}\lambda_j = p\).</p>
+  <details><summary>Hint</summary><p>The trace is cyclic: \(\operatorname{tr}(P\Lambda P^{\top}) = \operatorname{tr}(\Lambda P^{\top}P)\), and \(P^{\top}P = I\).</p></details>
 
   <h3>6. Prove that inverting a matrix inverts its eigenvalues</h3>
-  <p>Let \(A\) be invertible with \(Av = \lambda v\) for some \(v \ne 0\). Prove that \(\lambda \ne 0\) and that \(A^{-1}v = \lambda^{-1}v\): the eigenvectors are unchanged and the eigenvalues are reciprocated. Apply this to \(\operatorname{Cov}(\hat\beta) = \sigma^2 (X'X)^{-1}\) to prove that the coefficient variance along the eigenvector \(p_j\) is \(\sigma^2/\lambda_j\), and say what happens as \(\lambda_j \to 0\).</p>
+  <p>Let \(A\) be invertible with \(Av = \lambda v\) for some \(v \ne 0\). Prove that \(\lambda \ne 0\) and that \(A^{-1}v = \lambda^{-1}v\): the eigenvectors are unchanged and the eigenvalues are reciprocated. Apply this to \(\operatorname{Cov}(\hat\beta) = \sigma^2 (X^{\top}X)^{-1}\) to prove that the coefficient variance along the eigenvector \(p_j\) is \(\sigma^2/\lambda_j\), and say what happens as \(\lambda_j \to 0\).</p>
   <details><summary>Hint</summary><p>Apply \(A^{-1}\) to both sides of \(Av = \lambda v\). For \(\lambda \ne 0\): if \(\lambda\) were zero, \(Av = 0\) with \(v \ne 0\) would contradict invertibility.</p></details>
 
   <h3>7. Prove that the noise assumptions are one matrix equation</h3>
-  <p>Suppose \(\mathbb E[\varepsilon_i]=0\) and \(\mathbb E[\varepsilon_i^2]=\sigma^2\) for every \(i\), and \(\mathbb E[\varepsilon_i\varepsilon_j]=0\) whenever \(i \ne j\). Prove that these entrywise statements are exactly \(\mathbb E[\varepsilon]=0\) and \(\operatorname{Cov}(\varepsilon)=\mathbb E[\varepsilon\varepsilon']=\sigma^2 I\). Explain which assumption the diagonal carries and which the off-diagonal carries.</p>
-  <details><summary>Hint</summary><p>Write out the \((i,j)\) entry of the matrix \(\varepsilon\varepsilon'\) and take expectations entry by entry.</p></details>
+  <p>Suppose \(\mathbb E[\varepsilon_i]=0\) and \(\mathbb E[\varepsilon_i^2]=\sigma^2\) for every \(i\), and \(\mathbb E[\varepsilon_i\varepsilon_j]=0\) whenever \(i \ne j\). Prove that these entrywise statements are exactly \(\mathbb E[\varepsilon]=0\) and \(\operatorname{Cov}(\varepsilon)=\mathbb E[\varepsilon\varepsilon^{\top}]=\sigma^2 I\). Explain which assumption the diagonal carries and which the off-diagonal carries.</p>
+  <details><summary>Hint</summary><p>Write out the \((i,j)\) entry of the matrix \(\varepsilon\varepsilon^{\top}\) and take expectations entry by entry.</p></details>
 
   <h3>8. Derive the least-squares estimator</h3>
-  <p>Prove that \(\hat\beta\) minimizes \(\|Y-XB\|^2\) exactly when the residual \(Y-X\hat\beta\) is perpendicular to \(\operatorname{Col}(X)\). Deduce the normal equations and prove that their unique solution is \(\hat\beta=(X'X)^{-1}X'Y\) when \(X\) has full column rank. Obtain the same equations a second way, by differentiating \(\phi(B)=\|Y-XB\|^2\).</p>
+  <p>Prove that \(\hat\beta\) minimizes \(\|Y-XB\|^2\) exactly when the residual \(Y-X\hat\beta\) is perpendicular to \(\operatorname{Col}(X)\). Deduce the normal equations and prove that their unique solution is \(\hat\beta=(X^{\top}X)^{-1}X^{\top}Y\) when \(X\) has full column rank. Obtain the same equations a second way, by differentiating \(\phi(B)=\|Y-XB\|^2\).</p>
 
   <h3>9. Prove unbiasedness and derive the covariance</h3>
-  <p>Under \(Y=X\beta+\varepsilon\), \(\mathbb E[\varepsilon\mid X]=0\), and \(\operatorname{Cov}(\varepsilon\mid X)=\sigma^2I\), prove that ordinary least squares is conditionally unbiased and that \(\operatorname{Cov}(\hat\beta\mid X)=\sigma^2(X'X)^{-1}\).</p>
+  <p>Under \(Y=X\beta+\varepsilon\), \(\mathbb E[\varepsilon\mid X]=0\), and \(\operatorname{Cov}(\varepsilon\mid X)=\sigma^2I\), prove that ordinary least squares is conditionally unbiased and that \(\operatorname{Cov}(\hat\beta\mid X)=\sigma^2(X^{\top}X)^{-1}\).</p>
 
   <h3>10. Prove the vector bias–variance decomposition</h3>
   <p>For any estimator \(\tilde\beta\), prove</p>
@@ -760,9 +766,9 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <div class="checklist">
     <h3>You are ready for the ridge paper if you can prove…</h3>
     <ul>
-      <li>that \(X'X\) is symmetric, positive semidefinite, and when it is positive definite;</li>
-      <li>that a matrix with \(v'Mv &gt; 0\) for all \(v \ne 0\) is invertible;</li>
-      <li>that unit-length vectors have \(|u'v| \le 1\), so a dot product of standardized columns is their correlation;</li>
+      <li>that \(X^{\top}X\) is symmetric, positive semidefinite, and when it is positive definite;</li>
+      <li>that a matrix with \(v^{\top}Mv &gt; 0\) for all \(v \ne 0\) is invertible;</li>
+      <li>that unit-length vectors have \(|u^{\top}v| \le 1\), so a dot product of standardized columns is their correlation;</li>
       <li>that the eigenvalues of a symmetric matrix sum to its trace, hence to \(p\) under this scaling;</li>
       <li>that \(A^{-1}\) keeps the eigenvectors and reciprocates the eigenvalues, so the variance along \(p_j\) is \(\sigma^2/\lambda_j\);</li>
       <li>that \(\mathbb E[\varepsilon_i\varepsilon_j]=0\) for \(i \ne j\) and \(\mathbb E[\varepsilon_i^2]=\sigma^2\) are exactly \(\operatorname{Cov}(\varepsilon)=\sigma^2 I\);</li>
