@@ -5,9 +5,9 @@ export const site = {
   github: 'https://github.com/nurdauletakhanov/ReadingLab',
   nextLecture: {
     topic: 'Least Squares Foundations',
-    date: 'Friday',
+    date: 'Friday, 4 September 2026',
     place: 'Lecture Hall 1',
-    time: '3 pm',
+    time: '5 pm',
   },
   nav: [
     { href: '/tutorials/', label: 'Tutorials' },

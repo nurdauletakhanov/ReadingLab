@@ -154,8 +154,8 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   </ol>
   <p class="grp">Closing</p>
   <ol start="13">
-    <li><a href="#s13">Exercises</a></li>
-    <li><a href="#s14">Check yourself</a></li>
+    <li><a href="#s13">Proof exercises</a></li>
+    <li><a href="#s14">Proof checklist</a></li>
   </ol>
 </nav>
 
@@ -662,42 +662,56 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
 <!-- 13 -->
 <section id="s13">
   <p class="snum">Section 13</p>
-  <h2>Exercises</h2>
+  <h2>Proof exercises</h2>
+  <p>These problems ask for arguments, not numerical calculation. State every assumption you use.</p>
 
-  <h3>1. Compute a correlation by hand</h3>
-  <p>Take the five-car table from Section 1. Center and scale the horsepower column yourself, and verify the number \(0.913\) by taking the dot product with the standardized weight column.</p>
+  <h3>1. Prove that \(X'X\) is positive semidefinite</h3>
+  <p>For an arbitrary vector \(v\), prove that \(v'X'Xv \ge 0\). Use your result to explain why every eigenvalue of \(X'X\) is non-negative.</p>
+  <details><summary>Hint</summary><p>Rewrite the quadratic form as \((Xv)'(Xv) = \|Xv\|^2\).</p></details>
 
-  <h3>2. Make two predictors orthogonal</h3>
-  <p>Invent a five-row dataset with two predictors whose correlation is exactly zero. What does the data cloud look like? What is \(X'X\), and what are its eigenvalues?</p>
-  <details><summary>Hint</summary><p>Try \(x_1 = (1,1,-1,-1,0)\) and \(x_2 = (1,-1,1,-1,0)\) before standardizing. Both are already centered; check their dot product.</p></details>
+  <h3>2. Characterize when \(X'X\) is invertible</h3>
+  <p>Prove that \(X'X\) is invertible if and only if the columns of \(X\) are linearly independent. Explain what this says about exact multicollinearity.</p>
+  <details><summary>Hint</summary><p>Show that \(X'Xv = 0\) implies \(\|Xv\|^2 = 0\), and prove the converse.</p></details>
 
-  <h3>3. Verify the eigenvalue sum</h3>
-  <p>For a \(3\times3\) correlation matrix of your choosing, compute the eigenvalues numerically and check that they sum to 3. Then push one off-diagonal entry toward 1 and watch what happens to the smallest eigenvalue.</p>
+  <h3>3. Prove that correlation is a cosine</h3>
+  <p>Let \(x_1\) and \(x_2\) be centered predictor columns scaled to unit Euclidean length. Prove that their correlation is \(x_1'x_2 = \cos\theta\), and use the Cauchy–Schwarz inequality to prove that it lies in \([-1,1]\).</p>
 
-  <h3>4. Prove the matrix-calculus rules</h3>
-  <p>Verify \(\partial(\beta'A\beta)/\partial\beta = 2A\beta\) for a symmetric \(2\times2\) matrix \(A\) by writing the quadratic form out in full and differentiating with respect to \(\beta_1\) and \(\beta_2\) separately.</p>
+  <h3>4. Prove the eigenvalue-sum identity</h3>
+  <p>Assume every predictor column has unit Euclidean length. Prove that \(\operatorname{tr}(X'X)=p\), then use invariance of the trace under an eigendecomposition to prove \(\sum_{j=1}^{p}\lambda_j=p\).</p>
 
-  <h3>5. Find a biased estimator that beats least squares</h3>
-  <p>Consider the simple estimator \(\tilde\beta = c\,\hat\beta\) for a constant \(0 &lt; c &lt; 1\) — just least squares, scaled down. Compute its bias and its variance, then its MSE. Can you find a \(c\) making the MSE smaller than that of \(\hat\beta\)?</p>
-  <details><summary>Hint</summary><p>Bias \(= (c-1)\beta\) and variance \(= c^2\mathrm{Var}(\hat\beta)\). Write the MSE as a function of \(c\), differentiate, and see whether the minimum sits strictly below \(c = 1\). If you find that it does, you have just discovered the ridge paper's central idea on your own.</p></details>
+  <h3>5. Derive the least-squares estimator</h3>
+  <p>Starting from \(\phi(B)=\|Y-XB\|^2\), derive the normal equations and prove that their unique solution is \(\hat\beta=(X'X)^{-1}X'Y\) when \(X\) has full column rank.</p>
+
+  <h3>6. Prove unbiasedness and derive the covariance</h3>
+  <p>Under \(Y=X\beta+\varepsilon\), \(\mathbb E[\varepsilon\mid X]=0\), and \(\operatorname{Cov}(\varepsilon\mid X)=\sigma^2I\), prove that ordinary least squares is conditionally unbiased and that \(\operatorname{Cov}(\hat\beta\mid X)=\sigma^2(X'X)^{-1}\).</p>
+
+  <h3>7. Prove the vector bias–variance decomposition</h3>
+  <p>For any estimator \(\tilde\beta\), prove</p>
+  \[\mathbb E\|\tilde\beta-\beta\|^2
+  = \operatorname{tr}\!\big(\operatorname{Cov}(\tilde\beta)\big)
+  + \|\mathbb E[\tilde\beta]-\beta\|^2.\]
+  <p>Identify the cross-term and prove that it vanishes.</p>
+
+  <h3>8. Prove that a little shrinkage can improve MSE</h3>
+  <p>Let \(\tilde\beta_c=c\hat\beta\), where ordinary least squares is unbiased and \(0\le c\le1\). Write its MSE in terms of \(V=\operatorname{tr}(\operatorname{Cov}(\hat\beta))\) and \(B=\|\beta\|^2\). Prove that the minimizing value is \(c^*=B/(B+V)\), and compare its MSE with the MSE at \(c=1\).</p>
+  <details><summary>Hint</summary><p>First prove that \(R(c)=c^2V+(1-c)^2B\). The derivative is enough to establish the result.</p></details>
 </section>
 
 <!-- 14 -->
 <section id="s14">
   <p class="snum">Section 14</p>
-  <h2>Check yourself</h2>
+  <h2>Proof checklist</h2>
   <div class="checklist">
-    <h3>You are ready for the ridge paper if you can…</h3>
+    <h3>You are ready for the ridge paper if you can prove…</h3>
     <ul>
-      <li>Write \(Y = X\beta + \varepsilon\) and say what each symbol contains.</li>
-      <li>State the two noise assumptions and explain what each half of \(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\) means.</li>
-      <li>Explain why \(X'X\) is the correlation matrix, and why correlation is a cosine.</li>
-      <li>Say what a small eigenvalue of \(X'X\) tells you about your data.</li>
-      <li>Explain why the eigenvalues of a correlation matrix must sum to \(p\).</li>
-      <li>Derive \(\hat\beta = (X'X)^{-1}X'Y\) from scratch.</li>
-      <li>Say what "unbiased" means without using the word "correct".</li>
-      <li>State MSE = variance + bias², and state the Gauss–Markov theorem including both of its qualifiers.</li>
-      <li>Explain why the theorem does <em>not</em> prove least squares is the most accurate estimator possible.</li>
+      <li>that \(X'X\) is positive semidefinite, and when it is positive definite;</li>
+      <li>that centered, unit-length predictor columns have dot product equal to their correlation;</li>
+      <li>that the eigenvalues of \(X'X\) sum to \(p\) under this scaling;</li>
+      <li>the normal equations and the unique least-squares solution under full column rank;</li>
+      <li>the conditional unbiasedness and covariance of ordinary least squares;</li>
+      <li>the vector bias–variance decomposition with \(\operatorname{tr}(\operatorname{Cov})\);</li>
+      <li>why Gauss–Markov only compares linear unbiased estimators;</li>
+      <li>that allowing bias can produce a lower-MSE estimator.</li>
     </ul>
   </div>
 </section>
