@@ -208,7 +208,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p class="snum">Section 3 · Part II</p>
   <h2>Predictors are vectors</h2>
   <p>Here is the shift in perspective that makes everything afterwards easier. Stop reading \(X\) row by row — one row per car — and start reading it <em>column by column</em>, one column per predictor.</p>
-  <p>Each predictor is one column of \(X\). Because we measured five cars, the weight column has five entries, so we can treat it as a vector in \(\mathbb{R}^5\). The horsepower column is another vector in the same space. This viewpoint lets us compare predictors using vector length, dot products, and angles. We cannot draw \(\mathbb{R}^5\) directly, but these operations are defined in exactly the same way as they are in two or three dimensions.</p>
+  <p>If \(X\) has \(n\) rows and \(p\) columns, then each predictor column \(x_j\) is a vector in \(\mathbb{R}^n\). Here \(n=5\) cars and \(p=2\) predictors, so the weight and horsepower columns are two vectors in \(\mathbb{R}^5\). Their pairwise dot products form the matrix \(X'X\), which is \(p\times p\) — \(2\times2\) in this example. Thus the predictor vectors live in observation space \(\mathbb{R}^n\), while \(X'X\) records their relationships in a \(p\times p\) matrix.</p>
   <p>Two operations do all the work. For vectors \(u\) and \(v\) with \(n\) entries:</p>
   \[u'v = \sum_{i=1}^{n} u_i v_i \quad \text{(dot product)}, \qquad \|u\| = \sqrt{u'u} \quad \text{(length)}\]
   <p>And the fact that ties them together, true in any number of dimensions:</p>
