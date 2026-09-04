@@ -5,3 +5,6 @@ dist/
 *.log
 .env
 .env.*
+.codex-pptx-build/
+.codex-pptx-output/
+.codex-finalizer/
