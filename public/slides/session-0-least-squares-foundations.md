@@ -221,6 +221,27 @@ $$
 
 <p class="label">Part II · The geometry of correlation</p>
 
+## Why standardize? A detour through covariance
+
+<div class="eq">
+
+$$
+\operatorname{cov}(u,v) = \frac{1}{n-1}\sum_{i=1}^{n}(u_i-\bar u)(v_i-\bar v), \qquad r = \frac{\operatorname{cov}(u,v)}{\operatorname{sd}(u)\,\operatorname{sd}(v)}
+$$
+
+</div>
+
+- Covariance is the crude measure of co-movement: centre, multiply entry by entry, average. For the cars, cov(weight, hp) = 7.0.
+- But 7.0 of what? Tonne-horsepower. Measure weight in grams and the same five cars give 7 000 000. The number carries the ruler.
+- Divide by the standard deviations and the ruler cancels: 7.0 / (0.3162 × 24.238) = 0.913, in tonnes or in grams alike.
+- Standardizing does that division once, in advance, on the data. Afterwards a plain dot product already is the correlation.
+
+<p class="note">That is why the ridge paper assumes standardized columns throughout: XᵀX then needs no units.</p>
+
+---
+
+<p class="label">Part II · The geometry of correlation</p>
+
 ## XᵀX is the correlation matrix
 
 <div class="eq">

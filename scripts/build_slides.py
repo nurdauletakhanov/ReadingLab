@@ -63,6 +63,8 @@ P = P * np.where(P[0] < 0, -1, 1)          # draw eigenvectors pointing right
 beta_c = np.linalg.solve(Xc.T @ Xc, Xc.T @ yc)  # slopes on centred data
 beta0 = ybar - beta_c @ xbar
 theta = np.degrees(np.arccos(r))
+cov_wh = np.cov(X[:, 0], X[:, 1])[0, 1]           # tonne-horsepower
+sd_w, sd_h = X.std(axis=0, ddof=1)
 
 
 def f(x, d=2):
@@ -258,6 +260,14 @@ SLIDES = [
                   f"Their dot product is the cosine of the angle between them, and that is the sample correlation. For the cars, r = {r:.3f}.",
                   "|r| ≤ 1 is Cauchy–Schwarz, nothing more.",
                   "Nearly parallel columns mean nearly redundant predictors."]),
+
+    dict(kind="text", label="Part II · The geometry of correlation", title="Why standardize? A detour through covariance",
+         equation=r"\operatorname{cov}(u,v) = \frac{1}{n-1}\sum_{i=1}^{n}(u_i-\bar u)(v_i-\bar v), \qquad r = \frac{\operatorname{cov}(u,v)}{\operatorname{sd}(u)\,\operatorname{sd}(v)}",
+         bullets=[f"Covariance is the crude measure of co-movement: centre, multiply entry by entry, average. For the cars, cov(weight, hp) = {cov_wh:.1f}.",
+                  "But 7.0 of what? Tonne-horsepower. Measure weight in grams and the same five cars give 7 000 000. The number carries the ruler.",
+                  f"Divide by the standard deviations and the ruler cancels: {cov_wh:.1f} / ({sd_w:.4f} × {sd_h:.3f}) = {r:.3f}, in tonnes or in grams alike.",
+                  "Standardizing does that division once, in advance, on the data. Afterwards a plain dot product already is the correlation."],
+         note="That is why the ridge paper assumes standardized columns throughout: XᵀX then needs no units."),
 
     dict(kind="text", label="Part II · The geometry of correlation", title="XᵀX is the correlation matrix",
          equation=rf"X^{{\top}}X = \begin{{pmatrix}} 1 & r \\ r & 1 \end{{pmatrix}} = \begin{{pmatrix}} 1 & {r:.3f} \\ {r:.3f} & 1 \end{{pmatrix}}",
