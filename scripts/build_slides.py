@@ -175,6 +175,34 @@ def fig_eigen():
     fig.tight_layout(); fig.savefig(IMG / "eigen.png", facecolor=BG); plt.close(fig)
 
 
+def fig_projection():
+    fig, ax = plt.subplots(figsize=(6.4, 4.6), dpi=200)
+    fig.patch.set_facecolor(BG); ax.set_facecolor(BG); ax.axis("off")
+    plane = np.array([[0.15, 1.05], [5.6, 0.25], [7.5, 1.95], [2.05, 2.75]])
+    ax.add_patch(Polygon(plane, closed=True, facecolor=BLUE_SOFT, edgecolor=BLUE, lw=1.4, alpha=.95))
+    O = np.array([1.75, 1.45])
+    yhat = np.array([5.15, 1.62])
+    Y = np.array([5.15, 4.05])
+    for tip, lab, col in (((4.35, 1.06), "x₁", MUTED), ((3.35, 2.25), "x₂", MUTED)):
+        ax.add_patch(FancyArrowPatch(O, tip, arrowstyle="-|>", mutation_scale=13, color=col, lw=1.6))
+        ax.text(*(np.array(tip) + (0.12, -0.16)), lab, color=col, fontsize=13, fontweight="bold")
+    ax.add_patch(FancyArrowPatch(O, Y, arrowstyle="-|>", mutation_scale=17, color=ACCENT, lw=2.6, zorder=5))
+    ax.add_patch(FancyArrowPatch(O, yhat, arrowstyle="-|>", mutation_scale=17, color=BLUE, lw=2.6, zorder=5))
+    ax.add_patch(FancyArrowPatch(yhat, Y, arrowstyle="-|>", mutation_scale=15, color=RED, lw=2.2,
+                                 linestyle=(0, (5, 3)), zorder=5))
+    d = 0.3
+    ax.plot([yhat[0], yhat[0] + d, yhat[0] + d], [yhat[1] + d, yhat[1] + d, yhat[1]],
+            color=RED, lw=1.3, zorder=6)
+    ax.scatter(*O, s=28, color=INK, zorder=7)
+    ax.text(O[0] - 0.3, O[1] - 0.1, "0", color=INK, fontsize=12)
+    ax.text(Y[0] + 0.15, Y[1], "Y", color=ACCENT, fontsize=16, fontweight="bold", va="center")
+    ax.text(yhat[0] + 0.2, yhat[1] - 0.28, "Ŷ = Xβ̂", color=BLUE, fontsize=15, fontweight="bold", va="top")
+    ax.text(Y[0] + 0.2, (Y[1] + yhat[1]) / 2, "e = Y − Ŷ", color=RED, fontsize=14, fontweight="bold", va="center")
+    ax.text(6.75, 2.25, "Col(X)", color=BLUE, fontsize=14, fontweight="bold", ha="center")
+    ax.set_xlim(-0.35, 8.6); ax.set_ylim(0.0, 4.6)
+    fig.tight_layout(); fig.savefig(IMG / "projection.png", facecolor=BG); plt.close(fig)
+
+
 def fig_dartboard():
     rng = np.random.default_rng(7)
     fig, axes = plt.subplots(1, 2, figsize=(9.2, 4.6), dpi=200)
@@ -297,6 +325,15 @@ SLIDES = [
                   "If XᵀX can be inverted, the solution is unique and explicit.",
                   "Everything about β̂ is decided by that inverse."]),
 
+    dict(kind="figure", label="Part III · What makes an estimate good", title="The same answer, seen as a projection",
+         image="projection.png", width=6.1, side=True,
+         equation=r"\hat Y = X\hat\beta \in \operatorname{Col}(X), \qquad e = Y - \hat Y \perp \operatorname{Col}(X)",
+         bullets=["Every candidate fit XB mixes the columns of X, so all of them lie in one flat slice of ℝⁿ: the column space.",
+                  "Y almost never lies in that slice. Least squares takes the closest point of it, the shadow Ŷ below Y.",
+                  "Closest means the residual e = Y − Ŷ is perpendicular to every column: Xᵀe = 0. Expand it and the normal equations reappear.",
+                  "Ŷ is a point in ℝ⁵, one coordinate per car. β̂ is its address in ℝ², one per predictor."],
+         note="No calculus needed. Dropping a perpendicular and setting the gradient to zero are the same condition."),
+
     dict(kind="text", label="Part III · What makes an estimate good", title="When can XᵀX be inverted?",
          equation=r"v^{\top}X^{\top}Xv = (Xv)^{\top}(Xv) = \|Xv\|^2 \ge 0",
          bullets=["So XᵀX is positive semidefinite for any X.",
@@ -339,7 +376,7 @@ SLIDES = [
                "2.  Show it is invertible exactly when the columns of X are linearly independent.",
                "3.  For centred, unit-length columns, show that the dot product is the correlation and lies in [−1, 1].",
                "4.  Show that the eigenvalues of XᵀX sum to p under that scaling."],
-         right=["5.  Derive the normal equations and the least squares solution.",
+         right=["5.  Prove the projection condition, then derive the normal equations and the least squares solution.",
                 "6.  Prove that least squares is unbiased and derive its covariance.",
                 "7.  Prove  E‖β̃ − β‖² = tr Cov(β̃) + ‖bias‖².",
                 "8.  For β̃ = cβ̂ with 0 ≤ c ≤ 1, find the c that minimises the MSE. Is it 1?"],
@@ -584,7 +621,7 @@ def build_md():
 
 
 if __name__ == "__main__":
-    fig_centering(); fig_angle(); fig_eigen(); fig_dartboard()
+    fig_centering(); fig_angle(); fig_eigen(); fig_dartboard(); fig_projection(); fig_projection()
     build_pptx(); build_md()
     print(f"r = {r:.3f}, theta = {theta:.1f} deg, lambda = {lam.round(3)}, beta_c = {beta_c.round(3)}, beta0 = {beta0:.3f}")
     print(f"wrote {OUT / (STEM + '.pptx')} ({(OUT / (STEM + '.pptx')).stat().st_size/1e3:.0f} KB), {len(SLIDES)} slides")

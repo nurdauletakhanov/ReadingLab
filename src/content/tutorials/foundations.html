@@ -522,8 +522,23 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p>The setup is complete, so let us actually estimate \(\beta\). The oldest recipe, and still the default one, is to try out candidate coefficient vectors and keep whichever makes the total squared prediction error smallest.</p>
   <p>Notation matters here, so we borrow the paper's own. Write \(B\) for a <em class="term">candidate</em> — any \(p\)-vector we might try — and keep \(\beta\) strictly for the true, unknown coefficients. They are different things: \(\beta\) is a fixed fact about the world, while \(B\) is a variable we sweep over, most values of which fit the data terribly. The candidate that wins gets its own name, \(\hat\beta\).</p>
   <p>Why <em>squared</em> error rather than, say, absolute error? Two reasons. It is differentiable everywhere, so calculus works; and it punishes one large miss more than several small ones, which usually matches what we want.</p>
+  <h3>Geometric route: project \(Y\) onto the column space of \(X\)</h3>
+  <p>Every fitted vector has the form \(XB\), so every possible fit lies in the column space \(\operatorname{Col}(X)\). Least squares chooses the point in that space closest to \(Y\). Call that point \(\hat Y=X\hat\beta\). The coefficient vector \(\hat\beta\) gives the coordinates of the projection in the columns of \(X\); it is not itself the projected point.</p>
   <div class="deriv">
-    <div class="lab">Derivation · the normal equations</div>
+    <div class="lab">Derivation · the projection condition</div>
+    <ol>
+      <li><span>the least-squares fit is \(\hat Y=X\hat\beta\in\operatorname{Col}(X)\)</span></li>
+      <li><span>at the closest point, the residual \(e=Y-\hat Y\) is perpendicular to \(\operatorname{Col}(X)\)</span></li>
+      <li><span>therefore \(e\) is perpendicular to every column of \(X\), which means \(X'e=0\)</span></li>
+      <li><span>substitute \(e=Y-X\hat\beta\): \(\;X'(Y-X\hat\beta)=0\)</span></li>
+      <li><span>rearrange: \(\;X'X\hat\beta=X'Y\) — the <b>normal equations</b></span></li>
+      <li><span>if \(X\) has full column rank: \(\;\hat\beta=(X'X)^{-1}X'Y\)</span></li>
+    </ol>
+    <div class="note">The geometry separates two objects that are often confused. \(\hat Y\in\mathbb R^n\) is the projection in observation space, while \(\hat\beta\in\mathbb R^p\) contains its coordinates. If the columns of \(X\) are dependent, the projection \(\hat Y\) can still be unique even though its coordinate vector \(\hat\beta\) is not.</div>
+  </div>
+  <p>The projection argument gives the normal equations without matrix calculus. Differentiating the squared distance gives the same condition.</p>
+  <div class="deriv">
+    <div class="lab">Derivation · the same equations from calculus</div>
     <ol>
       <li><span>\(\phi(B) = \|Y - XB\|^2 = (Y-XB)'(Y-XB)\) — the fit score of candidate \(B\)</span></li>
       <li><span>expand: \(\;= Y'Y - 2B'X'Y + B'X'XB\)</span></li>
@@ -699,7 +714,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p>Assume every predictor column has unit Euclidean length. Prove that \(\operatorname{tr}(X'X)=p\), then use invariance of the trace under an eigendecomposition to prove \(\sum_{j=1}^{p}\lambda_j=p\).</p>
 
   <h3>5. Derive the least-squares estimator</h3>
-  <p>Starting from \(\phi(B)=\|Y-XB\|^2\), derive the normal equations and prove that their unique solution is \(\hat\beta=(X'X)^{-1}X'Y\) when \(X\) has full column rank.</p>
+  <p>Prove that \(\hat\beta\) minimizes \(\|Y-XB\|^2\) exactly when the residual \(Y-X\hat\beta\) is perpendicular to \(\operatorname{Col}(X)\). Deduce the normal equations and prove that their unique solution is \(\hat\beta=(X'X)^{-1}X'Y\) when \(X\) has full column rank.</p>
 
   <h3>6. Prove unbiasedness and derive the covariance</h3>
   <p>Under \(Y=X\beta+\varepsilon\), \(\mathbb E[\varepsilon\mid X]=0\), and \(\operatorname{Cov}(\varepsilon\mid X)=\sigma^2I\), prove that ordinary least squares is conditionally unbiased and that \(\operatorname{Cov}(\hat\beta\mid X)=\sigma^2(X'X)^{-1}\).</p>
@@ -726,7 +741,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
       <li>that \(X'X\) is positive semidefinite, and when it is positive definite;</li>
       <li>that centered, unit-length predictor columns have dot product equal to their correlation;</li>
       <li>that the eigenvalues of \(X'X\) sum to \(p\) under this scaling;</li>
-      <li>the normal equations and the unique least-squares solution under full column rank;</li>
+      <li>how orthogonal projection gives the normal equations, and why full column rank makes the least-squares coefficients unique;</li>
       <li>the conditional unbiasedness and covariance of ordinary least squares;</li>
       <li>the vector bias–variance decomposition with \(\operatorname{tr}(\operatorname{Cov})\);</li>
       <li>why Gauss–Markov only compares linear unbiased estimators;</li>

@@ -326,6 +326,36 @@ $$
 
 <p class="label">Part III · What makes an estimate good</p>
 
+## The same answer, seen as a projection
+
+<div class="side">
+<div>
+
+<div class="eq">
+
+$$
+\hat Y = X\hat\beta \in \operatorname{Col}(X), \qquad e = Y - \hat Y \perp \operatorname{Col}(X)
+$$
+
+</div>
+
+- Every candidate fit XB mixes the columns of X, so all of them lie in one flat slice of ℝⁿ: the column space.
+- Y almost never lies in that slice. Least squares takes the closest point of it, the shadow Ŷ below Y.
+- Closest means the residual e = Y − Ŷ is perpendicular to every column: Xᵀe = 0. Expand it and the normal equations reappear.
+- Ŷ is a point in ℝ⁵, one coordinate per car. β̂ is its address in ℝ², one per predictor.
+
+</div>
+<div>
+
+![](https://nurdauletakhanov.github.io/ReadingLab/slides/img/projection.png)
+
+</div>
+</div>
+
+---
+
+<p class="label">Part III · What makes an estimate good</p>
+
 ## When can XᵀX be inverted?
 
 <div class="eq">
@@ -461,7 +491,7 @@ $$
 </div>
 <div>
 
-5.  Derive the normal equations and the least squares solution.
+5.  Prove the projection condition, then derive the normal equations and the least squares solution.
 
 6.  Prove that least squares is unbiased and derive its covariance.
 
