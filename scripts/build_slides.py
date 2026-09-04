@@ -268,8 +268,7 @@ SLIDES = [
                   "But 7.0 of what? Tonne-horsepower. Measure weight in grams and the same five cars give 7 000 000. The number carries the ruler.",
                   f"The standard deviation is the typical distance from the mean, in the variable's own units: sd(u) = √cov(u, u). Here sd(weight) = {sd_w:.4f} t and sd(hp) = {sd_h:.3f}.",
                   f"Divide by the standard deviations and the ruler cancels: {cov_wh:.1f} / ({sd_w:.4f} × {sd_h:.3f}) = {r:.3f}, in tonnes or in grams alike.",
-                  "Standardizing does that division once, in advance, on the data. Afterwards a plain dot product already is the correlation."],
-         note="That is why the ridge paper assumes standardized columns throughout: XᵀX then needs no units."),
+                  "Standardizing does that division once, on the data itself. Afterwards a plain dot product already is the correlation, and the ridge paper assumes exactly that."],
 
     dict(kind="text", label="Part II · The geometry of correlation", title="XᵀX is the correlation matrix",
          equation=rf"X^{{\top}}X = \begin{{pmatrix}} 1 & r \\ r & 1 \end{{pmatrix}} = \begin{{pmatrix}} 1 & {r:.3f} \\ {r:.3f} & 1 \end{{pmatrix}}",

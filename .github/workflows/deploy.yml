@@ -19,9 +19,33 @@ jobs:
     runs-on: ubuntu-latest
     steps:
       - uses: actions/checkout@v4
-      - uses: withastro/action@v6
+
+      - uses: actions/setup-node@v4
         with:
           node-version: 22
+
+      # corepack installs exactly the pnpm pinned in package.json "packageManager".
+      # withastro/action used pnpm/action-setup, which npm-installs pnpm latest and
+      # then downgrades: that step alone took 7 minutes.
+      - name: Enable pnpm
+        run: |
+          corepack enable
+          corepack prepare --activate
+          pnpm --version
+
+      - name: Cache pnpm store
+        uses: actions/cache@v4
+        with:
+          path: ~/.local/share/pnpm/store
+          key: pnpm-${{ runner.os }}-${{ hashFiles('pnpm-lock.yaml') }}
+          restore-keys: pnpm-${{ runner.os }}-
+
+      - run: pnpm install --frozen-lockfile
+      - run: pnpm build
+
+      - uses: actions/upload-pages-artifact@v3
+        with:
+          path: dist
 
   deploy:
     needs: build
