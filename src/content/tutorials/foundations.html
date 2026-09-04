@@ -208,7 +208,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p class="snum">Section 3 · Part II</p>
   <h2>Predictors are vectors</h2>
   <p>Here is the shift in perspective that makes everything afterwards easier. Stop reading \(X\) row by row — one row per car — and start reading it <em>column by column</em>, one column per predictor.</p>
-  <p>The weight column is a list of five numbers. So is the horsepower column. A list of five numbers is a point, or an arrow, in five-dimensional space. You cannot picture five dimensions, but every rule you know from two and three dimensions still holds, and that is all we need.</p>
+  <p>Each predictor is one column of \(X\). Because we measured five cars, the weight column has five entries, so we can treat it as a vector in \(\mathbb{R}^5\). The horsepower column is another vector in the same space. This viewpoint lets us compare predictors using vector length, dot products, and angles. We cannot draw \(\mathbb{R}^5\) directly, but these operations are defined in exactly the same way as they are in two or three dimensions.</p>
   <p>Two operations do all the work. For vectors \(u\) and \(v\) with \(n\) entries:</p>
   \[u'v = \sum_{i=1}^{n} u_i v_i \quad \text{(dot product)}, \qquad \|u\| = \sqrt{u'u} \quad \text{(length)}\]
   <p>And the fact that ties them together, true in any number of dimensions:</p>
