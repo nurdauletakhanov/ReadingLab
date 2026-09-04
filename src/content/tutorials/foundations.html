@@ -633,6 +633,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
     <li><b>mean</b> — \(\mathbb{E}[\cdot]\), averaged over every dataset you might have collected, since Section 8 showed \(\hat\beta\) changes with the noise.</li>
   </ul>
   <p>So MSE is the average squared distance between estimate and truth. It scores the <em>recipe</em>, not any single run of it, and smaller is better.</p>
+  <div class="key"><b>MSE is not the bias</b>The two definitions use the same three symbols and differ only in where the expectation sits. Bias averages <em>first</em> and subtracts second: \(\mathbb{E}[\hat\beta] - \beta\), a fixed vector. MSE subtracts first, once per dataset, and averages last: \(\mathbb{E}\|\hat\beta - \beta\|^2\), a single non-negative number. On the dartboard, bias is the distance from the centre of the cluster to the bullseye, while MSE is the average squared distance of the individual darts to the bullseye. They agree only when every dart lands on the same spot, which means zero variance. For least squares the bias is zero, so its whole MSE is variance: \(\sigma^2\sum_i 1/\lambda_i\).</div>
   <p>Now the identity that makes it useful: mean squared error splits, exactly and always, into the two quantities from the previous section.</p>
   <div class="deriv">
     <div class="lab">Derivation · MSE = variance + bias²</div>
@@ -660,18 +661,25 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <div class="deriv">
     <div class="lab">Derivation · proof of Gauss–Markov</div>
     <ol>
-      <li><span>let \(\tilde\beta = CY\) be any linear estimator; then \(\mathbb{E}[\tilde\beta] = CX\beta\)</span></li>
-      <li><span>for this to equal \(\beta\) for <em>every</em> possible \(\beta\), we need \(\;CX = I\)</span></li>
-      <li><span>write \(C\) as least squares plus a deviation: \(\;C = (X'X)^{-1}X' + D\)</span></li>
-      <li><span>then \(CX = I + DX\), so the unbiasedness condition forces \(\;DX = 0\)</span></li>
-      <li><span>now compute the variance: \(\;\mathrm{Var}(\tilde\beta) = \sigma^2 CC'\)</span></li>
-      <li><span>\(CC' = \big[(X'X)^{-1}X' + D\big]\big[(X'X)^{-1}X' + D\big]'\)</span></li>
-      <li><span>\(\;= (X'X)^{-1} + (X'X)^{-1}(DX)' + (DX)(X'X)^{-1} + DD'\)</span></li>
-      <li><span>the two middle terms vanish because \(DX = 0\), leaving</span></li>
+      <li><span>let \(\tilde\beta = CY\) be any linear estimator, where \(C\) is \(p\times n\) and built from \(X\) alone</span></li>
+      <li><span>substitute the model: \(\;\tilde\beta = C(X\beta + \varepsilon) = CX\beta + C\varepsilon\)</span></li>
+      <li><span>take expectations; \(\mathbb{E}[\varepsilon] = 0\) kills the second term: \(\;\mathbb{E}[\tilde\beta] = CX\beta\)</span></li>
+      <li><span>unbiased means \(CX\beta = \beta\), and it must hold for <em>every</em> \(\beta\), because we never learn which \(\beta\) is the true one</span></li>
+      <li><span>feed in the basis vectors \(e_1,\dots,e_p\) one at a time; the \(j\)-th says column \(j\) of \(CX\) equals \(e_j\), so \(\;CX = I\)</span></li>
+      <li><span>abbreviate least squares \(A = (X'X)^{-1}X'\); it satisfies \(\;AX = (X'X)^{-1}(X'X) = I\)</span></li>
+      <li><span>any \(C\) can be written \(C = A + D\), where \(D = C - A\) simply names how far the competitor deviates from least squares</span></li>
+      <li><span>then \(\;CX = AX + DX = I + DX\), and \(CX = I\) forces \(\;DX = 0\)</span></li>
+      <li><span>now the variance. The constant part drops out, so \(\;\tilde\beta - \mathbb{E}[\tilde\beta] = C\varepsilon\)</span></li>
+      <li><span>the covariance of a vector is an outer product: \(\;\mathrm{Var}(\tilde\beta) = \mathbb{E}\big[(C\varepsilon)(C\varepsilon)'\big] = \mathbb{E}\big[C\,\varepsilon\varepsilon'\,C'\big]\)</span></li>
+      <li><span>\(C\) is constant, so it slides out on both sides: \(\;= C\;\mathbb{E}[\varepsilon\varepsilon']\;C'\)</span></li>
+      <li><span>the noise assumption \(\mathbb{E}[\varepsilon\varepsilon'] = \sigma^2 I\) gives \(\;\mathrm{Var}(\tilde\beta) = \sigma^2 CC'\)</span></li>
+      <li><span>expand with \(C = A + D\): \(\;CC' = AA' + AD' + DA' + DD'\)</span></li>
+      <li><span>the cross terms die: \(\;AD' = (X'X)^{-1}X'D' = (X'X)^{-1}(DX)' = 0\), and \(DA' = (AD')' = 0\)</span></li>
+      <li><span>\(AA' = (X'X)^{-1}\) was computed in Section 9, leaving</span></li>
       <li><span>\(\mathrm{Var}(\tilde\beta) = \underbrace{\sigma^2(X'X)^{-1}}_{\mathrm{Var}(\hat\beta)} + \sigma^2 DD'\)</span></li>
-      <li><span>\(DD'\) has non-negative diagonal entries (each is a sum of squares), so every coefficient's variance is at least as large as under least squares, with equality only when \(D = 0\)  ∎</span></li>
+      <li><span>\(DD'\) has non-negative diagonal entries (each is a sum of squares), so every coefficient's variance is at least as large as under least squares, with equality only when \(D = 0\) &nbsp;∎</span></li>
     </ol>
-    <div class="note">The structure of the argument is worth more than the result: unbiasedness pins down \(CX = I\), and once that constraint is imposed, any deviation \(D\) from least squares adds a non-negative quantity to the variance. You cannot do better <em>without leaving the class</em>.</div>
+    <div class="note">Two steps carry the whole proof. Step 4 is the one to remember: unbiasedness is demanded for <em>every</em> \(\beta\), not for one particular \(\beta\), and only that turns \(CX\beta = \beta\) into the matrix identity \(CX = I\). Step 8 then says \(DX = 0\): every row of \(D\) is perpendicular to every column of \(X\), so a competitor may only draw on directions in the data that carry no information about \(\beta\). It adds noise and buys nothing, which is exactly what the final line measures.</div>
   </div>
   <p>Notice what the theorem does <em>not</em> require: no normal distribution, no large sample. Just the two noise assumptions from Section 7.</p>
   <div class="qa"><b>Why is Markov's name on it?</b> Gauss proved it in 1823. Markov's 1912 work was credited by Neyman in 1934, and the double name stuck — though historians generally agree Markov added nothing Gauss had not already established. If you want the story, R. L. Plackett's 1949 note in <em>Biometrika</em>, "A historical note on the method of least squares", tells it well.</div>
