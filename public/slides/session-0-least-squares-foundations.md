@@ -326,7 +326,7 @@ $$
 
 <p class="label">Part III · What makes an estimate good</p>
 
-## The same answer, seen as a projection
+## Least squares as orthogonal projection
 
 <div class="side">
 <div>
@@ -339,10 +339,10 @@ $$
 
 </div>
 
-- Every candidate fit XB mixes the columns of X, so all of them lie in one flat slice of ℝⁿ: the column space.
-- Y almost never lies in that slice. Least squares takes the closest point of it, the shadow Ŷ below Y.
-- Closest means the residual e = Y − Ŷ is perpendicular to every column: Xᵀe = 0. Expand it and the normal equations reappear.
-- Ŷ is a point in ℝ⁵, one coordinate per car. β̂ is its address in ℝ², one per predictor.
+- Every fitted vector has the form XB, so it lies in the column space of X.
+- Least squares selects Ŷ = Xβ̂, the point in Col(X) nearest to Y.
+- At the nearest point, the residual e = Y − Ŷ is perpendicular to every column of X. Thus Xᵀe = 0, which gives the normal equations.
+- Ŷ lives in ℝⁿ. β̂ lives in ℝᵖ and gives the coordinates of Ŷ in the columns of X.
 
 </div>
 <div>
@@ -516,7 +516,7 @@ $$
 1. XᵀX is positive semidefinite, and positive definite under full column rank.
 2. For centred unit-length columns, a dot product is a correlation.
 3. The eigenvalues of XᵀX sum to p.
-4. The normal equations give the unique least squares solution.
+4. Orthogonal projection gives the normal equations. Full column rank makes the least squares coefficients unique.
 
 </div>
 <div>

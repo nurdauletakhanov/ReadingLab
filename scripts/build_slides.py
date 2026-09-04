@@ -325,14 +325,14 @@ SLIDES = [
                   "If XᵀX can be inverted, the solution is unique and explicit.",
                   "Everything about β̂ is decided by that inverse."]),
 
-    dict(kind="figure", label="Part III · What makes an estimate good", title="The same answer, seen as a projection",
+    dict(kind="figure", label="Part III · What makes an estimate good", title="Least squares as orthogonal projection",
          image="projection.png", width=6.1, side=True,
          equation=r"\hat Y = X\hat\beta \in \operatorname{Col}(X), \qquad e = Y - \hat Y \perp \operatorname{Col}(X)",
-         bullets=["Every candidate fit XB mixes the columns of X, so all of them lie in one flat slice of ℝⁿ: the column space.",
-                  "Y almost never lies in that slice. Least squares takes the closest point of it, the shadow Ŷ below Y.",
-                  "Closest means the residual e = Y − Ŷ is perpendicular to every column: Xᵀe = 0. Expand it and the normal equations reappear.",
-                  "Ŷ is a point in ℝ⁵, one coordinate per car. β̂ is its address in ℝ², one per predictor."],
-         note="No calculus needed. Dropping a perpendicular and setting the gradient to zero are the same condition."),
+         bullets=["Every fitted vector has the form XB, so it lies in the column space of X.",
+                  "Least squares selects Ŷ = Xβ̂, the point in Col(X) nearest to Y.",
+                  "At the nearest point, the residual e = Y − Ŷ is perpendicular to every column of X. Thus Xᵀe = 0, which gives the normal equations.",
+                  "Ŷ lives in ℝⁿ. β̂ lives in ℝᵖ and gives the coordinates of Ŷ in the columns of X."],
+         note="This derivation uses geometry. Differentiating the squared residual length gives the same condition."),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="When can XᵀX be inverted?",
          equation=r"v^{\top}X^{\top}Xv = (Xv)^{\top}(Xv) = \|Xv\|^2 \ge 0",
@@ -386,7 +386,7 @@ SLIDES = [
          items=["XᵀX is positive semidefinite, and positive definite under full column rank.",
                 "For centred unit-length columns, a dot product is a correlation.",
                 "The eigenvalues of XᵀX sum to p.",
-                "The normal equations give the unique least squares solution.",
+                "Orthogonal projection gives the normal equations. Full column rank makes the least squares coefficients unique.",
                 "Least squares is unbiased with covariance σ²(XᵀX)⁻¹.",
                 "Vector MSE = total variance + squared bias.",
                 "Gauss–Markov compares only linear unbiased estimators.",
@@ -621,7 +621,7 @@ def build_md():
 
 
 if __name__ == "__main__":
-    fig_centering(); fig_angle(); fig_eigen(); fig_dartboard(); fig_projection(); fig_projection()
+    fig_centering(); fig_angle(); fig_eigen(); fig_dartboard(); fig_projection()
     build_pptx(); build_md()
     print(f"r = {r:.3f}, theta = {theta:.1f} deg, lambda = {lam.round(3)}, beta_c = {beta_c.round(3)}, beta0 = {beta0:.3f}")
     print(f"wrote {OUT / (STEM + '.pptx')} ({(OUT / (STEM + '.pptx')).stat().st_size/1e3:.0f} KB), {len(SLIDES)} slides")
