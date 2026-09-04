@@ -7,7 +7,7 @@ export const site = {
     topic: 'Least Squares Foundations',
     date: 'Friday, 4 September 2026',
     place: 'Lecture Hall 1',
-    time: '5 pm',
+    time: '6 pm',
   },
   nav: [
     { href: '/tutorials/', label: 'Tutorials' },
