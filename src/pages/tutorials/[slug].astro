@@ -15,7 +15,8 @@ const video = entry.data.video ? await getEntry(entry.data.video) : undefined;
   <div class="tut-bar">
     <span>Session {entry.data.session}</span>
     <span class="tut-links">
-      {entry.data.slides && <a href={withBase(entry.data.slides)} download>Lecture slides ↓</a>}
+      {entry.data.slides && <a href={withBase(entry.data.slides)} download>PowerPoint ↓</a>}
+      {entry.data.slidesSource && <a href={withBase(entry.data.slidesSource)} download>Markdown slides ↓</a>}
       {video && <a href={withBase(`/videos/${video.id}/`)}>Watch the walkthrough →</a>}
     </span>
   </div>

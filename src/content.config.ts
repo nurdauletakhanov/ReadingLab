@@ -21,6 +21,7 @@ const tutorials = defineCollection({
     paper: paper.optional(),
     video: reference('videos').optional(),
     slides: z.string().optional(),
+    slidesSource: z.string().optional(),
     linkRewrites: z.record(z.string()).optional(),
     // Filled by the loader, not by the sidecar:
     css: z.string(),

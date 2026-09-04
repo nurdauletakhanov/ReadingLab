@@ -4,3 +4,4 @@ level: 1
 summary: "The ground the ridge paper stands on: the linear model, X'X and its eigenvalues, what makes an estimate good, and why unbiased is not the same as accurate."
 video: foundations
 slides: slides/session-0-least-squares-foundations.pptx
+slidesSource: slides/session-0-least-squares-foundations.md

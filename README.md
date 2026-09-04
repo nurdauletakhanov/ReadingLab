@@ -40,8 +40,9 @@ push to `main`. The announcement at the top of the home page updates automatical
    The page keeps its own CSS and MathJax markup; the build scopes its styles under `.tut`
    and drops it into the site layout. Nothing in the HTML needs editing.
 
-   An optional PowerPoint lecture deck can live in `public/slides/`. Add
-   `slides: slides/<filename>.pptx` to the tutorial yaml to show its download link.
+   Lecture decks can live in `public/slides/`. Add `slides: slides/<filename>.pptx`
+   for the PowerPoint download and `slidesSource: slides/<filename>.md` for an
+   optional Marp-compatible Markdown source.
 
 2. **Video.** Re-encode and register the render in one step:
 
