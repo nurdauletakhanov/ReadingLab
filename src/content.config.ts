@@ -20,6 +20,7 @@ const tutorials = defineCollection({
     level: z.number().int().min(1).max(15).optional(),
     paper: paper.optional(),
     video: reference('videos').optional(),
+    slides: z.string().optional(),
     linkRewrites: z.record(z.string()).optional(),
     // Filled by the loader, not by the sidecar:
     css: z.string(),

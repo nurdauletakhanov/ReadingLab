@@ -14,7 +14,10 @@ const video = entry.data.video ? await getEntry(entry.data.video) : undefined;
 <BaseLayout title={entry.data.title} description={entry.data.summary} math={entry.data.hasMath} fontsHref={entry.data.fontsHref} fullBleed>
   <div class="tut-bar">
     <span>Session {entry.data.session}</span>
-    {video && <a href={withBase(`/videos/${video.id}/`)}>Watch the walkthrough →</a>}
+    <span class="tut-links">
+      {entry.data.slides && <a href={withBase(entry.data.slides)} download>Markdown slides ↓</a>}
+      {video && <a href={withBase(`/videos/${video.id}/`)}>Watch the walkthrough →</a>}
+    </span>
   </div>
   <article class="tut">
     <Fragment set:html={`<style>${entry.data.css}</style>`} />
@@ -28,4 +31,5 @@ const video = entry.data.video ? await getEntry(entry.data.video) : undefined;
     display: flex; justify-content: space-between; gap: 1rem;
     font-family: var(--mono); font-size: .78rem; color: var(--muted);
   }
+  .tut-links { display: flex; gap: 1rem; flex-wrap: wrap; justify-content: flex-end; }
 </style>
