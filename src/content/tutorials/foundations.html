@@ -699,34 +699,48 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <h2>Proof exercises</h2>
   <p>These problems ask for arguments, not numerical calculation. State every assumption you use.</p>
 
-  <h3>1. Prove that \(X'X\) is positive semidefinite</h3>
+  <h3>1. Prove that \(X'X\) is symmetric</h3>
+  <p>For any matrix \(X\), prove that \((X'X)' = X'X\). Explain why this holds whatever the shape of \(X\), and why it is what licenses the eigendecomposition \(X'X = P\Lambda P'\) with real eigenvalues and perpendicular eigenvectors.</p>
+  <details><summary>Hint</summary><p>Use \((AB)' = B'A'\) twice, and \((A')' = A\).</p></details>
+
+  <h3>2. Prove that \(X'X\) is positive semidefinite</h3>
   <p>For an arbitrary vector \(v\), prove that \(v'X'Xv \ge 0\). Use your result to explain why every eigenvalue of \(X'X\) is non-negative.</p>
   <details><summary>Hint</summary><p>Rewrite the quadratic form as \((Xv)'(Xv) = \|Xv\|^2\).</p></details>
 
-  <h3>2. Characterize when \(X'X\) is invertible</h3>
-  <p>Prove that \(X'X\) is invertible if and only if the columns of \(X\) are linearly independent. Explain what this says about exact multicollinearity.</p>
-  <details><summary>Hint</summary><p>Show that \(X'Xv = 0\) implies \(\|Xv\|^2 = 0\), and prove the converse.</p></details>
+  <h3>3. Prove that a positive definite matrix is invertible</h3>
+  <p>Let \(M\) be symmetric with \(v'Mv &gt; 0\) for every \(v \ne 0\). Prove that \(M\) is invertible. Then prove that \(X'X\) satisfies this condition exactly when the columns of \(X\) are linearly independent, and explain what that says about exact multicollinearity.</p>
+  <details><summary>Hint</summary><p>A square matrix fails to be invertible only if some \(v \ne 0\) has \(Mv = 0\); test that \(v\) in the quadratic form. For the second part, show that \(X'Xv = 0\) forces \(\|Xv\|^2 = 0\), and prove the converse.</p></details>
 
-  <h3>3. Prove that correlation is a cosine</h3>
-  <p>Let \(x_1\) and \(x_2\) be centered predictor columns scaled to unit Euclidean length. Prove that their correlation is \(x_1'x_2 = \cos\theta\), and use the Cauchy–Schwarz inequality to prove that it lies in \([-1,1]\).</p>
+  <h3>4. Prove that a dot product of unit vectors is at most 1</h3>
+  <p>Let \(u\) and \(v\) have unit Euclidean length. Prove that \(|u'v| \le 1\), with equality exactly when the two vectors are parallel. Deduce that for centered, unit-length predictor columns the correlation is \(x_1'x_2 = \cos\theta\) and lies in \([-1,1]\).</p>
+  <details><summary>Hint</summary><p>Cauchy–Schwarz, \(|u'v| \le \|u\|\|v\|\); or expand \(\|u - v\|^2 \ge 0\) and \(\|u + v\|^2 \ge 0\).</p></details>
 
-  <h3>4. Prove the eigenvalue-sum identity</h3>
-  <p>Assume every predictor column has unit Euclidean length. Prove that \(\operatorname{tr}(X'X)=p\), then use invariance of the trace under an eigendecomposition to prove \(\sum_{j=1}^{p}\lambda_j=p\).</p>
+  <h3>5. Prove that the eigenvalues sum to the trace</h3>
+  <p>For a symmetric matrix \(A\) with eigendecomposition \(A = P\Lambda P'\), prove that \(\operatorname{tr}(A) = \sum_j \lambda_j\). Then prove that unit-length columns give \(\operatorname{tr}(X'X)=p\), and conclude that \(\sum_{j=1}^{p}\lambda_j = p\).</p>
+  <details><summary>Hint</summary><p>The trace is cyclic: \(\operatorname{tr}(P\Lambda P') = \operatorname{tr}(\Lambda P'P)\), and \(P'P = I\).</p></details>
 
-  <h3>5. Derive the least-squares estimator</h3>
-  <p>Prove that \(\hat\beta\) minimizes \(\|Y-XB\|^2\) exactly when the residual \(Y-X\hat\beta\) is perpendicular to \(\operatorname{Col}(X)\). Deduce the normal equations and prove that their unique solution is \(\hat\beta=(X'X)^{-1}X'Y\) when \(X\) has full column rank.</p>
+  <h3>6. Prove that inverting a matrix inverts its eigenvalues</h3>
+  <p>Let \(A\) be invertible with \(Av = \lambda v\) for some \(v \ne 0\). Prove that \(\lambda \ne 0\) and that \(A^{-1}v = \lambda^{-1}v\): the eigenvectors are unchanged and the eigenvalues are reciprocated. Apply this to \(\operatorname{Cov}(\hat\beta) = \sigma^2 (X'X)^{-1}\) to prove that the coefficient variance along the eigenvector \(p_j\) is \(\sigma^2/\lambda_j\), and say what happens as \(\lambda_j \to 0\).</p>
+  <details><summary>Hint</summary><p>Apply \(A^{-1}\) to both sides of \(Av = \lambda v\). For \(\lambda \ne 0\): if \(\lambda\) were zero, \(Av = 0\) with \(v \ne 0\) would contradict invertibility.</p></details>
 
-  <h3>6. Prove unbiasedness and derive the covariance</h3>
+  <h3>7. Prove that the noise assumptions are one matrix equation</h3>
+  <p>Suppose \(\mathbb E[\varepsilon_i]=0\) and \(\mathbb E[\varepsilon_i^2]=\sigma^2\) for every \(i\), and \(\mathbb E[\varepsilon_i\varepsilon_j]=0\) whenever \(i \ne j\). Prove that these entrywise statements are exactly \(\mathbb E[\varepsilon]=0\) and \(\operatorname{Cov}(\varepsilon)=\mathbb E[\varepsilon\varepsilon']=\sigma^2 I\). Explain which assumption the diagonal carries and which the off-diagonal carries.</p>
+  <details><summary>Hint</summary><p>Write out the \((i,j)\) entry of the matrix \(\varepsilon\varepsilon'\) and take expectations entry by entry.</p></details>
+
+  <h3>8. Derive the least-squares estimator</h3>
+  <p>Prove that \(\hat\beta\) minimizes \(\|Y-XB\|^2\) exactly when the residual \(Y-X\hat\beta\) is perpendicular to \(\operatorname{Col}(X)\). Deduce the normal equations and prove that their unique solution is \(\hat\beta=(X'X)^{-1}X'Y\) when \(X\) has full column rank. Obtain the same equations a second way, by differentiating \(\phi(B)=\|Y-XB\|^2\).</p>
+
+  <h3>9. Prove unbiasedness and derive the covariance</h3>
   <p>Under \(Y=X\beta+\varepsilon\), \(\mathbb E[\varepsilon\mid X]=0\), and \(\operatorname{Cov}(\varepsilon\mid X)=\sigma^2I\), prove that ordinary least squares is conditionally unbiased and that \(\operatorname{Cov}(\hat\beta\mid X)=\sigma^2(X'X)^{-1}\).</p>
 
-  <h3>7. Prove the vector bias–variance decomposition</h3>
+  <h3>10. Prove the vector bias–variance decomposition</h3>
   <p>For any estimator \(\tilde\beta\), prove</p>
   \[\mathbb E\|\tilde\beta-\beta\|^2
   = \operatorname{tr}\!\big(\operatorname{Cov}(\tilde\beta)\big)
   + \|\mathbb E[\tilde\beta]-\beta\|^2.\]
   <p>Identify the cross-term and prove that it vanishes.</p>
 
-  <h3>8. Prove that a little shrinkage can improve MSE</h3>
+  <h3>11. Prove that a little shrinkage can improve MSE</h3>
   <p>Let \(\tilde\beta_c=c\hat\beta\), where ordinary least squares is unbiased and \(0\le c\le1\). Write its MSE in terms of \(V=\operatorname{tr}(\operatorname{Cov}(\hat\beta))\) and \(B=\|\beta\|^2\). Prove that the minimizing value is \(c^*=B/(B+V)\), and compare its MSE with the MSE at \(c=1\).</p>
   <details><summary>Hint</summary><p>First prove that \(R(c)=c^2V+(1-c)^2B\). The derivative is enough to establish the result.</p></details>
 </section>
@@ -738,9 +752,12 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <div class="checklist">
     <h3>You are ready for the ridge paper if you can prove…</h3>
     <ul>
-      <li>that \(X'X\) is positive semidefinite, and when it is positive definite;</li>
-      <li>that centered, unit-length predictor columns have dot product equal to their correlation;</li>
-      <li>that the eigenvalues of \(X'X\) sum to \(p\) under this scaling;</li>
+      <li>that \(X'X\) is symmetric, positive semidefinite, and when it is positive definite;</li>
+      <li>that a matrix with \(v'Mv &gt; 0\) for all \(v \ne 0\) is invertible;</li>
+      <li>that unit-length vectors have \(|u'v| \le 1\), so a dot product of standardized columns is their correlation;</li>
+      <li>that the eigenvalues of a symmetric matrix sum to its trace, hence to \(p\) under this scaling;</li>
+      <li>that \(A^{-1}\) keeps the eigenvectors and reciprocates the eigenvalues, so the variance along \(p_j\) is \(\sigma^2/\lambda_j\);</li>
+      <li>that \(\mathbb E[\varepsilon_i\varepsilon_j]=0\) for \(i \ne j\) and \(\mathbb E[\varepsilon_i^2]=\sigma^2\) are exactly \(\operatorname{Cov}(\varepsilon)=\sigma^2 I\);</li>
       <li>how orthogonal projection gives the normal equations, and why full column rank makes the least-squares coefficients unique;</li>
       <li>the conditional unbiasedness and covariance of ordinary least squares;</li>
       <li>the vector bias–variance decomposition with \(\operatorname{tr}(\operatorname{Cov})\);</li>

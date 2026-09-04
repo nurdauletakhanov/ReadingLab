@@ -371,21 +371,30 @@ SLIDES = [
                   "The price is bias. Session 1 proves that for some k > 0 the trade lowers the mean squared error, always.",
                   "Bring the centred model, the eigenvalues, and the bias–variance split. The paper assumes all three."]),
 
-    dict(kind="columns", label="Closing", title="Exercises",
-         left=["1.  Show that XᵀX is positive semidefinite.",
-               "2.  Show it is invertible exactly when the columns of X are linearly independent.",
-               "3.  For centred, unit-length columns, show that the dot product is the correlation and lies in [−1, 1].",
-               "4.  Show that the eigenvalues of XᵀX sum to p under that scaling."],
-         right=["5.  Prove the projection condition, then derive the normal equations and the least squares solution.",
-                "6.  Prove that least squares is unbiased and derive its covariance.",
-                "7.  Prove  E‖β̃ − β‖² = tr Cov(β̃) + ‖bias‖².",
-                "8.  For β̃ = cβ̂ with 0 ≤ c ≤ 1, find the c that minimises the MSE. Is it 1?"],
-         note="Work in pairs. Mark the line where each assumption about ε is used."),
+    dict(kind="columns", label="Closing", title="Exercises I \u2014 the matrix X\u1d40X",
+         left=["1.  Prove that XᵀX is symmetric, whatever the shape of X. That is what licenses XᵀX = PΛPᵀ.",
+               "2.  Prove that vᵀXᵀXv ≥ 0 for every v, so XᵀX is positive semidefinite and its eigenvalues are ≥ 0.",
+               "3.  Prove that a symmetric M with vᵀMv > 0 for every v ≠ 0 is invertible. When does XᵀX qualify?"],
+         right=["4.  Prove that unit-length u, v have |uᵀv| ≤ 1, with equality only when parallel. Deduce r = cos θ ∈ [−1, 1].",
+                "5.  Prove that the eigenvalues of a symmetric matrix sum to its trace. Deduce Σλⱼ = p for standardized columns.",
+                "6.  Prove that A⁻¹ keeps the eigenvectors and reciprocates the eigenvalues. Deduce the variance σ²/λⱼ along pⱼ."],
+         note="Work in pairs. Every one of these six is used somewhere in the ridge paper."),
+
+    dict(kind="columns", label="Closing", title="Exercises II \u2014 the model",
+         left=["7.  Prove that E[εᵢ] = 0, E[εᵢ²] = σ² and E[εᵢεⱼ] = 0 for i ≠ j are exactly Cov(ε) = σ²I. Which assumption is the diagonal, which the off-diagonal?",
+               "8.  Derive the normal equations twice: by orthogonal projection, and by differentiating ‖Y − XB‖²."],
+         right=["9.  Prove that least squares is unbiased and that Cov(β̂ | X) = σ²(XᵀX)⁻¹.",
+                "10.  Prove E‖β̃ − β‖² = tr Cov(β̃) + ‖bias‖², and show that the cross-term vanishes.",
+                "11.  For β̃ = cβ̂ with 0 ≤ c ≤ 1, prove the best c is B/(B + V). Is it ever 1?"],
+         note="Mark the line where each assumption about ε enters."),
 
     dict(kind="checklist", label="Closing", title="Before Session 1 you should be able to prove",
-         items=["XᵀX is positive semidefinite, and positive definite under full column rank.",
-                "For centred unit-length columns, a dot product is a correlation.",
-                "The eigenvalues of XᵀX sum to p.",
+         items=["XᵀX is symmetric and positive semidefinite; positive definite under full column rank.",
+                "A symmetric matrix with vᵀMv > 0 for every v ≠ 0 is invertible.",
+                "Unit-length vectors have |uᵀv| ≤ 1, so a dot product of standardized columns is a correlation.",
+                "The eigenvalues of a symmetric matrix sum to its trace, hence to p under this scaling.",
+                "A⁻¹ keeps the eigenvectors and reciprocates the eigenvalues, so the variance along pⱼ is σ²/λⱼ.",
+                "E[εᵢεⱼ] = 0 for i ≠ j and E[εᵢ²] = σ² are exactly Cov(ε) = σ²I.",
                 "Orthogonal projection gives the normal equations. Full column rank makes the least squares coefficients unique.",
                 "Least squares is unbiased with covariance σ²(XᵀX)⁻¹.",
                 "Vector MSE = total variance + squared bias.",
@@ -522,8 +531,9 @@ def build_pptx():
             items = [f"{i}.  {t}" for i, t in enumerate(s["items"], start=1)]
             half = (len(items) + 1) // 2
             cw = (W - 2*MARGIN - Inches(0.6)) / 2
-            add_text(slide, MARGIN, y, cw, Inches(4.5), items[:half], size=18, line_spacing=1.25, space_after=12)
-            add_text(slide, MARGIN + cw + Inches(0.6), y, cw, Inches(4.5), items[half:], size=18, line_spacing=1.25, space_after=12)
+            fs = 15 if len(items) > 8 else 18
+            add_text(slide, MARGIN, y, cw, Inches(4.5), items[:half], size=fs, line_spacing=1.18, space_after=8)
+            add_text(slide, MARGIN + cw + Inches(0.6), y, cw, Inches(4.5), items[half:], size=fs, line_spacing=1.18, space_after=8)
             add_text(slide, MARGIN, H - Inches(1.0), W - 2*MARGIN, Inches(0.4), s["note"], size=16, color=MUTED, font="Georgia")
     prs.save(OUT / f"{STEM}.pptx")
 
@@ -567,6 +577,8 @@ style: |
   .side {{ display: grid; grid-template-columns: 1fr 420px; gap: 36px; align-items: start; }}
   .wide {{ display: grid; grid-template-columns: 640px 1fr; gap: 32px; align-items: start; }}
   .two {{ display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }}
+  .dense {{ font-size: 20px; gap: 34px; }}
+  .dense li {{ margin-bottom: .2em; }}
   img {{ background: transparent; }}
 ---
 """
@@ -615,7 +627,8 @@ def build_md():
         elif k == "checklist":
             items = [f"{i}. {t}" for i, t in enumerate(s["items"], start=1)]
             half = (len(items) + 1) // 2
-            out.append('<div class="two">\n<div>\n\n' + "\n".join(items[:half]) + '\n\n</div>\n<div>\n\n' + "\n".join(items[half:]) + "\n\n</div>\n</div>\n")
+            cls = "two dense" if len(items) > 8 else "two"
+            out.append(f'<div class="{cls}">\n<div>\n\n' + "\n".join(items[:half]) + '\n\n</div>\n<div>\n\n' + "\n".join(items[half:]) + "\n\n</div>\n</div>\n")
             out.append(f'\n<p class="note">{s["note"]}</p>\n')
     (OUT / f"{STEM}.md").write_text("".join(out))
 

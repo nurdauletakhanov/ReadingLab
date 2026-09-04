@@ -23,6 +23,8 @@ style: |
   .side { display: grid; grid-template-columns: 1fr 420px; gap: 36px; align-items: start; }
   .wide { display: grid; grid-template-columns: 640px 1fr; gap: 32px; align-items: start; }
   .two { display: grid; grid-template-columns: 1fr 1fr; gap: 48px; }
+  .dense { font-size: 20px; gap: 34px; }
+  .dense li { margin-bottom: .2em; }
   img { background: transparent; }
 ---
 
@@ -475,34 +477,57 @@ $$
 
 <p class="label">Closing</p>
 
-## Exercises
+## Exercises I — the matrix XᵀX
 
 <div class="two">
 <div>
 
-1.  Show that XᵀX is positive semidefinite.
+1.  Prove that XᵀX is symmetric, whatever the shape of X. That is what licenses XᵀX = PΛPᵀ.
 
-2.  Show it is invertible exactly when the columns of X are linearly independent.
+2.  Prove that vᵀXᵀXv ≥ 0 for every v, so XᵀX is positive semidefinite and its eigenvalues are ≥ 0.
 
-3.  For centred, unit-length columns, show that the dot product is the correlation and lies in [−1, 1].
-
-4.  Show that the eigenvalues of XᵀX sum to p under that scaling.
+3.  Prove that a symmetric M with vᵀMv > 0 for every v ≠ 0 is invertible. When does XᵀX qualify?
 
 </div>
 <div>
 
-5.  Prove the projection condition, then derive the normal equations and the least squares solution.
+4.  Prove that unit-length u, v have |uᵀv| ≤ 1, with equality only when parallel. Deduce r = cos θ ∈ [−1, 1].
 
-6.  Prove that least squares is unbiased and derive its covariance.
+5.  Prove that the eigenvalues of a symmetric matrix sum to its trace. Deduce Σλⱼ = p for standardized columns.
 
-7.  Prove  E‖β̃ − β‖² = tr Cov(β̃) + ‖bias‖².
-
-8.  For β̃ = cβ̂ with 0 ≤ c ≤ 1, find the c that minimises the MSE. Is it 1?
+6.  Prove that A⁻¹ keeps the eigenvectors and reciprocates the eigenvalues. Deduce the variance σ²/λⱼ along pⱼ.
 
 </div>
 </div>
 
-<p class="note">Work in pairs. Mark the line where each assumption about ε is used.</p>
+<p class="note">Work in pairs. Every one of these six is used somewhere in the ridge paper.</p>
+
+---
+
+<p class="label">Closing</p>
+
+## Exercises II — the model
+
+<div class="two">
+<div>
+
+7.  Prove that E[εᵢ] = 0, E[εᵢ²] = σ² and E[εᵢεⱼ] = 0 for i ≠ j are exactly Cov(ε) = σ²I. Which assumption is the diagonal, which the off-diagonal?
+
+8.  Derive the normal equations twice: by orthogonal projection, and by differentiating ‖Y − XB‖².
+
+</div>
+<div>
+
+9.  Prove that least squares is unbiased and that Cov(β̂ | X) = σ²(XᵀX)⁻¹.
+
+10.  Prove E‖β̃ − β‖² = tr Cov(β̃) + ‖bias‖², and show that the cross-term vanishes.
+
+11.  For β̃ = cβ̂ with 0 ≤ c ≤ 1, prove the best c is B/(B + V). Is it ever 1?
+
+</div>
+</div>
+
+<p class="note">Mark the line where each assumption about ε enters.</p>
 
 ---
 
@@ -510,21 +535,24 @@ $$
 
 ## Before Session 1 you should be able to prove
 
-<div class="two">
+<div class="two dense">
 <div>
 
-1. XᵀX is positive semidefinite, and positive definite under full column rank.
-2. For centred unit-length columns, a dot product is a correlation.
-3. The eigenvalues of XᵀX sum to p.
-4. Orthogonal projection gives the normal equations. Full column rank makes the least squares coefficients unique.
+1. XᵀX is symmetric and positive semidefinite; positive definite under full column rank.
+2. A symmetric matrix with vᵀMv > 0 for every v ≠ 0 is invertible.
+3. Unit-length vectors have |uᵀv| ≤ 1, so a dot product of standardized columns is a correlation.
+4. The eigenvalues of a symmetric matrix sum to its trace, hence to p under this scaling.
+5. A⁻¹ keeps the eigenvectors and reciprocates the eigenvalues, so the variance along pⱼ is σ²/λⱼ.
+6. E[εᵢεⱼ] = 0 for i ≠ j and E[εᵢ²] = σ² are exactly Cov(ε) = σ²I.
 
 </div>
 <div>
 
-5. Least squares is unbiased with covariance σ²(XᵀX)⁻¹.
-6. Vector MSE = total variance + squared bias.
-7. Gauss–Markov compares only linear unbiased estimators.
-8. A biased estimator can have a lower MSE.
+7. Orthogonal projection gives the normal equations. Full column rank makes the least squares coefficients unique.
+8. Least squares is unbiased with covariance σ²(XᵀX)⁻¹.
+9. Vector MSE = total variance + squared bias.
+10. Gauss–Markov compares only linear unbiased estimators.
+11. A biased estimator can have a lower MSE.
 
 </div>
 </div>
