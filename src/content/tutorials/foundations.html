@@ -263,6 +263,9 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p>There is a cruder measure of co-movement that comes before correlation, and seeing why it fails is the clearest way to understand why we standardize. It is the <em class="term">covariance</em>: center both columns, multiply them entry by entry, and average.</p>
   \[\mathrm{cov}(u,v) = \frac{1}{n-1}\sum_{i=1}^{n}(u_i - \bar u)(v_i - \bar v)\]
   <p>It is positive when the two variables tend to sit above their means together, and negative when one is high while the other is low. For our five cars, \(\mathrm{cov}(\text{weight},\text{hp}) = 7.0\).</p>
+  <p>The table below also needs the <em class="term">standard deviation</em>, so let us define it now. It is the square root of a variable's covariance with itself, and it measures the typical distance of an entry from the mean, in the variable's own units:</p>
+  \[\mathrm{sd}(u) = \sqrt{\mathrm{cov}(u,u)} = \sqrt{\frac{1}{n-1}\sum_{i=1}^{n}(u_i - \bar u)^2}\]
+  <p>For our cars, \(\mathrm{sd}(\text{weight}) = 0.3162\) tonnes and \(\mathrm{sd}(\text{horsepower}) = 24.238\). Rescale a variable by \(c\) and its standard deviation is rescaled by \(c\) too, because the square root undoes the square. Keep that in mind; it is the whole trick below.</p>
   <p>But 7.0 of <em>what</em>? Tonne-horsepower. The number carries units, and that makes it useless as a measure of strength: you cannot tell whether 7.0 is a strong relationship or a weak one without knowing what scales you measured on.</p>
   <p>Here is the failure made concrete. Record weight in <b>grams</b> instead of tonnes — the same five cars, the same physical reality, just a different ruler. Every weight number is multiplied by \(c = 10^{6}\):</p>
   <div class="tablewrap">

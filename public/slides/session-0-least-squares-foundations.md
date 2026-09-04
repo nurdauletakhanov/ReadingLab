@@ -233,6 +233,7 @@ $$
 
 - Covariance is the crude measure of co-movement: centre, multiply entry by entry, average. For the cars, cov(weight, hp) = 7.0.
 - But 7.0 of what? Tonne-horsepower. Measure weight in grams and the same five cars give 7 000 000. The number carries the ruler.
+- The standard deviation is the typical distance from the mean, in the variable's own units: sd(u) = √cov(u, u). Here sd(weight) = 0.3162 t and sd(hp) = 24.238.
 - Divide by the standard deviations and the ruler cancels: 7.0 / (0.3162 × 24.238) = 0.913, in tonnes or in grams alike.
 - Standardizing does that division once, in advance, on the data. Afterwards a plain dot product already is the correlation.
 

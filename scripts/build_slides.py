@@ -263,8 +263,10 @@ SLIDES = [
 
     dict(kind="text", label="Part II · The geometry of correlation", title="Why standardize? A detour through covariance",
          equation=r"\operatorname{cov}(u,v) = \frac{1}{n-1}\sum_{i=1}^{n}(u_i-\bar u)(v_i-\bar v), \qquad r = \frac{\operatorname{cov}(u,v)}{\operatorname{sd}(u)\,\operatorname{sd}(v)}",
+         size=17,
          bullets=[f"Covariance is the crude measure of co-movement: centre, multiply entry by entry, average. For the cars, cov(weight, hp) = {cov_wh:.1f}.",
                   "But 7.0 of what? Tonne-horsepower. Measure weight in grams and the same five cars give 7 000 000. The number carries the ruler.",
+                  f"The standard deviation is the typical distance from the mean, in the variable's own units: sd(u) = √cov(u, u). Here sd(weight) = {sd_w:.4f} t and sd(hp) = {sd_h:.3f}.",
                   f"Divide by the standard deviations and the ruler cancels: {cov_wh:.1f} / ({sd_w:.4f} × {sd_h:.3f}) = {r:.3f}, in tonnes or in grams alike.",
                   "Standardizing does that division once, in advance, on the data. Afterwards a plain dot product already is the correlation."],
          note="That is why the ridge paper assumes standardized columns throughout: XᵀX then needs no units."),
@@ -431,7 +433,7 @@ def build_pptx():
             if s.get("equation"):
                 y = equation_box(slide, y, s["equation"]) + Inches(0.35)
             if s.get("bullets"):
-                bullets_box(slide, MARGIN, y, W - 2*MARGIN, H - y - Inches(0.9), s["bullets"])
+                bullets_box(slide, MARGIN, y, W - 2*MARGIN, H - y - Inches(0.9), s["bullets"], size=s.get("size", 19))
             if s.get("note"):
                 add_text(slide, MARGIN, H - Inches(1.0), W - 2*MARGIN, Inches(0.4), s["note"], size=16, color=MUTED, font="Georgia")
         elif k == "table":
