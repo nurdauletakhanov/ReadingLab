@@ -69,13 +69,26 @@ def f(x, d=2):
     return f"{x:.{d}f}"
 
 
-# ----------------------------------------------------------------------------- figures
-matrix_eq = ("⎛6.4⎞     ⎛1.2   95 ⎞            ⎛ε₁⎞\n"
-             "⎜7.1⎟     ⎜1.4  100 ⎟   ⎛β₁⎞     ⎜ε₂⎟\n"
-             "⎜5.8⎟  =  ⎜1.0   90 ⎟ · ⎝β₂⎠  +  ⎜ε₃⎟\n"
-             "⎜9.6⎟     ⎜1.8  150 ⎟            ⎜ε₄⎟\n"
-             "⎝8.2⎠     ⎝1.6  115 ⎠            ⎝ε₅⎠")
+# ----------------------------------------------------------------------------- LaTeX equations
+TEX_RC = {"text.usetex": True, "text.latex.preamble": r"\usepackage{amsmath,amssymb}"}
+EQ_DPI = 200
 
+
+def render_tex(tex: str, name: str, size: int = 22) -> tuple[pathlib.Path, float, float]:
+    """Typeset one display equation with LaTeX on the accent-soft panel. Returns (path, width_in, height_in)."""
+    out = IMG / f"{name}.png"
+    with plt.rc_context(TEX_RC):
+        fig = plt.figure(figsize=(12, 3), dpi=EQ_DPI)
+        fig.patch.set_facecolor(ACCENT_SOFT)
+        fig.text(0.5, 0.5, f"${tex}$", ha="center", va="center", fontsize=size, color=INK)
+        fig.savefig(out, facecolor=ACCENT_SOFT, bbox_inches="tight", pad_inches=0.22)
+        plt.close(fig)
+    from PIL import Image
+    w, h = Image.open(out).size
+    return out, w / EQ_DPI, h / EQ_DPI
+
+
+# ----------------------------------------------------------------------------- figures
 def style_axes(ax):
     ax.set_facecolor(BG)
     for s in ("top", "right"):
@@ -160,13 +173,6 @@ def fig_eigen():
     fig.tight_layout(); fig.savefig(IMG / "eigen.png", facecolor=BG); plt.close(fig)
 
 
-def fig_matrix():
-    fig = plt.figure(figsize=(7.2, 2.3), dpi=200)
-    fig.patch.set_facecolor(ACCENT_SOFT)
-    fig.text(0.5, 0.5, matrix_eq, ha="center", va="center", fontsize=17, family="DejaVu Sans Mono", color=INK, linespacing=1.25)
-    fig.savefig(IMG / "matrix.png", facecolor=ACCENT_SOFT); plt.close(fig)
-
-
 def fig_dartboard():
     rng = np.random.default_rng(7)
     fig, axes = plt.subplots(1, 2, figsize=(9.2, 4.6), dpi=200)
@@ -209,91 +215,91 @@ SLIDES = [
                 "Fuel is the response. Weight and horsepower are the predictors."]),
 
     dict(kind="text", label="Part I · The model", title="From the table to an equation",
-         equation="fuelᵢ  =  β₁ · weightᵢ  +  β₂ · horsepowerᵢ  +  εᵢ",
+         equation=r"\text{fuel}_i = \beta_1\,\text{weight}_i + \beta_2\,\text{horsepower}_i + \varepsilon_i",
          bullets=["β₁ and β₂ belong to the relationship, not to any single car. They are what we want.",
                   "εᵢ is everything the two measurements miss: driver, tyres, weather, the scale.",
                   "No amount of staring at the table reveals β. We will have to estimate it."]),
 
-    dict(kind="figure", label="Part I · The model", title="Five equations become one",
-         image="matrix.png", width=7.2, top=True, equation="Y = Xβ + ε",
+    dict(kind="text", label="Part I · The model", title="Five equations become one",
+         equation=r"\underbrace{\begin{pmatrix}6.4\\7.1\\5.8\\9.6\\8.2\end{pmatrix}}_{Y} = \underbrace{\begin{pmatrix}1.2&95\\1.4&100\\1.0&90\\1.8&150\\1.6&115\end{pmatrix}}_{X} \underbrace{\begin{pmatrix}\beta_1\\ \beta_2\end{pmatrix}}_{\beta} + \underbrace{\begin{pmatrix}\varepsilon_1\\ \varepsilon_2\\ \varepsilon_3\\ \varepsilon_4\\ \varepsilon_5\end{pmatrix}}_{\varepsilon}",
          bullets=["Y = Xβ + ε.   X has n = 5 rows, one per car, and p = 2 columns, one per predictor.",
                   "Every paper on the reading list starts from this line."]),
 
     dict(kind="text", label="Part I · The model", title="The intercept is a question about the origin",
-         equation="yᵢ = β₀ + β₁xᵢ₁ + β₂xᵢ₂ + εᵢ",
+         equation=r"y_i = \beta_0 + \beta_1 x_{i1} + \beta_2 x_{i2} + \varepsilon_i",
          bullets=["A real model has an intercept β₀; it lets the fitted plane sit above or below zero.",
                   "Without β₀ the fit must pass through the origin: a car with zero weight and zero horsepower.",
                   "Carrying β₀ through every formula is a nuisance. The cleaner move is to relocate the origin."]),
 
     dict(kind="figure", label="Part I · The model", title="Centring moves the origin to the average car",
          image="centering.png", width=7.3,
-         equation=f"x̄ = ({xbar[0]:.1f}, {xbar[1]:.0f}),   xᵢⱼ ↦ xᵢⱼ − x̄ⱼ",
+         equation=rf"\bar x = ({xbar[0]:.1f},\,{xbar[1]:.0f}), \qquad x_{{ij}} \mapsto x_{{ij}} - \bar x_j",
          bullets=["Subtract each column's mean from every entry, and do the same to y.",
                   "Every car moves by the same vector, so the cloud slides as one rigid piece.",
                   "Distances, angles, and the shape are untouched. Only the mean has moved, to (0, 0)."]),
 
     dict(kind="text", label="Part I · The model", title="What centring buys us",
-         equation="β̂₀ = ȳ − β̂₁x̄₁ − β̂₂x̄₂",
+         equation=r"\hat\beta_0 = \bar y - \hat\beta_1 \bar x_1 - \hat\beta_2 \bar x_2",
          bullets=["The average car is now the origin, and its predicted fuel is the average fuel: the intercept is exactly zero.",
                   "So we fit only the slopes, on centred data, from  Y = Xβ + ε  with no β₀ in sight.",
                   f"The intercept comes back for free afterwards. For the cars: β̂₁ = {f(beta_c[0])}, β̂₂ = {f(beta_c[1],3)}, β̂₀ = {f(beta0)}.",
                   "Ridge regression shrinks slopes, never the intercept. Centring is what keeps the two apart."]),
 
     dict(kind="text", label="Part II · The geometry of correlation", title="Predictors are vectors",
-         equation="X = [ x₁  x₂ ],   x₁, x₂ ∈ ℝ⁵,   XᵀX = ⎛x₁ᵀx₁  x₁ᵀx₂⎞ ⎝x₂ᵀx₁  x₂ᵀx₂⎠",
+         equation=r"X = [\,x_1 \;\; x_2\,], \quad x_1, x_2 \in \mathbb{R}^5, \qquad X^{\top}X = \begin{pmatrix} x_1^{\top}x_1 & x_1^{\top}x_2 \\ x_2^{\top}x_1 & x_2^{\top}x_2 \end{pmatrix}",
          bullets=["Read X by columns: weight is one vector in ℝ⁵, horsepower is another.",
                   "XᵀX collects their dot products. It is p × p, so rows and columns now index predictors, not cars.",
                   "The whole story of this session and the next lives inside that small matrix."]),
 
     dict(kind="figure", label="Part II · The geometry of correlation", title="Correlation is an angle",
          image="angle.png", width=4.9, side=True,
-         equation="x₁ᵀx₂ = ‖x₁‖ ‖x₂‖ cos θ = cos θ = r",
+         equation=r"x_1^{\top}x_2 = \|x_1\|\,\|x_2\| \cos\theta = \cos\theta = r",
          bullets=["Centre both columns and scale each to unit length.",
                   f"Their dot product is the cosine of the angle between them, and that is the sample correlation. For the cars, r = {r:.3f}.",
                   "|r| ≤ 1 is Cauchy–Schwarz, nothing more.",
                   "Nearly parallel columns mean nearly redundant predictors."]),
 
     dict(kind="text", label="Part II · The geometry of correlation", title="XᵀX is the correlation matrix",
-         equation=f"XᵀX = ⎛ 1   r ⎞ ⎝ r   1 ⎠ = ⎛ 1      {r:.3f} ⎞ ⎝ {r:.3f}   1  ⎠",
+         equation=rf"X^{{\top}}X = \begin{{pmatrix}} 1 & r \\ r & 1 \end{{pmatrix}} = \begin{{pmatrix}} 1 & {r:.3f} \\ {r:.3f} & 1 \end{{pmatrix}}",
          bullets=["On the diagonal: squared column lengths, all equal to 1.",
                   "Off the diagonal: the pairwise correlations.",
                   "The trace is p, so the eigenvalues always add up to p. They share a fixed budget."]),
 
     dict(kind="figure", label="Part II · The geometry of correlation", title="Eigenvalues: where the information is",
          image="eigen.png", width=4.9, side=True,
-         equation="XᵀX = PΛPᵀ,   XᵀX pⱼ = λⱼ pⱼ",
+         equation=r"X^{\top}X = P\Lambda P^{\top}, \qquad X^{\top}X\,p_j = \lambda_j\,p_j",
          bullets=["Each eigenvalue is the spread of the data cloud along its eigenvector.",
                   f"For the cars: λ₁ = {lam[0]:.2f} along the diagonal, λ₂ = {lam[1]:.2f} across it. They sum to 2.",
                   "Along the short axis the data barely varies. Whatever the coefficients do in that direction, the data cannot tell.",
                   "Remember the small one. Everything in Session 1 is about 1/λ₂."]),
 
     dict(kind="text", label="Part II · The geometry of correlation", title="What we assume about the noise",
-         equation="E[ε | X] = 0,        Cov(ε | X) = σ² I",
+         equation=r"\mathbb{E}[\varepsilon \mid X] = 0, \qquad \operatorname{Cov}(\varepsilon \mid X) = \sigma^2 I",
          bullets=["Nothing systematic is left over: on average the model is right.",
                   "Every car has the same error variance, and no two errors are linked.",
                   "That is all. Normality is not needed for anything today."]),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="Least squares: make the leftovers small",
-         equation="β̂ = arg min ‖Y − Xβ‖²   ⟹   XᵀX β̂ = XᵀY   ⟹   β̂ = (XᵀX)⁻¹ XᵀY",
+         equation=r"\hat\beta = \arg\min_{\beta} \|Y - X\beta\|^2 \;\Longrightarrow\; X^{\top}X\hat\beta = X^{\top}Y \;\Longrightarrow\; \hat\beta = (X^{\top}X)^{-1}X^{\top}Y",
          bullets=["The objective is the squared length of the residual vector in ℝ⁵.",
                   "Its gradient is −2XᵀY + 2XᵀXβ. Setting it to zero gives the normal equations.",
                   "If XᵀX can be inverted, the solution is unique and explicit.",
                   "Everything about β̂ is decided by that inverse."]),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="When can XᵀX be inverted?",
-         equation="vᵀ XᵀX v = (Xv)ᵀ(Xv) = ‖Xv‖² ≥ 0",
+         equation=r"v^{\top}X^{\top}Xv = (Xv)^{\top}(Xv) = \|Xv\|^2 \ge 0",
          bullets=["So XᵀX is positive semidefinite for any X.",
                   "If the columns are linearly independent, Xv ≠ 0 whenever v ≠ 0, the quadratic form is strictly positive, and the inverse exists.",
                   "Nearly dependent columns keep the inverse but make it enormous. That is the ridge paper's whole subject."]),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="The estimate is a random variable",
-         equation="β̂ = (XᵀX)⁻¹Xᵀ(Xβ + ε) = β + (XᵀX)⁻¹Xᵀ ε",
+         equation=r"\hat\beta = (X^{\top}X)^{-1}X^{\top}(X\beta + \varepsilon) = \beta + (X^{\top}X)^{-1}X^{\top}\varepsilon",
          bullets=["β and X are fixed. Redraw the noise, and the estimate moves.",
                   "An estimator therefore has a distribution, and we can ask two questions of it:",
                   "where is its centre, and how wide is its spread?"]),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="Unbiased, with covariance σ²(XᵀX)⁻¹",
-         equation="E[β̂ | X] = β,        Cov(β̂ | X) = σ² (XᵀX)⁻¹",
+         equation=r"\mathbb{E}[\hat\beta \mid X] = \beta, \qquad \operatorname{Cov}(\hat\beta \mid X) = \sigma^2 (X^{\top}X)^{-1}",
          bullets=["The centre is exactly right: least squares is unbiased.",
                   "The spread is the inverse of the correlation matrix. Along eigenvector pⱼ the variance is σ²/λⱼ.",
                   f"For the cars: σ²/λ₁ = {1/lam[0]:.2f} σ²  but  σ²/λ₂ = {1/lam[1]:.1f} σ².",
@@ -301,18 +307,18 @@ SLIDES = [
 
     dict(kind="figure", label="Part III · What makes an estimate good", title="Unbiased is not the same as accurate",
          image="dartboard.png", width=7.3,
-         equation="MSE(β̃) = E‖β̃ − β‖² = tr Cov(β̃) + ‖bias(β̃)‖²",
+         equation=r"\operatorname{MSE}(\tilde\beta) = \mathbb{E}\|\tilde\beta - \beta\|^2 = \operatorname{tr}\operatorname{Cov}(\tilde\beta) + \|\operatorname{bias}(\tilde\beta)\|^2",
          bullets=["Player A is centred on the bullseye but scatters widely. Player B aims a little off and clusters tightly.",
                   "Every single dart of B lands closer. Mean squared error scores both players on the same scale."]),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="Gauss–Markov, read carefully",
-         equation="Cov(β̃ | X) − Cov(β̂ | X) ⪰ 0   for every β̃ that is linear in Y and unbiased",
+         equation=r"\operatorname{Cov}(\tilde\beta \mid X) - \operatorname{Cov}(\hat\beta \mid X) \succeq 0 \quad \text{for every } \tilde\beta \text{ linear in } Y \text{ and unbiased}",
          bullets=["Among linear unbiased estimators, least squares has the smallest covariance.",
                   "Two qualifiers. Drop “unbiased” and the theorem says nothing at all.",
                   "That gap is the door ridge regression walks through."]),
 
     dict(kind="text", label="Part III · What makes an estimate good", title="Where this leaves us",
-         equation="β̂ = (XᵀX)⁻¹XᵀY        β̂(k) = (XᵀX + kI)⁻¹XᵀY,  k > 0",
+         equation=r"\hat\beta = (X^{\top}X)^{-1}X^{\top}Y \qquad\qquad \hat\beta(k) = (X^{\top}X + kI)^{-1}X^{\top}Y, \quad k > 0",
          bullets=["In the eigenvector basis, every 1/λⱼ becomes 1/(λⱼ + k). The small eigenvalue can no longer explode.",
                   "The price is bias. Session 1 proves that for some k > 0 the trade lowers the mean squared error, always.",
                   "Bring the centred model, the eigenvalues, and the bias–variance split. The paper assumes all three."]),
@@ -387,20 +393,10 @@ def chrome(slide, label, title, number):
     add_text(slide, W - MARGIN - Inches(1), H - Inches(0.55), Inches(1), Inches(0.3), str(number), size=11, color=MUTED, align=PP_ALIGN.RIGHT)
 
 
-def equation_box(slide, y, text, mono=False, size=None):  # noqa: E302
-    lines = text.split("\n")
-    size = size or (18 if mono else 24)
-    h = Inches(0.42) * len(lines) + Inches(0.3)
-    box = slide.shapes.add_shape(1, MARGIN, y, W - 2*MARGIN, h)  # 1 = rectangle
-    box.fill.solid(); box.fill.fore_color.rgb = rgb(ACCENT_SOFT); box.line.fill.background()
-    box.shadow.inherit = False
-    tf = box.text_frame; tf.word_wrap = True; tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    for i, line in enumerate(lines):
-        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.alignment = PP_ALIGN.CENTER; p.line_spacing = 1.0
-        run = p.add_run(); run.text = line
-        run.font.size = Pt(size); run.font.name = "Menlo" if mono else "Cambria Math"; run.font.color.rgb = rgb(INK)
-    return y + h
+def equation_box(slide, y, tex, mono=False, size=None):  # noqa: E302
+    return equation_box_width(slide, MARGIN, y, W - 2*MARGIN, tex)
+
+
 
 
 def build_pptx():
@@ -423,7 +419,7 @@ def build_pptx():
                 add_text(slide, MARGIN, y, W - 2*MARGIN, Inches(0.9), s["lines"], size=20, line_spacing=1.25, space_after=6)
                 y += Inches(0.55) * len(s["lines"]) + Inches(0.2)
             if s.get("equation"):
-                y = equation_box(slide, y, s["equation"], mono=s.get("mono", False)) + Inches(0.35)
+                y = equation_box(slide, y, s["equation"]) + Inches(0.35)
             if s.get("bullets"):
                 bullets_box(slide, MARGIN, y, W - 2*MARGIN, H - y - Inches(0.9), s["bullets"])
             if s.get("note"):
@@ -454,20 +450,20 @@ def build_pptx():
                 pic_w = Inches(s["width"])
                 pic = slide.shapes.add_picture(str(img), int((W - pic_w) / 2), y, width=pic_w)
                 y2 = y + pic.height + Inches(0.35)
-                y2 = equation_box(slide, y2, s["equation"], size=22) + Inches(0.3)
+                y2 = equation_box(slide, y2, s["equation"]) + Inches(0.3)
                 bullets_box(slide, MARGIN, y2, W - 2*MARGIN, H - y2 - Inches(0.6), s["bullets"], size=18)
             elif s.get("side"):
                 pic_w = Inches(s["width"])
                 slide.shapes.add_picture(str(img), W - MARGIN - pic_w, y, width=pic_w)
                 tw = W - 2*MARGIN - pic_w - Inches(0.5)
-                y = equation_box_width(slide, MARGIN, y, tw, s["equation"]) + Inches(0.3)
+                y = equation_box_width(slide, MARGIN, y, tw, s["equation"], size=20) + Inches(0.3)
                 bullets_box(slide, MARGIN, y, tw, H - y - Inches(0.8), s["bullets"], size=18)
             else:
                 pic_w = Inches(s["width"])
                 pic = slide.shapes.add_picture(str(img), MARGIN, y, width=pic_w)
                 tw = W - 2*MARGIN - pic_w - Inches(0.45)
                 x = MARGIN + pic_w + Inches(0.45)
-                y2 = equation_box_width(slide, x, y, tw, s["equation"], size=16) + Inches(0.25)
+                y2 = equation_box_width(slide, x, y, tw, s["equation"], size=18) + Inches(0.25)
                 bullets_box(slide, x, y2, tw, H - y2 - Inches(0.7), s["bullets"], size=16)
         elif k == "columns":
             cw = (W - 2*MARGIN - Inches(0.6)) / 2
@@ -484,17 +480,17 @@ def build_pptx():
     prs.save(OUT / f"{STEM}.pptx")
 
 
-def equation_box_width(slide, x, y, w, text, size=20):
-    lines = text.split("\n")
-    h = Inches(0.4) * len(lines) + Inches(0.3)
-    box = slide.shapes.add_shape(1, x, y, w, h)
-    box.fill.solid(); box.fill.fore_color.rgb = rgb(ACCENT_SOFT); box.line.fill.background(); box.shadow.inherit = False
-    tf = box.text_frame; tf.word_wrap = True; tf.vertical_anchor = MSO_ANCHOR.MIDDLE
-    for i, line in enumerate(lines):
-        p = tf.paragraphs[0] if i == 0 else tf.add_paragraph()
-        p.alignment = PP_ALIGN.CENTER
-        run = p.add_run(); run.text = line; run.font.size = Pt(size); run.font.name = "Cambria Math"; run.font.color.rgb = rgb(INK)
-    return y + h
+_eq_counter = [0]
+
+
+def equation_box_width(slide, x, y, w, tex, size=22):
+    _eq_counter[0] += 1
+    path, win, hin = render_tex(tex, f"eq{_eq_counter[0]:02d}", size)
+    max_h = 2.6
+    scale = min(1.0, (w / 914400) / win, max_h / hin)
+    pw, ph = Inches(win * scale), Inches(hin * scale)
+    slide.shapes.add_picture(str(path), int(x + (w - pw) / 2), y, width=pw, height=ph)
+    return y + ph
 
 
 # ----------------------------------------------------------------------------- marp markdown
@@ -502,6 +498,7 @@ MARP_HEAD = f"""---
 marp: true
 theme: default
 paginate: true
+math: mathjax
 size: 16:9
 style: |
   section {{ background: {BG}; color: {INK}; font-family: Arial, Helvetica, sans-serif; font-size: 26px; line-height: 1.35; padding: 54px 72px; }}
@@ -514,7 +511,8 @@ style: |
   li {{ margin-bottom: .35em; }}
   li::marker {{ color: {ACCENT}; }}
   .label {{ color: {ACCENT}; font-size: 15px; font-weight: 700; letter-spacing: .06em; text-transform: uppercase; margin: 0 0 8px; }}
-  .eq {{ background: {ACCENT_SOFT}; border-radius: 8px; padding: 12px 20px; text-align: center; font-family: "Cambria Math", "STIX Two Math", serif; font-size: 28px; margin: 12px 0 22px; white-space: pre-wrap; }}
+  .eq {{ background: {ACCENT_SOFT}; border-radius: 8px; padding: 6px 20px; text-align: center; font-size: 26px; margin: 12px 0 22px; }}
+  .eq p {{ margin: 0; }}
   .mono {{ font-family: Menlo, monospace; font-size: 20px; text-align: left; display: inline-block; }}
   .note {{ color: {MUTED}; font-family: Georgia, serif; font-size: 20px; margin-top: 26px; }}
   .subtitle {{ color: {MUTED}; font-family: Georgia, serif; font-size: 28px; }}
@@ -526,9 +524,8 @@ style: |
 """
 
 
-def md_eq(text, mono=False):
-    cls = "eq mono" if mono else "eq"
-    return f'<div class="{cls}">{text}</div>\n\n'
+def md_eq(tex, mono=False):
+    return '<div class="eq">\n\n$$\n' + tex + '\n$$\n\n</div>\n\n'
 
 
 def build_md():
@@ -576,7 +573,7 @@ def build_md():
 
 
 if __name__ == "__main__":
-    fig_centering(); fig_angle(); fig_eigen(); fig_dartboard(); fig_matrix()
+    fig_centering(); fig_angle(); fig_eigen(); fig_dartboard()
     build_pptx(); build_md()
     print(f"r = {r:.3f}, theta = {theta:.1f} deg, lambda = {lam.round(3)}, beta_c = {beta_c.round(3)}, beta0 = {beta0:.3f}")
     print(f"wrote {OUT / (STEM + '.pptx')} ({(OUT / (STEM + '.pptx')).stat().st_size/1e3:.0f} KB), {len(SLIDES)} slides")
