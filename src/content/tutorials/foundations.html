@@ -134,7 +134,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p class="grp">Part I · The model</p>
   <ol>
     <li><a href="#s1">From a table of cars to an equation</a></li>
-    <li><a href="#s2">Compressing it into matrices</a></li>
+    <li><a href="#s2">Matrices, the intercept, and centering</a></li>
   </ol>
   <p class="grp">Part II · The geometry of correlation</p>
   <ol start="3">
@@ -185,7 +185,7 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
 <!-- 2 -->
 <section id="s2">
   <p class="snum">Section 2 · Part I</p>
-  <h2>Compressing it into matrices</h2>
+  <h2>Matrices, the intercept, and centering</h2>
   <p>Writing that equation once per car gives five equations. Stacked, they look like this:</p>
   \[\begin{aligned}
   6.4 &= 1.2\,\beta_1 + \;\,95\,\beta_2 + \varepsilon_1\\
@@ -199,8 +199,24 @@ mjx-container[display="true"] { overflow-x: auto; overflow-y: hidden; max-width:
   <p>Check that the matrix product really does reproduce the five equations — multiply the first row of \(X\) by \(\beta\) and you get \(1.2\beta_1 + 95\beta_2\). It does. So the whole system is:</p>
   \[Y = X\beta + \varepsilon\]
   <p>That is the linear model, and every paper in this reading list starts from it. In general \(X\) has \(n\) rows (one per observation) and \(p\) columns (one per predictor), so \(\beta\) has \(p\) entries. Here \(n = 5\) and \(p = 2\).</p>
+  <h3 id="intercept-centering">Intercept and centering</h3>
+  <p>We left one familiar term out of the equations above. A regression model normally includes an <em class="term">intercept</em>:</p>
+  \[y_i = \beta_0 + \beta_1x_{i1} + \beta_2x_{i2} + \varepsilon_i\]
+  <p>The intercept \(\beta_0\) lets the fitted plane move up or down. Without it, the fitted plane must pass through the origin. In the original car measurements, that origin means a car with zero weight and zero horsepower, so forcing the model through it would make little sense.</p>
+  <p>Centering changes what the origin means. Subtract the mean of each variable from every observation. For our data,</p>
+  \[\bar y = 7.42, \qquad \bar x_{\text{weight}} = 1.4, \qquad \bar x_{\text{hp}} = 110.\]
+  <p>For the first car, the centered measurements are</p>
+  \[6.4-7.42=-1.02, \qquad 1.2-1.4=-0.2, \qquad 95-110=-15.\]
+  <p>These numbers no longer describe the car's absolute measurements. They describe how far that car sits above or below the average car. Define</p>
+  \[y_i^c=y_i-\bar y, \qquad x_{ij}^c=x_{ij}-\bar x_j.\]
+  <p>After centering the response and every predictor, the same relationship can be written in centered coordinates as</p>
+  \[y_i^c = \beta_1x_{i1}^c + \beta_2x_{i2}^c + \varepsilon_i^c.\]
+  <p>There is no intercept in this equation. The new origin is the average car: its centered predictors are zero, and its predicted centered fuel consumption is zero. That zero corresponds to \(7.42\) L/100 km in the original units.</p>
+  <div class="key"><b>What “the intercept becomes zero” means</b>The original intercept was not assumed to be zero and has not been discarded. It is zero only in the centered coordinate system. If we center the predictors but do not center the response, the intercept is generally \(\bar y\), not zero.</div>
+  <p>Once we estimate the slopes from the centered data, we return to the original units by recovering the intercept:</p>
+  \[\hat\beta_0 = \bar y - \hat\beta_1\bar x_1 - \hat\beta_2\bar x_2.\]
+  <p>This is useful for ridge regression because we usually want to shrink the slope coefficients, not the intercept. Centering separates the intercept from the slopes before the penalty is applied.</p>
   <p>We have named the noise \(\varepsilon\) but said nothing about it. That is deliberate. The assumptions the classical theory makes about \(\varepsilon\) are best read as statements about <em>geometry</em>, so we will build that language first and come back to them in Section 7.</p>
-  <div class="qa"><b>Where is the intercept?</b> A constant term \(\beta_0\) is usually included by adding a column of ones to \(X\). The ridge paper sidesteps this by centering all variables first, which makes the intercept zero. We will do the same in Section 4.</div>
 </section>
 
 <!-- 3 -->
