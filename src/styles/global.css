@@ -1,7 +1,7 @@
 /* Site tokens. Same palette and dark-mode convention as the tutorials, so chrome and article match. */
 :root {
   --bg: #f7f7f5; --surface: #ffffff; --text: #24282e; --muted: #6b7280;
-  --accent: #a8710a; --accent-soft: #f6ecd6; --line: #e0e1de; --player-bg: #0e1014;
+  --accent: #a8710a; --accent-soft: #f6ecd6; --line: #e0e1de;
   --serif: "Newsreader", Georgia, serif;
   --sans: "Public Sans", -apple-system, system-ui, sans-serif;
   --mono: "IBM Plex Mono", ui-monospace, SFMono-Regular, Menlo, monospace;

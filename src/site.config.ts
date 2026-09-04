@@ -1,6 +1,6 @@
 export const site = {
   title: 'ReadingLab',
-  tagline: 'A paper-reading club: written tutorials, animated walkthroughs, and the reading list behind them.',
+  tagline: 'A paper-reading club: rigorous tutorials, lecture slides, and the reading list behind them.',
   author: 'Nurdaulet Akhanov',
   github: 'https://github.com/nurdauletakhanov/ReadingLab',
   nextLecture: {
@@ -11,7 +11,6 @@ export const site = {
   },
   nav: [
     { href: '/tutorials/', label: 'Tutorials' },
-    { href: '/videos/', label: 'Videos' },
     { href: '/papers/', label: 'Papers' },
     { href: '/labs/', label: 'Labs', flag: 'labs' as const },
   ],

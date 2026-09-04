@@ -1,4 +1,4 @@
-import { defineCollection, reference, z } from 'astro:content';
+import { defineCollection, z } from 'astro:content';
 import { glob } from 'astro/loaders';
 import { legacyHtmlLoader } from './loaders/legacy-html';
 
@@ -19,7 +19,6 @@ const tutorials = defineCollection({
     summary: z.string().default(''),
     level: z.number().int().min(1).max(15).optional(),
     paper: paper.optional(),
-    video: reference('videos').optional(),
     slides: z.string().optional(),
     slidesSource: z.string().optional(),
     linkRewrites: z.record(z.string()).optional(),
@@ -28,30 +27,6 @@ const tutorials = defineCollection({
     script: z.string().optional(),
     fontsHref: z.string().url().optional(),
     hasMath: z.boolean(),
-  }),
-});
-
-const chapter = z.object({
-  title: z.string(),
-  at: z.union([z.number().nonnegative(), z.string().min(3)]), // seconds, or the opening words of a narration cue
-});
-
-const videos = defineCollection({
-  loader: glob({ pattern: '*.yaml', base: './src/content/videos' }),
-  schema: z.object({
-    title: z.string(),
-    eyebrow: z.string().optional(),
-    session: z.number().int(),
-    summary: z.string().default(''),
-    level: z.number().int().min(1).max(15).optional(),
-    paper,
-    mp4: z.string(),     // under public/, e.g. videos/ridge/ridge.mp4
-    srt: z.string(),     // file next to this yaml, e.g. ridge.srt
-    poster: z.string().optional(),
-    durationSec: z.number().optional(),
-    chapters: z.array(chapter).min(1),
-    keyResults: z.array(z.object({ label: z.string(), tex: z.string() })).default([]),
-    tutorial: reference('tutorials').optional(),
   }),
 });
 
@@ -73,4 +48,4 @@ const labs = defineCollection({
   }),
 });
 
-export const collections = { tutorials, videos, papers, labs };
+export const collections = { tutorials, papers, labs };

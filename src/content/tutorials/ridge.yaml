@@ -8,6 +8,5 @@ paper:
   year: 1970
   venue: "Technometrics 12(1)"
   url: "https://doi.org/10.1080/00401706.1970.10488634"
-video: ridge
 linkRewrites:
   "https://claude.ai/code/artifact/459b9778-0262-43f3-aff6-98e7a26110d7": /tutorials/foundations/
