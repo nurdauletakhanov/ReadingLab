@@ -309,6 +309,12 @@ mjx-container[display="true"] { margin: .5rem 0 !important; }
 
   <p>So \(Z\) stretches each of the two directions by its own factor. But \(\hat\beta\) is not one of those directions — it is a combination of them. So split it into its two parts, one along each direction:</p>
   \[\hat\beta \;=\; \hat\alpha_1 v_1 \;+\; \hat\alpha_2 v_2\]
+  <p>Two questions are worth answering before going on: why we are allowed to do this, and why it helps.</p>
+  <p><b>Allowed,</b> because \(v_1\) and \(v_2\) are eigenvectors of the symmetric matrix \(X'X\). Symmetry forces them to be perpendicular, and we scale each to length one, so the two of them are a set of axes for the plane — a basis. Every vector in the plane is a combination of them, in exactly one way. The recipe for the two lengths is a projection onto each axis:</p>
+  \[\hat\alpha_1 = v_1'\hat\beta, \qquad \hat\alpha_2 = v_2'\hat\beta.\]
+  <p><b>It helps</b> because we know what \(Z\) does to \(v_1\) and \(v_2\) — it multiplies each by a number — and we do not know, directly, what it does to \(\hat\beta\). Linearity carries the known answer across the sum:</p>
+  \[Z\hat\beta \;=\; Z\big(\hat\alpha_1 v_1 + \hat\alpha_2 v_2\big) \;=\; \hat\alpha_1\,Zv_1 \;+\; \hat\alpha_2\,Zv_2 \;=\; \frac{\lambda_1}{\lambda_1+k}\hat\alpha_1 v_1 \;+\; \frac{\lambda_2}{\lambda_2+k}\hat\alpha_2 v_2.\]
+  <p>One unknown matrix-times-vector product has become two ordinary multiplications by a number. That is the whole reason eigenvectors are worth finding: written in their basis, a matrix stops mixing coordinates and simply scales each one on its own.</p>
   <p>The numbers \(\hat\alpha_1\) and \(\hat\alpha_2\) are simply the <em>lengths of those two parts</em> — how far \(\hat\beta\) reaches along each direction. Ridge then multiplies each part by its own factor and adds them back up:</p>
   \[\hat\beta^{*} \;=\; \underbrace{\frac{\lambda_1}{\lambda_1+k}}_{\text{near }1}\hat\alpha_1 v_1 \;+\; \underbrace{\frac{\lambda_2}{\lambda_2+k}}_{\text{near }0}\hat\alpha_2 v_2\]
   <p>That is the entire operation: <b>split, scale each part, add back</b>. The matrix bookkeeping for it — collecting the lengths as \(\hat\alpha = P'\hat\beta\) and the factors as \(D\), so that \(\hat\alpha^{*} = D\hat\alpha\) — is just a compact way of writing those two lines.</p>
